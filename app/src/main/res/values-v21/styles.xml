@@ -9,4 +9,8 @@
         <item name="colorButtonNormal">@color/blue</item>
     </style>
 
+    <style name="TitlePageTheme" parent="AppTheme">
+        <item name="android:statusBarColor">@android:color/transparent</item>
+    </style>
+
 </resources>
