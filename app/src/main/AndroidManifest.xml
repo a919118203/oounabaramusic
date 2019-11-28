@@ -12,7 +12,7 @@
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
         <activity android:name=".ChooseLoginActivity"
-            android:theme="@style/TitlePageTheme"/>
+            android:theme="@style/ChooseLoginTheme"/>
         <activity
             android:name=".TitlePageActivity"
             android:theme="@style/TitlePageTheme">

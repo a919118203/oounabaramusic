@@ -6,11 +6,14 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
-        <item name="colorButtonNormal">@color/blue</item>
     </style>
 
     <style name="TitlePageTheme" parent="AppTheme">
         <item name="android:statusBarColor">@android:color/transparent</item>
+    </style>
+
+    <style name="ChooseLoginTheme" parent="AppTheme">
+        <item name="android:statusBarColor">@color/blue</item>
     </style>
 
 </resources>
