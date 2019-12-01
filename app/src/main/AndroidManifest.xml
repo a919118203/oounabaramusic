@@ -14,15 +14,15 @@
         <activity android:name=".ChooseLoginActivity"
             android:theme="@style/ChooseLoginTheme"/>
         <activity
-            android:name=".TitlePageActivity"
-            android:theme="@style/TitlePageTheme">
+            android:name=".TitlePageActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".MainActivity"/>
+        <activity android:name=".MainActivity"
+            android:label=""/>
     </application>
 
 </manifest>

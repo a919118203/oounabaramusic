@@ -1,24 +1,223 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    android:orientation="vertical"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    android:layout_width="match_parent">
 
-    <TextView
+    <LinearLayout
+        android:orientation="horizontal"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_height="wrap_content">
+        <ImageView
+            android:src="@mipmap/setting"
+            android:layout_width="0dp"
+            android:layout_height="24dp"
+            android:layout_weight="1"
+            android:paddingEnd="10dp"
+            android:layout_gravity="center_vertical"/>
 
-    <Button
+        <com.oounabaramusic.android.widget.textview.TextViewToolBar
+            android:id="@+id/main_my"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:textColor="@color/font_positive"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:text="@string/main_my"
+            android:background="@drawable/btn_main_selector"/>
+
+        <com.oounabaramusic.android.widget.textview.TextViewToolBar
+            android:id="@+id/main_search"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/main_search"/>
+
+        <com.oounabaramusic.android.widget.textview.TextViewToolBar
+            android:id="@+id/main_now"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/main_now"/>
+
+        <com.oounabaramusic.android.widget.textview.TextViewToolBar
+            android:id="@+id/main_video"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/main_video"/>
+    </LinearLayout>
+
+    <View
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/mogeko"
-        tools:ignore="MissingConstraints" />
+        android:layout_height="1dp"
+        android:background="@color/font_negative"/>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <LinearLayout
+        android:id="@+id/local_music"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/local_music"
+            android:padding="10dp"/>
+
+        <com.oounabaramusic.android.widget.textview.TextViewBigFont
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:text="@string/local_music"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:textColor="@color/font_positive"/>
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/font_negative"/>
+
+    <LinearLayout
+        android:id="@+id/recently_played"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/recently_played"
+            android:padding="10dp"/>
+
+        <com.oounabaramusic.android.widget.textview.TextViewBigFont
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:text="@string/recently_played"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:textColor="@color/font_positive"/>
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/font_negative"/>
+
+    <LinearLayout
+        android:id="@+id/download_manager"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/recently_played"
+            android:padding="10dp"/>
+
+        <com.oounabaramusic.android.widget.textview.TextViewBigFont
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:text="@string/download_manager"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:textColor="@color/font_positive"/>
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/font_negative"/>
+
+    <LinearLayout
+        android:id="@+id/my_collection"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/recently_played"
+            android:padding="10dp"/>
+
+        <com.oounabaramusic.android.widget.textview.TextViewBigFont
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:text="@string/my_collection"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:textColor="@color/font_positive"/>
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="5dp"
+        android:background="@color/font_negative"/>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:id="@+id/my_playlist"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <com.oounabaramusic.android.widget.textview.TextViewBigFont
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:textColor="@color/font_positive"
+            android:text="@string/created_playlist"
+            android:gravity="center_vertical"/>
+
+        <ImageButton
+            android:id="@+id/playlist_add"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <ImageButton
+            android:id="@+id/my_playlist_menu"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+
+    <ListView
+        android:id="@+id/my_playlist_list_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <LinearLayout
+        android:id="@+id/favorite_playlist"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <com.oounabaramusic.android.widget.textview.TextViewBigFont
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:textColor="@color/font_positive"
+            android:text="@string/favorite_playlist"
+            android:gravity="center_vertical"/>
+
+
+        <ImageButton
+            android:id="@+id/favorite_playlist_menu"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+</LinearLayout>
