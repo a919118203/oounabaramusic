@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="10dp">
+
+    <ImageView
+        android:id="@+id/playlist_cover"
+        android:src="@mipmap/choose_login"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:contentDescription="歌单的封面"
+        tools:ignore="HardcodedText" />
+
+    <com.oounabaramusic.android.widget.textview.TextViewMediumFont
+        android:id="@+id/playlist_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:paddingTop="5dp"
+        android:layout_toEndOf="@+id/playlist_cover"
+        android:textColor="@color/font_positive"
+        android:text="名字"
+        tools:ignore="HardcodedText" />
+
+    <com.oounabaramusic.android.widget.textview.TextViewSmallFont
+        android:id="@+id/playlist_cnt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/playlist_name"
+        android:layout_below="@+id/playlist_name"
+        android:layout_marginTop="5dp"
+        android:text="数量"
+        tools:ignore="HardcodedText" />
+
+    <ImageView
+        android:id="@+id/my_playlist_item_menu"
+        android:src="@mipmap/my_playlist_menu"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_alignParentEnd="true"
+        android:contentDescription="我的歌单的菜单"
+        android:layout_marginTop="12dp"
+        tools:ignore="HardcodedText" />
+</RelativeLayout>

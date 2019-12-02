@@ -14,4 +14,6 @@
     <string name="my_collection">我的收藏</string>
     <string name="created_playlist">创建的歌单</string>
     <string name="favorite_playlist">收藏的歌单</string>
+    <string name="my_playlist_menu_title">创建的歌单</string>
+    <string name="add_new_playlist">创建新歌单</string>
 </resources>

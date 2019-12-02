@@ -11,24 +11,24 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 
 @SuppressLint("AppCompatCustomView")
-public class TextViewBigFont extends TextView {
-    public TextViewBigFont(Context context, @Nullable AttributeSet attrs) {
+public class TextViewSmallFont extends TextView {
+    public TextViewSmallFont(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public TextViewBigFont(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public TextViewSmallFont(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 
-    public TextViewBigFont(Context context) {
+    public TextViewSmallFont(Context context) {
         super(context);
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
-        setTextSize(TypedValue.COMPLEX_UNIT_SP,20);
-        //setSingleLine();
-        //setEllipsize(TextUtils.TruncateAt.END);
+        setTextSize(TypedValue.COMPLEX_UNIT_SP,12);
+        setSingleLine();
+        setEllipsize(TextUtils.TruncateAt.END);
         super.onDraw(canvas);
     }
 }

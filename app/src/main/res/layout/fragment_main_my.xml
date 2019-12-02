@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/font_negative"/>
+
+        <LinearLayout
+            android:id="@+id/local_music"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:src="@mipmap/local_music"
+                android:layout_width="70dp"
+                android:layout_height="50dp"
+                android:paddingBottom="10dp"
+                android:paddingTop="10dp"
+                android:paddingRight="20dp"
+                android:paddingLeft="20dp"/>
+
+            <com.oounabaramusic.android.widget.textview.TextViewMediumFont
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:text="@string/local_music"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:textColor="@color/font_positive"/>
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/font_negative"/>
+
+        <LinearLayout
+            android:id="@+id/recently_played"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:src="@mipmap/recently_played"
+                android:layout_width="70dp"
+                android:layout_height="50dp"
+                android:paddingBottom="10dp"
+                android:paddingTop="10dp"
+                android:paddingRight="20dp"
+                android:paddingLeft="20dp"/>
+
+            <com.oounabaramusic.android.widget.textview.TextViewMediumFont
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:text="@string/recently_played"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:textColor="@color/font_positive"/>
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/font_negative"/>
+
+        <LinearLayout
+            android:id="@+id/download_manager"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:src="@mipmap/recently_played"
+                android:layout_width="70dp"
+                android:layout_height="50dp"
+                android:paddingBottom="10dp"
+                android:paddingTop="10dp"
+                android:paddingRight="20dp"
+                android:paddingLeft="20dp"/>
+
+            <com.oounabaramusic.android.widget.textview.TextViewMediumFont
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:text="@string/download_manager"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:textColor="@color/font_positive"/>
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/font_negative"/>
+
+        <LinearLayout
+            android:id="@+id/my_collection"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:src="@mipmap/recently_played"
+                android:layout_width="70dp"
+                android:layout_height="50dp"
+                android:paddingBottom="10dp"
+                android:paddingTop="10dp"
+                android:paddingRight="20dp"
+                android:paddingLeft="20dp"/>
+
+            <com.oounabaramusic.android.widget.textview.TextViewMediumFont
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:text="@string/my_collection"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:textColor="@color/font_positive"/>
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="5dp"
+            android:background="@color/font_negative"/>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:id="@+id/my_playlist"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp">
+
+            <ImageView
+                android:src="@mipmap/right_arrow"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_gravity="center"
+                android:layout_marginEnd="10dp"/>
+
+            <com.oounabaramusic.android.widget.textview.TextViewBigFont
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textStyle="bold"
+                android:textColor="@color/font_positive"
+                android:text="@string/created_playlist"
+                android:gravity="center_vertical"/>
+
+            <ImageView
+                android:id="@+id/add_playlist"
+                android:src="@mipmap/add_playlist"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_gravity="center"
+                android:layout_marginEnd="20dp"
+                android:background="@drawable/btn_main_selector_rectangle"/>
+
+            <ImageView
+                android:id="@+id/my_playlist_menu"
+                android:src="@mipmap/my_playlist_menu"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_gravity="center"
+                android:background="@drawable/btn_main_selector_rectangle"/>
+        </LinearLayout>
+
+        <ListView
+            android:id="@+id/my_playlist_list_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <LinearLayout
+            android:id="@+id/favorite_playlist"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp">
+
+            <ImageView
+                android:src="@mipmap/right_arrow"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_gravity="center"
+                android:layout_marginEnd="10dp"/>
+
+            <com.oounabaramusic.android.widget.textview.TextViewBigFont
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:textColor="@color/font_positive"
+                android:text="@string/favorite_playlist"
+                android:gravity="center_vertical"/>
+
+
+            <ImageView
+                android:id="@+id/favorite_playlist_menu"
+                android:src="@mipmap/my_playlist_menu"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_gravity="center"
+                android:background="@drawable/btn_main_selector_rectangle"/>
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>
