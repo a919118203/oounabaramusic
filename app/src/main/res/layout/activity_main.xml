@@ -1,15 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.drawerlayout.widget.DrawerLayout
-    android:id="@+id/main_drawer_layout"
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <include layout="@layout/activity_main_content"/>
+    <androidx.drawerlayout.widget.DrawerLayout
+        android:id="@+id/main_drawer_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-    <TextView
+        <include layout="@layout/activity_main_content"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="start"
+            android:text="hello world!"/>
+    </androidx.drawerlayout.widget.DrawerLayout>
+
+    <View
+        android:id="@+id/popup_window_dismiss"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_gravity="start"
-        android:text="hello world!"/>
-</androidx.drawerlayout.widget.DrawerLayout>
+        android:alpha="0.5"
+        android:background="@color/font_negative"
+        android:visibility="gone"/>
+</FrameLayout>

@@ -3,14 +3,7 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
-        <item name="android:homeAsUpIndicator">@mipmap/setting</item>
-    </style>
-
-    <style name="ChooseLoginTheme" parent="AppTheme">
-        <item name="android:statusBarColor">@color/blue</item>
+        <item name="android:statusBarColor">#CD4BE2</item>
     </style>
 
 </resources>

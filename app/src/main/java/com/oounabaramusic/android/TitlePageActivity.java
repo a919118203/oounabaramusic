@@ -17,7 +17,7 @@ public class TitlePageActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        StatusBarUtil.setTranslucentStatus(this);//隐藏状态栏
+        StatusBarUtil.hiddenStatusBar(true,this);
         setContentView(R.layout.activity_title_page);
         new Thread(new Runnable() {
             @Override

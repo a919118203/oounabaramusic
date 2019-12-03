@@ -1,11 +1,20 @@
 package com.oounabaramusic.android;
 
+import android.os.Build;
 import android.os.Bundle;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.oounabaramusic.android.fragment.MainMyFragment;
+import com.oounabaramusic.android.util.DensityUtil;
 import com.oounabaramusic.android.util.LogUtil;
 import com.oounabaramusic.android.util.StatusBarUtil;
 
@@ -13,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import androidx.annotation.NonNull;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
@@ -23,6 +33,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
     private TextView fragmentMainMy, fragmentMainSearch, fragmentMainNow, fragmentMainVideo;
     private ImageView mainSetting,mainSearch;
     private ViewPager viewPager;
+    private DrawerLayout dl;
     private List<Fragment> fragments=new ArrayList<>();
 
     @Override
@@ -34,17 +45,23 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
     }
 
     private void init() {
-        fragments.add(new MainMyFragment());
-        viewPager=findViewById(R.id.main_view_pager);
-        viewPager.setAdapter(new MainFragmentPagerAdapter());
-        viewPager.addOnPageChangeListener(new MainOnPagerChangeListener());
-
+        dl=findViewById(R.id.main_drawer_layout);
         fragmentMainMy =findViewById(R.id.fragment_main_my);
         fragmentMainSearch =findViewById(R.id.fragment_main_search);
         fragmentMainNow =findViewById(R.id.fragment_main_now);
         fragmentMainVideo =findViewById(R.id.fragment_main_video);
         mainSetting=findViewById(R.id.main_setting);
         mainSearch=findViewById(R.id.main_search);
+
+        //透明状态栏后为了不让控件和状态栏重叠
+        LinearLayout ll=findViewById(R.id.activity_main_toolbar);
+        int px=DensityUtil.dip2px(this,10);
+        ll.setPadding(px,StatusBarUtil.getStatusBarHeight(this),px,0);//默认单位为px
+
+        fragments.add(new MainMyFragment(findViewById(R.id.popup_window_dismiss)));
+        viewPager=findViewById(R.id.main_view_pager);
+        viewPager.setAdapter(new MainFragmentPagerAdapter());
+        viewPager.addOnPageChangeListener(new MainOnPagerChangeListener());
 
         fragmentMainMy.setOnClickListener(this);
         fragmentMainSearch.setOnClickListener(this);
@@ -107,4 +124,5 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
             LogUtil.printLog("MainActivity","onPageScrollStateChanged");
         }
     }
+
 }

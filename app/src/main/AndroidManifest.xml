@@ -11,8 +11,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".ChooseLoginActivity"
-            android:theme="@style/ChooseLoginTheme"/>
+        <activity android:name=".ChooseLoginActivity"/>
         <activity
             android:name=".TitlePageActivity">
             <intent-filter>

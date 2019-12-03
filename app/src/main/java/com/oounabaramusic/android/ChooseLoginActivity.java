@@ -13,6 +13,7 @@ public class ChooseLoginActivity extends BaseActivity implements View.OnClickLis
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        StatusBarUtil.setTranslucentStatus(this);
         setContentView(R.layout.activity_choose_login);
         findViewById(R.id.choose_login_phone).setOnClickListener(this);
         findViewById(R.id.choose_login_tourist).setOnClickListener(this);
