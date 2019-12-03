@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="10dp">
+
+    <ImageView
+        android:id="@+id/isPlaying"
+        android:src="@mipmap/isplaying"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:contentDescription="是否在播放"
+        tools:ignore="HardcodedText" />
+
+    <com.oounabaramusic.android.widget.textview.TextViewMediumFont
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="match_parent"
+        android:textColor="@color/font_positive"/>
+
+    <ImageView
+        android:id="@+id/local_music_menu"
+        android:src="@mipmap/my_playlist_menu"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:contentDescription="菜单"
+        tools:ignore="HardcodedText" />
+</LinearLayout>

@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import androidx.annotation.NonNull;
+import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentPagerAdapter;
@@ -58,7 +59,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
         int px=DensityUtil.dip2px(this,10);
         ll.setPadding(px,StatusBarUtil.getStatusBarHeight(this),px,0);//默认单位为px
 
-        fragments.add(new MainMyFragment(findViewById(R.id.popup_window_dismiss)));
+        fragments.add(new MainMyFragment((FrameLayout) findViewById(R.id.activity_main_layout)));
         viewPager=findViewById(R.id.main_view_pager);
         viewPager.setAdapter(new MainFragmentPagerAdapter());
         viewPager.addOnPageChangeListener(new MainOnPagerChangeListener());
@@ -85,6 +86,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
             case R.id.fragment_main_video:
                 break;
             case R.id.main_setting:
+                dl.openDrawer(GravityCompat.START);
                 break;
         }
     }

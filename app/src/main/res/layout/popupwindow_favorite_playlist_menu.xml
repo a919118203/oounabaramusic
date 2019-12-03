@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/popup_window_content"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="bottom"
+    android:background="@drawable/layout_card"
+    android:paddingStart="10dp"
+    android:paddingEnd="10dp"
+    android:paddingTop="20dp">
+
+    <com.oounabaramusic.android.widget.textview.TextViewSmallFont
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:text="@string/favorite_playlist"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/font_negative"/>
+
+    <LinearLayout
+        android:id="@+id/menu_management_playlist"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="50dp">
+
+        <ImageView
+            android:src="@mipmap/management"
+            android:layout_width="50dp"
+            android:layout_height="match_parent"
+            android:padding="10dp"/>
+
+
+        <com.oounabaramusic.android.widget.textview.TextViewMediumFont
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="@string/management_playlist"
+            android:textColor="@color/font_positive"
+            android:gravity="center_vertical"/>
+    </LinearLayout>
+</LinearLayout>

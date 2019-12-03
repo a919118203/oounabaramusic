@@ -78,7 +78,7 @@
             android:layout_height="wrap_content">
 
             <ImageView
-                android:src="@mipmap/recently_played"
+                android:src="@mipmap/download"
                 android:layout_width="70dp"
                 android:layout_height="50dp"
                 android:paddingBottom="10dp"
@@ -107,7 +107,7 @@
             android:layout_height="wrap_content">
 
             <ImageView
-                android:src="@mipmap/recently_played"
+                android:src="@mipmap/collection"
                 android:layout_width="70dp"
                 android:layout_height="50dp"
                 android:paddingBottom="10dp"

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="none">
+
+        <item android:id="@+id/my_news"
+            android:icon="@mipmap/news"
+            android:title="@string/me_news"/>
+
+        <item android:id="@+id/my_friends"
+            android:icon="@mipmap/friends"
+            android:title="@string/my_friends" />
+    </group>
+</menu>

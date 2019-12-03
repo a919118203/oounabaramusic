@@ -16,4 +16,13 @@
     <string name="favorite_playlist">收藏的歌单</string>
     <string name="my_playlist_menu_title">创建的歌单</string>
     <string name="add_new_playlist">创建新歌单</string>
+    <string name="management_playlist">管理歌单</string>
+    <string name="restore_playlist">恢复歌单</string>
+    <string name="my_playlist_item_menu_title">歌单：</string>
+    <string name="download">下载</string>
+    <string name="edit_playlist_info">编辑歌单信息</string>
+    <string name="delete_playlist">删除</string>
+    <string name="me_news">我的消息</string>
+    <string name="my_friends">我的朋友</string>
+    <string name="search_local_music">扫描本地音乐</string>
 </resources>

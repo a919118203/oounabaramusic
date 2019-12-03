@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout
+    android:id="@+id/activity_main_layout"
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -11,18 +13,11 @@
 
         <include layout="@layout/activity_main_content"/>
 
-        <TextView
+        <com.google.android.material.navigation.NavigationView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="start"
-            android:text="hello world!"/>
+            app:headerLayout="@layout/nav_header"
+            app:menu="@menu/nav_menu"/>
     </androidx.drawerlayout.widget.DrawerLayout>
-
-    <View
-        android:id="@+id/popup_window_dismiss"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:alpha="0.5"
-        android:background="@color/font_negative"
-        android:visibility="gone"/>
 </FrameLayout>

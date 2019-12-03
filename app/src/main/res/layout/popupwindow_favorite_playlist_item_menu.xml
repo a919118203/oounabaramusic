@@ -15,7 +15,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="10dp"
-        android:text="@string/my_playlist_menu_title"/>
+        android:text="@string/my_playlist_item_menu_title"/>
 
     <View
         android:layout_width="match_parent"
@@ -23,13 +23,13 @@
         android:background="@color/font_negative"/>
 
     <LinearLayout
-        android:id="@+id/menu_add_playlist"
+        android:id="@+id/item_menu_download"
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="50dp">
 
         <ImageView
-            android:src="@mipmap/add_playlist"
+            android:src="@mipmap/download"
             android:layout_width="50dp"
             android:layout_height="match_parent"
             android:padding="10dp"/>
@@ -39,7 +39,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="@string/add_new_playlist"
+            android:text="@string/download"
             android:textColor="@color/font_positive"
             android:gravity="center_vertical"/>
     </LinearLayout>
@@ -50,13 +50,13 @@
         android:background="@color/font_negative"/>
 
     <LinearLayout
-        android:id="@+id/menu_management_playlist"
+        android:id="@+id/item_menu_delete_playlist"
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="50dp">
 
         <ImageView
-            android:src="@mipmap/management"
+            android:src="@mipmap/delete"
             android:layout_width="50dp"
             android:layout_height="match_parent"
             android:padding="10dp"/>
@@ -66,36 +66,8 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="@string/management_playlist"
-            android:textColor="@color/font_positive"
-            android:gravity="center_vertical"/>
-    </LinearLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/font_negative"/>
-
-    <LinearLayout
-        android:id="@+id/menu_restore_playlist"
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="50dp">
-
-        <ImageView
-            android:src="@mipmap/restore"
-            android:layout_width="50dp"
-            android:layout_height="match_parent"
-            android:padding="10dp"/>
-
-
-        <com.oounabaramusic.android.widget.textview.TextViewMediumFont
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:text="@string/restore_playlist"
+            android:text="@string/delete_playlist"
             android:textColor="@color/font_positive"
             android:gravity="center_vertical"/>
     </LinearLayout>
 </LinearLayout>
-
