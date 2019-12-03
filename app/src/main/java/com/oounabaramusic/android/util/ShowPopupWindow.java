@@ -33,13 +33,12 @@ public class ShowPopupWindow{
 
     private void initBlockView() {
         block =new View(rootView.getContext());
-        ViewGroup vg= (ViewGroup) rootView.getChildAt(0);
         FrameLayout.LayoutParams pl=new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.MATCH_PARENT);
         block.setLayoutParams(pl);
         block.setBackgroundColor(rootView.getResources().getColor(R.color.font_negative));
         block.setAlpha(0.5f);
         block.setVisibility(View.GONE);
-        vg.addView(block);
+        rootView.addView(block);
     }
 
     public void showPopupMenu() {
