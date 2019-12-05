@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/popup_window_content"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="bottom"
+    android:background="@drawable/layout_card"
+    android:paddingStart="10dp"
+    android:paddingEnd="10dp"
+    android:paddingTop="20dp">
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="40dp">
+
+        <com.oounabaramusic.android.widget.textview.TextViewMediumFont
+            android:id="@+id/music_info_music_name"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:text="@string/local_music_item_menu_title"/>
+
+        <com.oounabaramusic.android.widget.textview.TextViewMediumFont
+            android:id="@+id/change_music_info"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:textColor="@color/clickable"
+            android:gravity="center"
+            android:background="@drawable/view_ripple_rectangle"
+            android:text="@string/change_music_info"/>
+    </LinearLayout>
+
+
+    <com.oounabaramusic.android.widget.textview.TextViewMediumFont
+        android:id="@+id/music_info_file_name"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:gravity="center_vertical"
+        android:text="@string/file_name"/>
+
+    <com.oounabaramusic.android.widget.textview.TextViewMediumFont
+        android:id="@+id/music_info_file_play_length"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:gravity="center_vertical"
+        android:text="@string/file_play_length"/>
+
+    <com.oounabaramusic.android.widget.textview.TextViewMediumFont
+        android:id="@+id/music_info_file_size"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:gravity="center_vertical"
+        android:text="@string/file_size"/>
+
+    <com.oounabaramusic.android.widget.textview.TextViewMediumFont
+        android:id="@+id/music_info_file_path"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:gravity="center_vertical"
+        android:text="@string/file_path"/>
+</LinearLayout>

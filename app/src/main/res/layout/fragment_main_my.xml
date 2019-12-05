@@ -17,7 +17,8 @@
             android:id="@+id/local_music"
             android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:background="@drawable/view_ripple_rectangle">
 
             <ImageView
                 android:src="@mipmap/local_music"
@@ -46,7 +47,8 @@
             android:id="@+id/recently_played"
             android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:background="@drawable/view_ripple_rectangle">
 
             <ImageView
                 android:src="@mipmap/recently_played"
@@ -75,7 +77,8 @@
             android:id="@+id/download_manager"
             android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:background="@drawable/view_ripple_rectangle">
 
             <ImageView
                 android:src="@mipmap/download"
@@ -104,7 +107,8 @@
             android:id="@+id/my_collection"
             android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:background="@drawable/view_ripple_rectangle">
 
             <ImageView
                 android:src="@mipmap/collection"
@@ -134,18 +138,22 @@
             android:id="@+id/my_playlist"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="10dp">
+            android:background="@drawable/view_ripple_rectangle"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp">
 
             <ImageView
                 android:src="@mipmap/right_arrow"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:layout_gravity="center"
-                android:layout_marginEnd="10dp"/>
+                android:layout_marginEnd="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"/>
 
             <com.oounabaramusic.android.widget.textview.TextViewBigFont
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:textStyle="bold"
                 android:textColor="@color/font_positive"
@@ -155,23 +163,25 @@
             <ImageView
                 android:id="@+id/add_playlist"
                 android:src="@mipmap/add_playlist"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
                 android:layout_gravity="center"
-                android:layout_marginEnd="20dp"
-                android:background="@drawable/btn_main_selector_rectangle"/>
+                android:padding="10dp"
+                android:layout_marginEnd="10dp"
+                android:background="@drawable/view_ripple_rectangle"/>
 
             <ImageView
                 android:id="@+id/my_playlist_menu"
                 android:src="@mipmap/my_playlist_menu"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
                 android:layout_gravity="center"
-                android:background="@drawable/btn_main_selector_rectangle"/>
+                android:padding="10dp"
+                android:background="@drawable/view_ripple_rectangle"/>
         </LinearLayout>
 
-        <ListView
-            android:id="@+id/my_playlist_list_view"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/my_playlist_Recycler_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
 
@@ -179,19 +189,22 @@
             android:id="@+id/favorite_playlist"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="10dp">
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp">
 
             <ImageView
                 android:src="@mipmap/right_arrow"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:layout_gravity="center"
-                android:layout_marginEnd="10dp"/>
+                android:layout_marginEnd="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"/>
 
             <com.oounabaramusic.android.widget.textview.TextViewBigFont
                 android:layout_width="0dp"
                 android:layout_weight="1"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:textStyle="bold"
                 android:textColor="@color/font_positive"
                 android:text="@string/favorite_playlist"
@@ -201,10 +214,16 @@
             <ImageView
                 android:id="@+id/favorite_playlist_menu"
                 android:src="@mipmap/my_playlist_menu"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
                 android:layout_gravity="center"
-                android:background="@drawable/btn_main_selector_rectangle"/>
+                android:padding="10dp"
+                android:background="@drawable/view_ripple_rectangle"/>
         </LinearLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/favorite_playlist_Recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
     </LinearLayout>
 </ScrollView>

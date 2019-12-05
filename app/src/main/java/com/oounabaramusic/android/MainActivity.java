@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
@@ -40,13 +41,15 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        StatusBarUtil.changeStatusBarContentColor(this);
         setContentView(R.layout.activity_main);
+        StatusBarUtil.changeStatusBarContentColor(this);
+
         init();
     }
 
     private void init() {
         dl=findViewById(R.id.main_drawer_layout);
+        StatusBarUtil.moveDownStatusBar(dl,this);
         fragmentMainMy =findViewById(R.id.fragment_main_my);
         fragmentMainSearch =findViewById(R.id.fragment_main_search);
         fragmentMainNow =findViewById(R.id.fragment_main_now);
@@ -54,12 +57,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
         mainSetting=findViewById(R.id.main_setting);
         mainSearch=findViewById(R.id.main_search);
 
-        //透明状态栏后为了不让控件和状态栏重叠
-        LinearLayout ll=findViewById(R.id.activity_main_toolbar);
-        int px=DensityUtil.dip2px(this,10);
-        ll.setPadding(px,StatusBarUtil.getStatusBarHeight(this),px,0);//默认单位为px
-
-        fragments.add(new MainMyFragment((FrameLayout) findViewById(R.id.activity_main_layout)));
+        fragments.add(new MainMyFragment((FrameLayout) findViewById(R.id.activity_main_layout),this));
         viewPager=findViewById(R.id.main_view_pager);
         viewPager.setAdapter(new MainFragmentPagerAdapter());
         viewPager.addOnPageChangeListener(new MainOnPagerChangeListener());

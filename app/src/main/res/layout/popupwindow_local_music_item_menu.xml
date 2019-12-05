@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/popup_window_content"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="bottom"
+    android:background="@drawable/layout_card"
+    android:paddingStart="10dp"
+    android:paddingEnd="10dp"
+    android:paddingTop="20dp">
+
+    <com.oounabaramusic.android.widget.textview.TextViewSmallFont
+        android:id="@+id/music_menu_music_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:text="@string/local_music_item_menu_title"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/font_negative"/>
+
+    <LinearLayout
+        android:id="@+id/item_menu_next_play"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:background="@drawable/view_ripple_rectangle"
+        android:layout_height="50dp">
+
+        <ImageView
+            android:src="@mipmap/play"
+            android:layout_width="50dp"
+            android:layout_height="match_parent"
+            android:padding="10dp"/>
+
+
+        <com.oounabaramusic.android.widget.textview.TextViewMediumFont
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="@string/next_play"
+            android:textColor="@color/font_positive"
+            android:gravity="center_vertical"/>
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/font_negative"/>
+
+    <LinearLayout
+        android:id="@+id/item_menu_add_to_playlist"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:background="@drawable/view_ripple_rectangle"
+        android:layout_height="50dp">
+
+        <ImageView
+            android:src="@mipmap/add_to_playlist"
+            android:layout_width="50dp"
+            android:layout_height="match_parent"
+            android:padding="10dp"/>
+
+
+        <com.oounabaramusic.android.widget.textview.TextViewMediumFont
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="@string/add_to_playlist"
+            android:textColor="@color/font_positive"
+            android:gravity="center_vertical"/>
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/font_negative"/>
+
+    <LinearLayout
+        android:id="@+id/item_menu_music_info"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:background="@drawable/view_ripple_rectangle"
+        android:layout_height="50dp">
+
+        <ImageView
+            android:src="@mipmap/music_info"
+            android:layout_width="50dp"
+            android:layout_height="match_parent"
+            android:padding="10dp"/>
+
+
+        <com.oounabaramusic.android.widget.textview.TextViewMediumFont
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="@string/music_info"
+            android:textColor="@color/font_positive"
+            android:gravity="center_vertical"/>
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/font_negative"/>
+
+    <LinearLayout
+        android:id="@+id/item_menu_delete_music"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@drawable/view_ripple_rectangle">
+
+        <ImageView
+            android:src="@mipmap/delete"
+            android:layout_width="50dp"
+            android:layout_height="match_parent"
+            android:padding="10dp"/>
+
+
+        <com.oounabaramusic.android.widget.textview.TextViewMediumFont
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="@string/delete_music"
+            android:textColor="@color/font_positive"
+            android:gravity="center_vertical"/>
+    </LinearLayout>
+</LinearLayout>

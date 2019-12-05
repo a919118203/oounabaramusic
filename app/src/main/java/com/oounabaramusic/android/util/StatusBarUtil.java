@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.graphics.Color;
 import android.os.Build;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 
@@ -79,5 +80,14 @@ public class StatusBarUtil {
             result = activity.getResources().getDimensionPixelSize(resourceId);
         }
         return result;
+    }
+
+    /**
+     * 向下移动状态栏个长度
+     */
+    public  static void moveDownStatusBar(View view,Activity activity){
+        ViewGroup.MarginLayoutParams mlp= (ViewGroup.MarginLayoutParams) view.getLayoutParams();
+        mlp.setMargins(0,getStatusBarHeight(activity),0,0);
+        view.setLayoutParams(mlp);
     }
 }

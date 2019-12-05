@@ -27,8 +27,6 @@ public class TextViewBigFont extends TextView {
     @Override
     protected void onDraw(Canvas canvas) {
         setTextSize(TypedValue.COMPLEX_UNIT_SP,20);
-        //setSingleLine();
-        //setEllipsize(TextUtils.TruncateAt.END);
         super.onDraw(canvas);
     }
 }

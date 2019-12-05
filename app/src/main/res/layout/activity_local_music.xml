@@ -1,35 +1,162 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout
-    android:id="@+id/local_music_layout"
+<FrameLayout xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_local_music_layout"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.google.android.material.appbar.AppBarLayout
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/activity_local_music_content"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent">
 
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/local_music_toolbar"
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/local_music_appbar"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="@color/colorPrimaryDark"
-            app:layout_scrollFlags="snap|scroll|enterAlways"/>
+            android:layout_height="wrap_content">
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/local_music_toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="@color/colorPrimaryDark"
+                app:layout_scrollFlags="snap|scroll|enterAlways">
+
+                <EditText
+                    android:hint="@string/local_music_edit"
+                    android:id="@+id/local_music_edit"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:inputType="text"
+                    android:visibility="gone"/>
+            </androidx.appcompat.widget.Toolbar>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:id="@+id/local_music_play_all"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="@drawable/view_ripple_rectangle">
+
+                <ImageView
+                    android:src="@mipmap/play"
+                    android:layout_width="?attr/actionBarSize"
+                    android:layout_height="match_parent"
+                    android:padding="15dp"/>
+
+                <com.oounabaramusic.android.widget.textview.TextViewMediumFont
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="@string/play_all"
+                    android:textColor="@color/font_positive"
+                    android:gravity="center_vertical"/>
+
+                <LinearLayout
+                    android:id="@+id/local_music_multiple_choice"
+                    android:orientation="horizontal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/view_ripple_rectangle">
+
+                    <ImageView
+                        android:src="@mipmap/setting"
+                        android:layout_width="?attr/actionBarSize"
+                        android:layout_height="match_parent"
+                        android:padding="18dp"/>
+
+                    <com.oounabaramusic.android.widget.textview.TextViewSmallFont
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:text="@string/multiple_choice"
+                        android:textColor="@color/font_positive"
+                        android:layout_marginEnd="10dp"
+                        android:gravity="center_vertical"/>
+                </LinearLayout>
+            </LinearLayout>
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/local_music_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 
         <LinearLayout
-            android:id="@+id/search_in_list_layout"
+            android:id="@+id/bottom_toolbar"
+            android:visibility="gone"
             android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize">
+            android:layout_height="60dp"
+            android:layout_gravity="bottom"
+            android:baselineAligned="false">
 
+            <LinearLayout
+                android:id="@+id/bottom_tool_next_play"
+                android:orientation="vertical"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:background="@drawable/view_ripple_rectangle">
 
+                <ImageView
+                    android:src="@mipmap/play"
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:gravity="center"
+                    android:paddingTop="5dp"/>
+
+                <com.oounabaramusic.android.widget.textview.TextViewSmallFont
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:text="@string/next_play"
+                    android:gravity="center"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/bottom_tool_add_to_playlist"
+                android:orientation="vertical"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:background="@drawable/view_ripple_rectangle">
+
+                <ImageView
+                    android:src="@mipmap/add_to_playlist"
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:gravity="center"
+                    android:paddingTop="5dp"/>
+
+                <com.oounabaramusic.android.widget.textview.TextViewSmallFont
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:text="@string/add_to_playlist"
+                    android:gravity="center"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/bottom_tool_delete"
+                android:orientation="vertical"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:background="@drawable/view_ripple_rectangle">
+
+                <ImageView
+                    android:src="@mipmap/delete"
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:gravity="center"
+                    android:paddingTop="5dp"/>
+
+                <com.oounabaramusic.android.widget.textview.TextViewSmallFont
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:text="@string/delete_music"
+                    android:gravity="center"/>
+            </LinearLayout>
         </LinearLayout>
-    </com.google.android.material.appbar.AppBarLayout>
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/local_music_recycler_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+</FrameLayout>

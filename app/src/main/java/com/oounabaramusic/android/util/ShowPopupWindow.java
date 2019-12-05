@@ -12,12 +12,31 @@ import com.oounabaramusic.android.R;
 public class ShowPopupWindow{
 
     private FrameLayout rootView;
+    private View contentView;
     private PopupWindow pw;
     private View block;
 
     public ShowPopupWindow(View contentView,FrameLayout rootView){
         this.rootView=rootView;
+        this.contentView=contentView;
         pw=new PopupWindow(contentView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        pw.setFocusable(true);
+        pw.setTouchable(true);
+        initBlockView();
+        pw.setOnDismissListener(new PopupWindow.OnDismissListener() {
+            @Override
+            public void onDismiss() {
+                if(block !=null){
+                    block.setVisibility(View.GONE);
+                }
+            }
+        });
+    }
+
+    public ShowPopupWindow(View contentView,FrameLayout rootView,int width,int height){
+        this.rootView=rootView;
+        this.contentView=contentView;
+        pw=new PopupWindow(contentView, width, height);
         pw.setFocusable(true);
         pw.setTouchable(true);
         initBlockView();
@@ -44,5 +63,23 @@ public class ShowPopupWindow{
     public void showPopupMenu() {
         block.setVisibility(View.VISIBLE);
         pw.showAtLocation(rootView, Gravity.BOTTOM,0,0);
+    }
+
+    public void showPopupMenu(int gravity) {
+        block.setVisibility(View.VISIBLE);
+        pw.showAtLocation(rootView,gravity,0,0);
+    }
+
+    public void showPopupMenu(int gravity,int x,int y) {
+        block.setVisibility(View.VISIBLE);
+        pw.showAtLocation(rootView, gravity,x,y);
+    }
+
+    public void dismiss(){
+        pw.dismiss();
+    }
+
+    public View getContentView() {
+        return contentView;
     }
 }

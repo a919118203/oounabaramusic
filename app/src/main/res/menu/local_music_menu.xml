@@ -9,5 +9,10 @@
     <item android:id="@+id/local_music_search_in_file"
         android:title="@string/search_local_music"
         android:icon="@mipmap/search_file"
-        app:showAsAction="ifRoom"/>
+        app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/local_music_menu_multiple_choice"
+        android:title="@string/multiple_choice"
+        app:showAsAction="always" />
 </menu>
