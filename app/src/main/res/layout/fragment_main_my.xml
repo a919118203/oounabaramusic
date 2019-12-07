@@ -143,6 +143,7 @@
             android:paddingEnd="10dp">
 
             <ImageView
+                android:id="@+id/open_my_playlist"
                 android:src="@mipmap/right_arrow"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
@@ -181,18 +182,21 @@
         </LinearLayout>
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/my_playlist_Recycler_view"
+            android:id="@+id/my_playlist_recycler_view"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:visibility="gone"/>
 
         <LinearLayout
             android:id="@+id/favorite_playlist"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingStart="10dp"
-            android:paddingEnd="10dp">
+            android:paddingEnd="10dp"
+            android:background="@drawable/view_ripple_rectangle">
 
             <ImageView
+                android:id="@+id/open_favorite_playlist"
                 android:src="@mipmap/right_arrow"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
@@ -222,7 +226,8 @@
         </LinearLayout>
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/favorite_playlist_Recycler_view"
+            android:id="@+id/favorite_playlist_recycler_view"
+            android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
     </LinearLayout>

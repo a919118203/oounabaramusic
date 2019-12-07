@@ -26,6 +26,7 @@
         android:id="@+id/menu_management_playlist"
         android:orientation="horizontal"
         android:layout_width="match_parent"
+        android:background="@drawable/view_ripple_rectangle"
         android:layout_height="50dp">
 
         <ImageView

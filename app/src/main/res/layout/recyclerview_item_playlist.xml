@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="60dp"
     android:background="@drawable/view_ripple_rectangle"
     android:paddingTop="5dp"
     android:paddingBottom="5dp"
@@ -44,10 +44,13 @@
     <ImageView
         android:id="@+id/my_playlist_item_menu"
         android:src="@mipmap/my_playlist_menu"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
+        android:layout_width="42dp"
+        android:layout_height="match_parent"
         android:layout_alignParentEnd="true"
+        android:layout_marginStart="8dp"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp"
+        android:background="@drawable/view_ripple_rectangle"
         android:contentDescription="我的歌单的菜单"
-        android:layout_marginTop="12dp"
         tools:ignore="HardcodedText" />
 </RelativeLayout>

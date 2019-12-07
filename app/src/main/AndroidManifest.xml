@@ -12,6 +12,10 @@
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
         <activity
+            android:name=".EditPlayListInfoActivity"
+            android:label="编辑歌单信息"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
             android:name=".LocalMusicActivity"
             android:label="本地音乐" />
         <activity android:name=".ChooseLoginActivity" />

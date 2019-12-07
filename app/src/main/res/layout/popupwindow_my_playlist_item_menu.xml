@@ -12,6 +12,7 @@
     android:paddingTop="20dp">
 
     <com.oounabaramusic.android.widget.textview.TextViewSmallFont
+        android:id="@+id/menu_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="10dp"
@@ -26,7 +27,8 @@
         android:id="@+id/item_menu_download"
         android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="50dp">
+        android:layout_height="50dp"
+        android:background="@drawable/view_ripple_rectangle">
 
         <ImageView
             android:src="@mipmap/download"
@@ -53,7 +55,8 @@
         android:id="@+id/item_menu_edit_playlist_info"
         android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="50dp">
+        android:layout_height="50dp"
+        android:background="@drawable/view_ripple_rectangle">
 
         <ImageView
             android:src="@mipmap/edit"
@@ -80,7 +83,8 @@
         android:id="@+id/item_menu_delete_playlist"
         android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="50dp">
+        android:layout_height="50dp"
+        android:background="@drawable/view_ripple_rectangle">
 
         <ImageView
             android:src="@mipmap/delete"

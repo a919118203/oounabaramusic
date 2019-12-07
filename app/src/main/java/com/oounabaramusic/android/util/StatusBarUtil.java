@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 
 import androidx.annotation.RequiresApi;
 
@@ -89,5 +90,17 @@ public class StatusBarUtil {
         ViewGroup.MarginLayoutParams mlp= (ViewGroup.MarginLayoutParams) view.getLayoutParams();
         mlp.setMargins(0,getStatusBarHeight(activity),0,0);
         view.setLayoutParams(mlp);
+    }
+
+    /**
+     * 关闭输入法
+     * @param activity
+     */
+    public static void hideSoftKeyboard(Activity activity) {
+        View view = activity.getWindow().peekDecorView();
+        if(view!=null){
+            InputMethodManager inputMethodManager = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
+            inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+        }
     }
 }

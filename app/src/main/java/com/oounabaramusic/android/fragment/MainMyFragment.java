@@ -3,37 +3,41 @@ package com.oounabaramusic.android.fragment;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.oounabaramusic.android.LocalMusicActivity;
 import com.oounabaramusic.android.R;
+import com.oounabaramusic.android.adapter.FavoritePlayListAdapter;
+import com.oounabaramusic.android.adapter.MyPlayListAdapter;
+import com.oounabaramusic.android.anim.OpenListAnimation;
 import com.oounabaramusic.android.util.ShowPopupWindow;
-
-import java.util.Objects;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 public class MainMyFragment extends Fragment implements View.OnClickListener{
 
     private ShowPopupWindow pwMyPlaylistMenu;
     private ShowPopupWindow pwFavoritePlaylistMenu;
+    private OpenListAnimation myPlaylistAnim,favoritePlaylistAnim;
     private FrameLayout rootView;
+    private MyPlayListAdapter myPlayListAdapter;
+    private RecyclerView myPlayListRv;
+    private FavoritePlayListAdapter favoritePlayListAdapter;
+    private RecyclerView favoritePlayListRv;
     private Activity activity;
 
     public MainMyFragment(FrameLayout rootView,Activity activity){
@@ -57,6 +61,19 @@ public class MainMyFragment extends Fragment implements View.OnClickListener{
         view.findViewById(R.id.download_manager).setOnClickListener(this);
         view.findViewById(R.id.my_collection).setOnClickListener(this);
         view.findViewById(R.id.add_playlist).setOnClickListener(this);
+        view.findViewById(R.id.my_playlist).setOnClickListener(this);
+        view.findViewById(R.id.favorite_playlist).setOnClickListener(this);
+
+        myPlaylistAnim=new OpenListAnimation(view.findViewById(R.id.open_my_playlist),activity);
+        favoritePlaylistAnim=new OpenListAnimation(view.findViewById(R.id.open_favorite_playlist),activity);
+
+        myPlayListRv=view.findViewById(R.id.my_playlist_recycler_view);
+        myPlayListRv.setAdapter(myPlayListAdapter=new MyPlayListAdapter(activity,rootView));
+        myPlayListRv.setLayoutManager(new LinearLayoutManager(activity));
+
+        favoritePlayListRv=view.findViewById(R.id.favorite_playlist_recycler_view);
+        favoritePlayListRv.setAdapter(favoritePlayListAdapter=new FavoritePlayListAdapter(activity,rootView));
+        favoritePlayListRv.setLayoutManager(new LinearLayoutManager(activity));
     }
 
     @Override
@@ -87,16 +104,26 @@ public class MainMyFragment extends Fragment implements View.OnClickListener{
             case R.id.add_playlist:           //创建的歌单中的添加按钮（＋）
                 showDialog();
                 break;
-            case R.id.local_music:
+
+            case R.id.local_music:           //点击“本地音乐”
                 intent=new Intent(activity, LocalMusicActivity.class);
                 activity.startActivity(intent);
                 break;
-            case R.id.download_manager:
+            case R.id.download_manager:      //点击“下载管理”
+                break;
+            case R.id.my_playlist:           //点击“创建的歌单”
+                myPlaylistAnim.changeStatus();
+                myPlayListRv.setVisibility(myPlaylistAnim.getStatus()==OpenListAnimation.STATUS_OPEN?View.VISIBLE:View.GONE);
+                break;
+            case R.id.favorite_playlist:     //点击“收藏的歌单”
+                favoritePlaylistAnim.changeStatus();
+                favoritePlayListRv.setVisibility(favoritePlaylistAnim.getStatus()==OpenListAnimation.STATUS_OPEN?View.VISIBLE:View.GONE);
                 break;
         }
     }
 
     private void showDialog() {
+
         View contentView=LayoutInflater.from(activity).inflate(R.layout.alterdialog_add_playlist,null);
         final EditText ct=contentView.findViewById(R.id.dialog_playlist_name);
         final TextView tv=contentView.findViewById(R.id.dialog_edit_count);
