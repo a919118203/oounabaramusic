@@ -3,6 +3,7 @@ package com.oounabaramusic.android;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.Activity;
@@ -21,6 +22,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.oounabaramusic.android.adapter.TagAdapter;
 import com.oounabaramusic.android.util.StatusBarUtil;
 
 import java.util.Objects;
@@ -68,6 +70,7 @@ public class EditPlayListInfoActivity extends AppCompatActivity implements View.
         findViewById(R.id.change_playlist_tag).setOnClickListener(this);
         findViewById(R.id.change_playlist_description).setOnClickListener(this);
 
+        //控制输入时字数的变化
         newPlaylistDescription=findViewById(R.id.playlist_description);
         descriptionCnt=findViewById(R.id.description_cnt);
         descriptionCnt.setText(String.valueOf(CONTENT_MAX_LENGTH));
@@ -88,6 +91,9 @@ public class EditPlayListInfoActivity extends AppCompatActivity implements View.
 
             }
         });
+
+        tagRv.setAdapter(new TagAdapter(this));
+        tagRv.setLayoutManager(new LinearLayoutManager(this));
     }
 
     @Override
