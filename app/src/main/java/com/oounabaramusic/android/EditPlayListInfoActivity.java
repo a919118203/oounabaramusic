@@ -1,5 +1,6 @@
 package com.oounabaramusic.android;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -8,6 +9,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -15,9 +20,11 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -25,9 +32,10 @@ import android.widget.Toast;
 import com.oounabaramusic.android.adapter.TagAdapter;
 import com.oounabaramusic.android.util.StatusBarUtil;
 
+import java.io.FileNotFoundException;
 import java.util.Objects;
 
-public class EditPlayListInfoActivity extends AppCompatActivity implements View.OnClickListener{
+public class EditPlayListInfoActivity extends BaseActivity implements View.OnClickListener{
 
     private final static int TOOLBAR_MODE_NORMAL=0;//普通模式
     private final static int TOOLBAR_MODE_EDIT_NAME=1;//名称编辑模式
@@ -43,11 +51,12 @@ public class EditPlayListInfoActivity extends AppCompatActivity implements View.
     private RecyclerView tagRv;
     private FrameLayout description;
     private LinearLayout mainContent;
+    private ImageView playListCover;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);//必须写在setContentView之前。
         setContentView(R.layout.activity_edit_play_list_info);
-
         Toolbar toolbar=findViewById(R.id.activity_edit_play_list_info_toolbar);
         setSupportActionBar(toolbar);
         ActionBar actionBar=getSupportActionBar();
@@ -55,15 +64,21 @@ public class EditPlayListInfoActivity extends AppCompatActivity implements View.
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+        }
         init();
     }
 
     private void init() {
+
         newPlaylistName=findViewById(R.id.edit_playlist_name);
         tagRv=findViewById(R.id.edit_play_list_info_tag);
         tagHint=findViewById(R.id.tag_count_hint_layout);
         description=findViewById(R.id.edit_play_list_info_description);
         mainContent=findViewById(R.id.edit_play_list_info_content);
+        playListCover=findViewById(R.id.playlist_cover);
 
         findViewById(R.id.change_playlist_cover).setOnClickListener(this);
         findViewById(R.id.change_playlist_name).setOnClickListener(this);
@@ -92,7 +107,7 @@ public class EditPlayListInfoActivity extends AppCompatActivity implements View.
             }
         });
 
-        tagRv.setAdapter(new TagAdapter(this));
+        tagRv.setAdapter(new TagAdapter(this, (TextView) findViewById(R.id.tag_count_hint)));
         tagRv.setLayoutManager(new LinearLayoutManager(this));
     }
 
@@ -197,6 +212,7 @@ public class EditPlayListInfoActivity extends AppCompatActivity implements View.
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.change_playlist_cover:
+                openAlbum();
                 break;
             case R.id.change_playlist_name:
                 switchToolBar(TOOLBAR_MODE_EDIT_NAME);
@@ -208,5 +224,23 @@ public class EditPlayListInfoActivity extends AppCompatActivity implements View.
                 switchToolBar(TOOLBAR_MODE_EDIT_DESCRIPTION);
                 break;
         }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        switch(requestCode){
+            case CHOOSE_PHOTO:
+                if(data!=null&&data.getData()!=null){
+                    try {
+                        Uri uri=data.getData();
+                        Bitmap bitmap=BitmapFactory.decodeStream(getContentResolver().openInputStream(data.getData()));
+                        playListCover.setImageBitmap(bitmap);
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    }
+                }
+                break;
+        }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 }

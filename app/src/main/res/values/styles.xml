@@ -1,7 +1,7 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="LightAppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="alertDialogTheme">@style/Theme.AppCompat.Light.Dialog.Alert.Self</item>
     </style>
 
@@ -9,4 +9,5 @@
         <item name="android:colorAccent">@color/blue</item>
     </style>
 
+    <style name="AppTheme" parent="Theme.AppCompat.NoActionBar"/>
 </resources>

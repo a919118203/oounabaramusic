@@ -3,7 +3,7 @@
     <item>
         <shape
             android:shape="rectangle">
-            <solid android:color="@color/font_negative"/>
+            <solid android:color="@color/negative"/>
         </shape>
     </item>
 
@@ -14,7 +14,7 @@
         </shape>
     </item>
     <item>
-        <ripple android:color="@color/font_negative">
+        <ripple android:color="@color/negative">
             <item android:id="@android:id/mask">
                 <shape android:shape="rectangle">
                     <solid android:color="@color/colorPrimaryDark"/>

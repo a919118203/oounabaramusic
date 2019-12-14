@@ -33,7 +33,7 @@
         android:gravity="center_vertical"
         android:layout_marginStart="15dp"
         android:text="名字名字名字"
-        android:textColor="@color/font_positive"
+        android:textColor="@color/positive"
         tools:ignore="HardcodedText" />
 
     <ImageView

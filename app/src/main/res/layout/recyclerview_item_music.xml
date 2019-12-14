@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent" android:layout_height="60dp"
+    android:background="@drawable/view_ripple_rectangle">
+
+    <com.oounabaramusic.android.widget.textview.TextViewMediumFont
+        android:id="@+id/index"
+        android:text="1"
+        android:layout_width="60dp"
+        android:layout_height="match_parent"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:gravity="center"
+        tools:ignore="HardcodedText" />
+
+    <com.oounabaramusic.android.widget.textview.TextViewMediumFont
+        android:id="@+id/music_name"
+        android:text="歌名"
+        android:textColor="@color/positive"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:maxLines="1"
+        android:ellipsize="end"
+        android:layout_toEndOf="@id/index"
+        android:layout_toStartOf="@id/music_menu"
+        tools:ignore="HardcodedText" />
+
+    <com.oounabaramusic.android.widget.textview.TextViewSmallFont
+        android:id="@+id/music_singer"
+        android:text="歌手名"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:maxLines="1"
+        android:ellipsize="end"
+        android:layout_toEndOf="@id/index"
+        android:layout_toStartOf="@id/music_menu"
+        android:layout_below="@id/music_name"
+        android:layout_marginTop="5dp"
+        tools:ignore="HardcodedText" />
+
+    <ImageView
+        android:id="@+id/music_menu"
+        android:src="@mipmap/my_playlist_menu"
+        android:layout_width="50dp"
+        android:layout_height="match_parent"
+        android:layout_alignParentEnd="true"
+        android:padding="10dp"/>
+
+</RelativeLayout>

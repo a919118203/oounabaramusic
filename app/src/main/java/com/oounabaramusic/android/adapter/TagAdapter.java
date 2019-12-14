@@ -21,21 +21,23 @@ import java.util.Random;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class TagAdapter extends RecyclerView.Adapter<TagAdapter.ViewHolder> {
+public class TagAdapter extends RecyclerView.Adapter<TagAdapter.ViewHolder> implements View.OnClickListener{
 
     public static final int SELECT=1;               //选中
     public static final int INVERT_SELECTION=2;     //反选
     public static final int SELECT_FAIL=3;          //选中失败
     private Activity activity;
-    private static boolean[][][] selected=new boolean[100][100][GridLayoutTagGrid.COL_COUNT];
-    private static int selectedCnt=0;
+    private boolean[][][] selected=new boolean[100][100][GridLayoutTagGrid.COL_COUNT];
+    private int selectedCnt=0;
     private Random random=new Random(47);
+    private TextView tagCnt;
 
-    public  TagAdapter(Activity activity){
+    public  TagAdapter(Activity activity,TextView tagCnt){
         this.activity=activity;
+        this.tagCnt=tagCnt;
     }
 
-    public static int selectCell(int position,int i,int j){
+    public int selectCell(int position,int i,int j){
         if(selected[position][i][j]){
             selected[position][i][j]=false;
             selectedCnt--;
@@ -51,7 +53,7 @@ public class TagAdapter extends RecyclerView.Adapter<TagAdapter.ViewHolder> {
         }
     }
 
-    public static boolean isSelected(int position,int i,int j){
+    public boolean isSelected(int position,int i,int j){
         return selected[position][i][j];
     }
 
@@ -75,7 +77,7 @@ public class TagAdapter extends RecyclerView.Adapter<TagAdapter.ViewHolder> {
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         GridLayoutTagGrid grid=holder.grid;
 
-        int cnt=position+1;//test,小标签的个数
+        int cnt=position+1;//selector_play_all,小标签的个数
         reSetHeight(grid,cnt);
 
         GridLayout.Spec rowSpec,columnSpec;
@@ -94,7 +96,8 @@ public class TagAdapter extends RecyclerView.Adapter<TagAdapter.ViewHolder> {
                         continue; //跳过大标签
                     TextViewCell tvc= (TextViewCell) grid.getChildAt(k);
                     if(i<needRow(cnt)){
-                        tvc.setPosition(position);//用于判断单元格是否已选中
+                        tvc.setPosition(position);
+                        tvc.setSelected(selected[position][i][j]);//用于判断单元格是否已选中
                         if(k<=cnt){
                             tvc.setText("小");
                         }else{
@@ -120,6 +123,7 @@ public class TagAdapter extends RecyclerView.Adapter<TagAdapter.ViewHolder> {
                     if(k<childCount){
                         TextViewCell tvc= (TextViewCell) grid.getChildAt(k);
                         tvc.setPosition(position);
+                        tvc.setSelected(selected[position][i][j]);
                         tvc.setText("小");
                         tvc.setVisibility(View.VISIBLE);
                     }else{
@@ -129,9 +133,9 @@ public class TagAdapter extends RecyclerView.Adapter<TagAdapter.ViewHolder> {
                         params.height=0;
                         params.width=0;
                         if(k<=cnt){
-                            grid.addView(new TextViewCell(activity,"小",i,j,position),params);
+                            grid.addView(new TextViewCell(activity,"小",i,j,position,this),params);
                         }else{
-                            grid.addView(new TextViewCell(activity,"",i,j,position),params);
+                            grid.addView(new TextViewCell(activity,"",i,j,position,this),params);
                         }
                     }
                     k++;
@@ -184,6 +188,26 @@ public class TagAdapter extends RecyclerView.Adapter<TagAdapter.ViewHolder> {
     @Override
     public int getItemCount() {
         return 20;
+    }
+
+    @Override
+    public void onClick(View v) {
+        if(v instanceof TextViewCell){
+            TextViewCell cell= (TextViewCell) v;
+            switch (selectCell(cell.getPosition(),cell.getRow(),cell.getCol())){
+                case SELECT:
+                    cell.setBackground(activity.getDrawable(R.drawable.gridlayout_cell_selected));
+                    break;
+                case INVERT_SELECTION:
+                    cell.setBackground(cell.getNotSelect());
+                    break;
+                case SELECT_FAIL:
+                    Toast.makeText(activity,"最多只可以3个标签",Toast.LENGTH_LONG).show();
+                    break;
+            }
+            String sb = "请选择合适的标签，最多选择3个，已选" + selectedCnt + "个";
+            tagCnt.setText(sb);
+        }
     }
 
     class ViewHolder extends  RecyclerView.ViewHolder{

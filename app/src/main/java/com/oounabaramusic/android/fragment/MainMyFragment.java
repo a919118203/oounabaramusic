@@ -140,7 +140,7 @@ public class MainMyFragment extends Fragment implements View.OnClickListener{
                 .setNegativeButton("取消",null)
                 .show();
         dialog.getButton(AlertDialog.BUTTON_POSITIVE).setClickable(false);
-        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(ContextCompat.getColor(activity,R.color.font_negative));
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(ContextCompat.getColor(activity,R.color.negative));
 
         ct.addTextChangedListener(new TextWatcher() {
             @Override
@@ -155,7 +155,7 @@ public class MainMyFragment extends Fragment implements View.OnClickListener{
                     dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(ContextCompat.getColor(activity,R.color.blue));
                 }else{
                     dialog.getButton(AlertDialog.BUTTON_POSITIVE).setClickable(false);
-                    dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(ContextCompat.getColor(activity,R.color.font_negative));
+                    dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(ContextCompat.getColor(activity,R.color.negative));
                 }
 
                 tv.setText(new String(ct.getText().toString().length()+"/40"));

@@ -12,19 +12,22 @@ import com.oounabaramusic.android.R;
 import com.oounabaramusic.android.adapter.TagAdapter;
 import com.oounabaramusic.android.widget.gridlayout.GridLayoutTagGrid;
 
-public class TextViewCell extends TextViewSmallFont implements View.OnClickListener{
+public class TextViewCell extends TextViewSmallFont{
 
     private Activity activity;
     private String name;
     private int row,col,position;
     private Drawable notSelect;
-    public  TextViewCell(Context context,String name,int row,int col,int position){
+    private View.OnClickListener listener;
+    private boolean selected=false;
+    public  TextViewCell(Context context,String name,int row,int col,int position,View.OnClickListener listener){
         super(context);
         activity= (Activity) context;
         this.name=name;
         this.row=row;
         this.col=col;
         this.position=position;
+        this.listener=listener;
         init();
     }
 
@@ -46,26 +49,21 @@ public class TextViewCell extends TextViewSmallFont implements View.OnClickListe
                 notSelect=activity.getDrawable(R.drawable.gridlayout_cell_top);;
             }
         }
-
-        if(TagAdapter.isSelected(position,row,col)){
-            setBackground(activity.getDrawable(R.drawable.gridlayout_cell_selected));
-        }else{
-            setBackground(notSelect);
-        }
+        setBackground(notSelect);
 
         if(!name.equals("")){
-            setOnClickListener(this);
+            setOnClickListener(listener);
         }
     }
 
     @Override
     public void setText(CharSequence text, BufferType type) {
         if(text.length()!=0){
-            setOnClickListener(this);
+            setOnClickListener(listener);
         }else{
             setClickable(false);
         }
-        if(TagAdapter.isSelected(position,row,col)){
+        if(selected){
             setBackground(activity.getDrawable(R.drawable.gridlayout_cell_selected));
         }else{
             setBackground(notSelect);
@@ -73,22 +71,28 @@ public class TextViewCell extends TextViewSmallFont implements View.OnClickListe
         super.setText(text, type);
     }
 
-    @Override
-    public void onClick(View v) {
-        switch (TagAdapter.selectCell(position,row,col)){
-            case TagAdapter.SELECT:
-                setBackground(activity.getDrawable(R.drawable.gridlayout_cell_selected));
-                break;
-            case TagAdapter.INVERT_SELECTION:
-                setBackground(notSelect);
-                break;
-            case TagAdapter.SELECT_FAIL:
-                Toast.makeText(activity,"最多只可以3个标签",Toast.LENGTH_LONG).show();
-                break;
-        }
-    }
-
     public void setPosition(int position) {
         this.position = position;
+    }
+
+    public int getPosition() {
+        return position;
+    }
+
+    public int getRow() {
+        return row;
+    }
+
+    public int getCol() {
+        return col;
+    }
+
+    public Drawable getNotSelect() {
+        return notSelect;
+    }
+
+    @Override
+    public void setSelected(boolean selected) {
+        this.selected = selected;
     }
 }

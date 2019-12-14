@@ -27,8 +27,6 @@ public class TextViewMediumFont extends TextView {
     @Override
     protected void onDraw(Canvas canvas) {
         setTextSize(TypedValue.COMPLEX_UNIT_SP,16);
-        setSingleLine();
-        setEllipsize(TextUtils.TruncateAt.END);
         super.onDraw(canvas);
     }
 }

@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.oounabaramusic.android.EditPlayListInfoActivity;
+import com.oounabaramusic.android.PlayListActivity;
 import com.oounabaramusic.android.R;
 import com.oounabaramusic.android.util.ShowPopupWindow;
 
@@ -70,7 +71,8 @@ public class MyPlayListAdapter extends RecyclerView.Adapter<MyPlayListAdapter.Vi
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
+                    Intent intent=new Intent(activity, PlayListActivity.class);
+                    activity.startActivity(intent);
                 }
             });
         }

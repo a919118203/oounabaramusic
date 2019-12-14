@@ -20,7 +20,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/font_negative"/>
+        android:background="@color/negative"/>
 
     <LinearLayout
         android:id="@+id/menu_management_playlist"
@@ -41,7 +41,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:text="@string/management_playlist"
-            android:textColor="@color/font_positive"
+            android:textColor="@color/positive"
             android:gravity="center_vertical"/>
     </LinearLayout>
 </LinearLayout>

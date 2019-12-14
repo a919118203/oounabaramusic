@@ -6,12 +6,28 @@ import android.graphics.Color;
 import android.os.Build;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.ProgressBar;
+import android.widget.Toolbar;
+
+import com.oounabaramusic.android.R;
 
 import androidx.annotation.RequiresApi;
 
+/**
+ * View.SYSTEM_UI_FLAG_LAYOUT_STABLE        不管状态栏的有无，activity都会空出状态栏的位置
+ *
+ * View.SYSTEM_UI_FLAG_FULLSCREEN           activity全屏显示，状态栏也显示，但是activity覆盖状态栏
+ *
+ * View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN    activity全屏显示，状态栏也显示，但是状态栏覆盖activity
+ *
+ * View.SYSTEM_UI_FLAG_HIDE_NAVIGATION      导航栏不显示，布局延伸到导航栏
+ *
+ * View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION    导航栏显示，布局延伸到导航栏
+ */
 public class StatusBarUtil {
     /**
      * 设置状态栏为透明
@@ -19,18 +35,10 @@ public class StatusBarUtil {
      */
     @TargetApi(19)
     public static void setTranslucentStatus(Activity activity) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             Window window = activity.getWindow();
-            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                    | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
             window.setStatusBarColor(Color.TRANSPARENT);
-
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            Window window = activity.getWindow();
-            window.setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS,
-                    WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         }
     }
 
@@ -42,11 +50,10 @@ public class StatusBarUtil {
     public static void changeStatusBarContentColor(Activity activity){
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             Window window = activity.getWindow();
-            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR|View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                    | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.setStatusBarColor(Color.TRANSPARENT);
+            window.getDecorView().setSystemUiVisibility(
+                    View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR|//设为淡色主题好让透明色的状态栏中的内容显示出来
+                    View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);//让activity占据全屏且显示状态栏，为了显示popupWindow的时候添加的一个View遮住全屏
+            window.setStatusBarColor(Color.TRANSPARENT);//设置为透明色
         }
     }
 
@@ -56,15 +63,10 @@ public class StatusBarUtil {
      * @param activity
      */
 
-    public static void hiddenStatusBar(boolean f,Activity activity){
-        if (f) {//隐藏状态栏
-            WindowManager.LayoutParams lp = activity.getWindow().getAttributes();
-            lp.flags |= WindowManager.LayoutParams.FLAG_FULLSCREEN;
-            activity.getWindow().setAttributes(lp);
-        } else {//显示状态栏
-            WindowManager.LayoutParams attr = activity.getWindow().getAttributes();
-            attr.flags &= (~WindowManager.LayoutParams.FLAG_FULLSCREEN);
-            activity.getWindow().setAttributes(attr);
+    public static void hiddenStatusBar(Activity activity){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            Window window = activity.getWindow();
+            window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN);
         }
     }
 
@@ -84,12 +86,52 @@ public class StatusBarUtil {
     }
 
     /**
-     * 向下移动状态栏个长度
+     * 向下移动状态栏个长度(id必须为appBar)
      */
-    public  static void moveDownStatusBar(View view,Activity activity){
-        ViewGroup.MarginLayoutParams mlp= (ViewGroup.MarginLayoutParams) view.getLayoutParams();
-        mlp.setMargins(0,getStatusBarHeight(activity),0,0);
-        view.setLayoutParams(mlp);
+    public  static void moveDownStatusBar(final Activity activity){
+        final View view=activity.findViewById(R.id.appbar);
+        if(view!=null){
+            view.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {  //视图将要绘制时会调用这个监听事件，
+                @Override
+                public boolean onPreDraw() {
+                    view.getViewTreeObserver().removeOnPreDrawListener(this);//会多次调用，没有特殊要求只需使用一次来获取视图的高度，所以remove
+                    ViewGroup.LayoutParams params=view.getLayoutParams();
+                    params.height=view.getHeight()+getStatusBarHeight(activity);
+                    view.setPadding(
+                            view.getPaddingLeft(),
+                            view.getPaddingTop()+StatusBarUtil.getStatusBarHeight(activity),
+                            view.getPaddingRight(),
+                            view.getPaddingBottom());
+
+                    ProgressBar pb;
+
+                    return true;
+                }
+            });
+        }
+    }
+
+    public  static void moveDownStatusBar(final Activity activity,int id){
+        final View view=activity.findViewById(id);
+        if(view!=null){
+            view.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {  //视图将要绘制时会调用这个监听事件，
+                @Override
+                public boolean onPreDraw() {
+                    view.getViewTreeObserver().removeOnPreDrawListener(this);//会多次调用，没有特殊要求只需使用一次来获取视图的高度，所以remove
+                    ViewGroup.LayoutParams params=view.getLayoutParams();
+                    params.height=view.getHeight()+getStatusBarHeight(activity);
+                    view.setPadding(
+                            view.getPaddingLeft(),
+                            view.getPaddingTop()+StatusBarUtil.getStatusBarHeight(activity),
+                            view.getPaddingRight(),
+                            view.getPaddingBottom());
+
+                    ProgressBar pb;
+
+                    return true;
+                }
+            });
+        }
     }
 
     /**
@@ -101,6 +143,13 @@ public class StatusBarUtil {
         if(view!=null){
             InputMethodManager inputMethodManager = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
             inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+        }
+    }
+
+    public static void setSystemUiVisibility(Activity activity,int f){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            Window window = activity.getWindow();
+            window.getDecorView().setSystemUiVisibility(f);
         }
     }
 }

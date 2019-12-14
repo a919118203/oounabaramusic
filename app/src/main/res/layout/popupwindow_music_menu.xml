@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/popup_window_content"
     android:orientation="vertical"
     android:layout_width="match_parent"
@@ -11,12 +12,39 @@
     android:paddingEnd="10dp"
     android:paddingTop="20dp">
 
-    <com.oounabaramusic.android.widget.textview.TextViewSmallFont
-        android:id="@+id/music_menu_music_name"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
-        android:text="@string/local_music_item_menu_title"/>
+        android:layout_marginBottom="10dp">
+
+        <ImageView
+            android:id="@+id/music_cover"
+            android:src="@mipmap/choose_login"
+            android:layout_width="50dp"
+            android:layout_height="50dp"/>
+
+        <com.oounabaramusic.android.widget.textview.TextViewMediumFont
+            android:id="@+id/music_name"
+            android:text="歌曲：津軽海峡・冬景色"
+            android:textColor="@color/positive"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/music_cover"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="5dp"
+            tools:ignore="HardcodedText" />
+
+        <com.oounabaramusic.android.widget.textview.TextViewSmallFont
+            android:id="@+id/music_singer_in_title"
+            android:text="石川さゆり"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:ignore="HardcodedText"
+            android:layout_toEndOf="@id/music_cover"
+            android:layout_below="@id/music_name"
+            android:layout_alignStart="@id/music_name"
+            android:layout_marginTop="3dp"/>
+    </RelativeLayout>
 
     <View
         android:layout_width="match_parent"
@@ -24,7 +52,7 @@
         android:background="@color/negative"/>
 
     <LinearLayout
-        android:id="@+id/item_menu_next_play"
+        android:id="@+id/music_next_play"
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:background="@drawable/view_ripple_rectangle"
@@ -46,13 +74,8 @@
             android:gravity="center_vertical"/>
     </LinearLayout>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/negative"/>
-
     <LinearLayout
-        android:id="@+id/item_menu_add_to_playlist"
+        android:id="@+id/music_add_to_playlist"
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:background="@drawable/view_ripple_rectangle"
@@ -74,20 +97,15 @@
             android:gravity="center_vertical"/>
     </LinearLayout>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/negative"/>
-
     <LinearLayout
-        android:id="@+id/item_menu_music_info"
+        android:id="@+id/music_download"
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:background="@drawable/view_ripple_rectangle"
         android:layout_height="50dp">
 
         <ImageView
-            android:src="@mipmap/music_info"
+            android:src="@mipmap/download"
             android:layout_width="50dp"
             android:layout_height="match_parent"
             android:padding="10dp"/>
@@ -97,22 +115,65 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="@string/music_info"
+            android:text="@string/download"
             android:textColor="@color/positive"
             android:gravity="center_vertical"/>
     </LinearLayout>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/negative"/>
-
     <LinearLayout
-        android:id="@+id/item_menu_delete_music"
+        android:id="@+id/musi_comment"
         android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:background="@drawable/view_ripple_rectangle">
+        android:background="@drawable/view_ripple_rectangle"
+        android:layout_height="50dp">
+
+        <ImageView
+            android:src="@mipmap/comment"
+            android:layout_width="50dp"
+            android:layout_height="match_parent"
+            android:padding="10dp"/>
+
+
+        <com.oounabaramusic.android.widget.textview.TextViewMediumFont
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="@string/comment"
+            android:textColor="@color/positive"
+            android:gravity="center_vertical"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/music_search_singer"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:background="@drawable/view_ripple_rectangle"
+        android:layout_height="50dp">
+
+        <ImageView
+            android:src="@mipmap/singer"
+            android:layout_width="50dp"
+            android:layout_height="match_parent"
+            android:padding="10dp"/>
+
+
+        <com.oounabaramusic.android.widget.textview.TextViewMediumFont
+            android:id="@+id/music_singer"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="歌手：石川さゆり"
+            android:textColor="@color/positive"
+            android:gravity="center_vertical"
+            tools:ignore="HardcodedText" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/music_delete"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:background="@drawable/view_ripple_rectangle"
+        android:layout_height="50dp">
 
         <ImageView
             android:src="@mipmap/delete"

@@ -14,6 +14,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -53,7 +54,7 @@ public class LocalMusicActivity extends BaseActivity implements View.OnClickList
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_local_music);
         StatusBarUtil.changeStatusBarContentColor(this);
-        StatusBarUtil.moveDownStatusBar(findViewById(R.id.activity_local_music_content),this);
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
 
         Toolbar toolBar=findViewById(R.id.local_music_toolbar);
         setSupportActionBar(toolBar);
@@ -65,6 +66,12 @@ public class LocalMusicActivity extends BaseActivity implements View.OnClickList
     }
 
     private void init() {
+        View view=findViewById(R.id.activity_local_music_content);
+        view.setPadding(
+                view.getPaddingLeft(),
+                view.getPaddingTop()+StatusBarUtil.getStatusBarHeight(this),
+                view.getPaddingRight(),
+                view.getPaddingBottom());
 
         rv=findViewById(R.id.local_music_recycler_view);
         adapter=new LocalMusicAdapter(this, (FrameLayout) findViewById(R.id.activity_local_music_layout),createMusicList());
@@ -120,6 +127,7 @@ public class LocalMusicActivity extends BaseActivity implements View.OnClickList
             case android.R.id.home://退出或退出edit模式
                 if(toolbarMode!=TOOLBAR_MODE_NORMAL){
                     switchToolBar(TOOLBAR_MODE_NORMAL);
+                    StatusBarUtil.hideSoftKeyboard(this);
                 }else{
                     finish();
                 }

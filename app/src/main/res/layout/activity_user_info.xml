@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/appbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:elevation="0dp">
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="300dp"
+                android:minHeight="130dp"
+                app:layout_scrollFlags="scroll|exitUntilCollapsed">
+
+                <ImageView
+                    android:src="@mipmap/default_background"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"/>
+
+                <View
+                    android:id="@+id/background"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/positive"/>
+
+                <include layout="@layout/user_info_header"/>
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:background="@drawable/layout_card"
+                    android:layout_gravity="bottom">
+
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="49dp">
+
+                        <com.oounabaramusic.android.widget.textview.TextViewMediumFont
+                            android:text="主页"
+                            android:textColor="@color/clickable"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:gravity="center"/>
+
+                        <com.oounabaramusic.android.widget.textview.TextViewMediumFont
+                            android:text="动态"
+                            android:textColor="@color/clickable"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:gravity="center"/>
+                    </LinearLayout>
+
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp">
+
+                        <View
+                            android:background="@color/negative"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"/>
+
+                        <View
+                            android:id="@+id/slide"
+                            android:background="@color/clickable"
+                            android:layout_width="45dp"
+                            android:layout_height="match_parent"/>
+                    </FrameLayout>
+                </LinearLayout>
+            </FrameLayout>
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <androidx.viewpager.widget.ViewPager
+            android:id="@+id/user_view_pager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"/>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/alpha_background"
+        android:theme="@style/AppTheme"
+        app:elevation="0dp">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/action_bar_size">
+
+            <com.oounabaramusic.android.widget.textview.TextViewMarqueeTitle
+                android:id="@+id/toolbar_title"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:ellipsize="marquee"
+                android:singleLine="true"
+                android:scrollHorizontally="true"
+                android:marqueeRepeatLimit="marquee_forever"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:gravity="center_vertical"/>
+        </androidx.appcompat.widget.Toolbar>
+    </com.google.android.material.appbar.AppBarLayout>
+</FrameLayout>

@@ -17,7 +17,7 @@ public class TitlePageActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        StatusBarUtil.hiddenStatusBar(true,this);
+        StatusBarUtil.hiddenStatusBar(this);
         setContentView(R.layout.activity_title_page);
         new Thread(new Runnable() {
             @Override

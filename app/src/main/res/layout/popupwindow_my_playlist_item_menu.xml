@@ -21,7 +21,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/font_negative"/>
+        android:background="@color/negative"/>
 
     <LinearLayout
         android:id="@+id/item_menu_download"
@@ -42,14 +42,14 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:text="@string/download"
-            android:textColor="@color/font_positive"
+            android:textColor="@color/positive"
             android:gravity="center_vertical"/>
     </LinearLayout>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/font_negative"/>
+        android:background="@color/negative"/>
 
     <LinearLayout
         android:id="@+id/item_menu_edit_playlist_info"
@@ -70,14 +70,14 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:text="@string/edit_playlist_info"
-            android:textColor="@color/font_positive"
+            android:textColor="@color/positive"
             android:gravity="center_vertical"/>
     </LinearLayout>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/font_negative"/>
+        android:background="@color/negative"/>
 
     <LinearLayout
         android:id="@+id/item_menu_delete_playlist"
@@ -98,7 +98,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:text="@string/delete_playlist"
-            android:textColor="@color/font_positive"
+            android:textColor="@color/positive"
             android:gravity="center_vertical"/>
     </LinearLayout>
 </LinearLayout>

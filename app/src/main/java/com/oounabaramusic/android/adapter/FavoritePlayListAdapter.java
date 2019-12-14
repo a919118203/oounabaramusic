@@ -9,8 +9,10 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.oounabaramusic.android.EditPlayListInfoActivity;
+import com.oounabaramusic.android.PlayListActivity;
 import com.oounabaramusic.android.R;
 import com.oounabaramusic.android.util.ShowPopupWindow;
 
@@ -70,7 +72,8 @@ public class FavoritePlayListAdapter extends RecyclerView.Adapter<FavoritePlayLi
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
+                    Intent intent=new Intent(activity, PlayListActivity.class);
+                    activity.startActivity(intent);
                 }
             });
         }

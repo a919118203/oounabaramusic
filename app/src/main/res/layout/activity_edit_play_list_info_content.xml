@@ -11,7 +11,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="10dp"
-        android:background="@color/font_negative"/>
+        android:background="@color/negative"/>
 
     <LinearLayout
         android:id="@+id/change_playlist_cover"
@@ -26,12 +26,13 @@
             android:layout_weight="1"
             android:layout_height="match_parent"
             android:text="更换封面"
-            android:textColor="@color/font_positive"
+            android:textColor="@color/positive"
             android:gravity="center_vertical"
             android:layout_marginStart="10dp"
             tools:ignore="HardcodedText" />
 
         <ImageView
+            android:id="@+id/playlist_cover"
             android:src="@mipmap/choose_login"
             android:layout_width="60dp"
             android:layout_height="60dp"
@@ -41,7 +42,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/font_negative"/>
+        android:background="@color/negative"/>
 
     <LinearLayout
         android:id="@+id/change_playlist_name"
@@ -56,7 +57,7 @@
             android:layout_weight="1"
             android:layout_height="match_parent"
             android:text="名称"
-            android:textColor="@color/font_positive"
+            android:textColor="@color/positive"
             android:gravity="center_vertical"
             android:layout_marginStart="10dp"
             tools:ignore="HardcodedText" />
@@ -73,7 +74,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/font_negative"/>
+        android:background="@color/negative"/>
 
     <LinearLayout
         android:id="@+id/change_playlist_tag"
@@ -88,7 +89,7 @@
             android:layout_weight="1"
             android:layout_height="match_parent"
             android:text="标签"
-            android:textColor="@color/font_positive"
+            android:textColor="@color/positive"
             android:gravity="center_vertical"
             android:layout_marginStart="10dp"
             tools:ignore="HardcodedText" />
@@ -105,7 +106,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/font_negative"/>
+        android:background="@color/negative"/>
 
     <LinearLayout
         android:id="@+id/change_playlist_description"
@@ -120,7 +121,7 @@
             android:layout_weight="1"
             android:layout_height="match_parent"
             android:text="描述"
-            android:textColor="@color/font_positive"
+            android:textColor="@color/positive"
             android:gravity="center_vertical"
             android:layout_marginStart="10dp"
             tools:ignore="HardcodedText" />

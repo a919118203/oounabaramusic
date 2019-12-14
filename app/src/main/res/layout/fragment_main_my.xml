@@ -11,7 +11,7 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@color/font_negative"/>
+            android:background="@color/negative"/>
 
         <LinearLayout
             android:id="@+id/local_music"
@@ -35,13 +35,13 @@
                 android:text="@string/local_music"
                 android:layout_weight="1"
                 android:gravity="center_vertical"
-                android:textColor="@color/font_positive"/>
+                android:textColor="@color/positive"/>
         </LinearLayout>
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@color/font_negative"/>
+            android:background="@color/negative"/>
 
         <LinearLayout
             android:id="@+id/recently_played"
@@ -65,13 +65,13 @@
                 android:text="@string/recently_played"
                 android:layout_weight="1"
                 android:gravity="center_vertical"
-                android:textColor="@color/font_positive"/>
+                android:textColor="@color/positive"/>
         </LinearLayout>
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@color/font_negative"/>
+            android:background="@color/negative"/>
 
         <LinearLayout
             android:id="@+id/download_manager"
@@ -95,13 +95,13 @@
                 android:text="@string/download_manager"
                 android:layout_weight="1"
                 android:gravity="center_vertical"
-                android:textColor="@color/font_positive"/>
+                android:textColor="@color/positive"/>
         </LinearLayout>
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@color/font_negative"/>
+            android:background="@color/negative"/>
 
         <LinearLayout
             android:id="@+id/my_collection"
@@ -125,13 +125,13 @@
                 android:text="@string/my_collection"
                 android:layout_weight="1"
                 android:gravity="center_vertical"
-                android:textColor="@color/font_positive"/>
+                android:textColor="@color/positive"/>
         </LinearLayout>
 
         <View
             android:layout_width="match_parent"
             android:layout_height="5dp"
-            android:background="@color/font_negative"/>
+            android:background="@color/negative"/>
 
         <LinearLayout
             android:orientation="horizontal"
@@ -157,7 +157,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:textStyle="bold"
-                android:textColor="@color/font_positive"
+                android:textColor="@color/positive"
                 android:text="@string/created_playlist"
                 android:gravity="center_vertical"/>
 
@@ -210,7 +210,7 @@
                 android:layout_weight="1"
                 android:layout_height="match_parent"
                 android:textStyle="bold"
-                android:textColor="@color/font_positive"
+                android:textColor="@color/positive"
                 android:text="@string/favorite_playlist"
                 android:gravity="center_vertical"/>
 

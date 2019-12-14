@@ -7,7 +7,7 @@
     android:layout_width="match_parent">
 
     <LinearLayout
-        android:id="@+id/activity_main_toolbar"
+        android:id="@+id/appbar"
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize">
@@ -32,7 +32,7 @@
             android:layout_width="?attr/actionBarSize"
             android:layout_height="match_parent"
             android:background="@drawable/toolbar_ripple_oval"
-            android:textColor="@color/font_positive"
+            android:textColor="@color/positive"
             android:gravity="center"
             android:textStyle="bold"
             android:text="@string/main_my" />

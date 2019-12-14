@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
+    android:id="@+id/playlist"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -27,7 +28,7 @@
         android:layout_marginStart="10dp"
         android:paddingTop="5dp"
         android:layout_toEndOf="@+id/playlist_cover"
-        android:textColor="@color/font_positive"
+        android:textColor="@color/positive"
         android:text="名字"
         tools:ignore="HardcodedText" />
 

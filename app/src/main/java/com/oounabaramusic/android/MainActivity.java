@@ -43,13 +43,12 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         StatusBarUtil.changeStatusBarContentColor(this);
-
+        StatusBarUtil.moveDownStatusBar(this);
         init();
     }
 
     private void init() {
         dl=findViewById(R.id.main_drawer_layout);
-        StatusBarUtil.moveDownStatusBar(dl,this);
         fragmentMainMy =findViewById(R.id.fragment_main_my);
         fragmentMainSearch =findViewById(R.id.fragment_main_search);
         fragmentMainNow =findViewById(R.id.fragment_main_now);
