@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#008577</color>
+    <color name="colorPrimary">@color/blue</color>
     <color name="colorPrimaryDark">#FAFAFA</color>
     <color name="colorAccent">#D81B60</color>
     <color name="blue">#4278A8</color>
@@ -9,4 +9,6 @@
     <color name="clickable">#4E13FF</color>
     <color name="alpha_background">#00000000</color>
     <color name="alpha_btn">#50ffffff</color>
+    <color name="alpha_black_background">#A0000000</color>
+
 </resources>

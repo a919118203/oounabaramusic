@@ -33,53 +33,14 @@
                     android:layout_height="match_parent"
                     android:background="@color/positive"/>
 
-                <include layout="@layout/user_info_header"/>
+                <include layout="@layout/header_user_info"/>
 
-                <LinearLayout
-                    android:orientation="vertical"
+                <com.google.android.material.tabs.TabLayout
+                    android:id="@+id/user_tab_layout"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:background="@drawable/layout_card"
-                    android:layout_gravity="bottom">
-
-                    <LinearLayout
-                        android:orientation="horizontal"
-                        android:layout_width="match_parent"
-                        android:layout_height="49dp">
-
-                        <com.oounabaramusic.android.widget.textview.TextViewMediumFont
-                            android:text="主页"
-                            android:textColor="@color/clickable"
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1"
-                            android:gravity="center"/>
-
-                        <com.oounabaramusic.android.widget.textview.TextViewMediumFont
-                            android:text="动态"
-                            android:textColor="@color/clickable"
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1"
-                            android:gravity="center"/>
-                    </LinearLayout>
-
-                    <FrameLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp">
-
-                        <View
-                            android:background="@color/negative"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"/>
-
-                        <View
-                            android:id="@+id/slide"
-                            android:background="@color/clickable"
-                            android:layout_width="45dp"
-                            android:layout_height="match_parent"/>
-                    </FrameLayout>
-                </LinearLayout>
+                    android:layout_gravity="bottom"/>
             </FrameLayout>
         </com.google.android.material.appbar.AppBarLayout>
 

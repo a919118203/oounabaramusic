@@ -6,33 +6,50 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.android.material.appbar.AppBarLayout;
+import com.google.android.material.tabs.TabLayout;
+import com.oounabaramusic.android.adapter.UserInfoFavoritePlayListAdapter;
+import com.oounabaramusic.android.adapter.UserInfoMyPlayListAdapter;
 import com.oounabaramusic.android.fragment.MainMyFragment;
+import com.oounabaramusic.android.fragment.UserInfoMainFragment;
 import com.oounabaramusic.android.util.DensityUtil;
 import com.oounabaramusic.android.util.LogUtil;
+import com.oounabaramusic.android.util.ShowPopupWindow;
 import com.oounabaramusic.android.util.StatusBarUtil;
+import com.oounabaramusic.android.widget.popupwindow.MyPopupWindow;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class UserInfoActivity extends AppCompatActivity {
+public class UserInfoActivity extends BaseActivity implements View.OnClickListener{
 
     private Toolbar toolbar;
     private ViewPager viewPager;
     private List<Fragment> fragments;
-    private View slide;
     private TextView userName;
     private RelativeLayout header;
+    private TabLayout tabLayout;
+    private ImageView userHeader;//用户头像
+    private TextView userFollowed;//粉丝
+    private TextView userToFollow;//关注
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,11 +70,18 @@ public class UserInfoActivity extends AppCompatActivity {
     }
 
     private void init() {
-
+        userFollowed=findViewById(R.id.user_followed);
+        userToFollow=findViewById(R.id.user_to_follow);
+        userHeader=findViewById(R.id.user_cover);
         userName=findViewById(R.id.user_name);
         header=findViewById(R.id.user_info_header);
-        slide=findViewById(R.id.slide);
-        slide.getLayoutParams().width= DensityUtil.getDisplayWidth(this)/2;
+        tabLayout=findViewById(R.id.user_tab_layout);
+        tabLayout.addTab(tabLayout.newTab().setText("主页"));
+        tabLayout.addTab(tabLayout.newTab().setText("动态"));
+
+        userHeader.setOnClickListener(this);
+        userFollowed.setOnClickListener(this);
+        userToFollow.setOnClickListener(this);
 
         final AppBarLayout appBarLayout=findViewById(R.id.appbar);
         final View view=findViewById(R.id.background);
@@ -86,7 +110,6 @@ public class UserInfoActivity extends AppCompatActivity {
                     header.setVisibility(View.GONE);
                 }else if(f1&&change<=60){
                     f1=false;
-                    LogUtil.printLog("Mogeko","11111");
                     header.setVisibility(View.VISIBLE);
                 }
             }
@@ -94,7 +117,7 @@ public class UserInfoActivity extends AppCompatActivity {
 
 
         fragments=new ArrayList<>();
-
+        fragments.add(new UserInfoMainFragment(this));
         viewPager=findViewById(R.id.user_view_pager);
         viewPager.setAdapter(new UserFragmentPagerAdapter());
         viewPager.addOnPageChangeListener(new UserOnPagerChangeListener());
@@ -108,6 +131,59 @@ public class UserInfoActivity extends AppCompatActivity {
             finish();
         }
         return true;
+    }
+
+    @Override
+    public void onClick(View v) {
+        Intent intent;
+        switch (v.getId()){
+            case R.id.user_cover:             //点击头像时
+                showChangeHeaderPopupWindow();
+                break;
+            case R.id.user_to_follow:         //点击关注时
+                intent=new Intent(this,MyFriendActivity.class);
+                intent.putExtra("from","toFollow");
+                startActivity(intent);
+                break;
+            case R.id.user_followed:          //点击粉丝时
+                intent=new Intent(this,MyFriendActivity.class);
+                intent.putExtra("from","followed");
+                startActivity(intent);
+                break;
+        }
+    }
+
+    private void showChangeHeaderPopupWindow() {
+        View contentView= LayoutInflater
+                .from(this)
+                .inflate(R.layout.popupwindow_change_header, (ViewGroup) getWindow().getDecorView(),false);
+
+        ImageView iv=contentView.findViewById(R.id.user_header);
+        iv.getLayoutParams().height=DensityUtil.getDisplayWidth(this);
+        iv.setImageDrawable(userHeader.getDrawable());//TODO 以后得改
+
+        final MyPopupWindow pw=new MyPopupWindow(this,
+                contentView,
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                Gravity.TOP);
+
+        View.OnClickListener listener=new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(v.getId()==R.id.user_change_header){
+                    openAlbum();
+                }else{
+                    pw.dismiss();
+                }
+            }
+        };
+
+        contentView.findViewById(R.id.user_change_header).setOnClickListener(listener);
+        contentView.findViewById(R.id.user_header).setOnClickListener(listener);
+        contentView.findViewById(R.id.rootLayout).setOnClickListener(listener);
+
+        pw.showAtLocation(getWindow().getDecorView(), Gravity.CENTER,0,0);
     }
 
     class UserFragmentPagerAdapter extends FragmentPagerAdapter{

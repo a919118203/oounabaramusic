@@ -42,7 +42,7 @@ public class MyPlayListAdapter extends RecyclerView.Adapter<MyPlayListAdapter.Vi
 
     @Override
     public int getItemCount() {
-        return 1;
+        return 21;
     }
 
     class ViewHolder extends RecyclerView.ViewHolder{

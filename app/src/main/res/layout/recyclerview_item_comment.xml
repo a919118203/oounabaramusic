@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/music_cover"
+        android:src="@mipmap/choose_login"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="22dp"/>
+
+    <com.oounabaramusic.android.widget.textview.TextViewSmallFont
+        android:text="单曲"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_toEndOf="@id/music_cover"
+        android:layout_alignTop="@id/music_cover"
+        android:layout_toStartOf="@id/good_cnt"
+        android:layout_marginStart="10dp"
+        android:gravity="center_vertical"
+        android:maxLines="1"
+        android:ellipsize="end"
+        tools:ignore="HardcodedText" />
+
+    <com.oounabaramusic.android.widget.textview.TextViewSmallFont
+        android:text="2"
+        android:id="@+id/good_cnt"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignTop="@id/music_cover"
+        android:layout_toStartOf="@id/good"
+        android:gravity="center_vertical|end"
+        tools:ignore="HardcodedText" />
+
+    <ImageView
+        android:id="@+id/good"
+        android:src="@mipmap/no_good"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignTop="@id/music_cover"
+        android:padding="10dp"
+        android:layout_marginEnd="22dp"
+        android:contentDescription="点赞图标"
+        tools:ignore="HardcodedText" />
+
+    <TextView
+        android:id="@+id/comment_content"
+        android:text="好优雅，我要睡觉了，帮我关下灯"
+        android:textSize="14sp"
+        android:textColor="@color/positive"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/music_cover"
+        android:layout_alignStart="@id/music_cover"
+        android:layout_marginEnd="22dp"
+        android:layout_marginTop="5dp"
+        android:maxLines="1"
+        android:ellipsize="end"
+        tools:ignore="HardcodedText" />
+
+    <com.oounabaramusic.android.widget.textview.TextViewSmallFont
+        android:id="@+id/comment_date"
+        android:text="2017年11月13日"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/comment_content"
+        android:layout_alignStart="@id/comment_content"
+        android:layout_marginTop="5dp"
+        tools:ignore="HardcodedText" />
+</RelativeLayout>

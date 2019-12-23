@@ -1,6 +1,214 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+<androidx.core.widget.NestedScrollView
+    android:id="@+id/scroll"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-</LinearLayout>
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:id="@+id/click_music_play_ranking"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/music_play_ranking"
+                android:src="@mipmap/ranking"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="22dp"
+                android:layout_marginTop="10dp"
+                android:contentDescription="排行榜"
+                tools:ignore="HardcodedText" />
+
+            <com.oounabaramusic.android.widget.textview.TextViewMediumFont
+                android:id="@+id/music_play_ranking_title"
+                android:text="听歌排行"
+                android:textColor="@color/positive"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@id/music_play_ranking"
+                android:layout_alignTop="@id/music_play_ranking"
+                android:layout_marginTop="8dp"
+                android:layout_marginStart="15dp"
+                tools:ignore="HardcodedText"/>
+
+            <com.oounabaramusic.android.widget.textview.TextViewSmallFont
+                android:text="累计听歌8497首"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/music_play_ranking_title"
+                android:layout_alignStart="@id/music_play_ranking_title"
+                android:layout_marginTop="3dp"
+                tools:ignore="HardcodedText"/>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/my_favorite_music"
+                android:src="@mipmap/collection"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="22dp"
+                android:layout_marginTop="10dp"
+                android:contentDescription="排行榜"
+                tools:ignore="HardcodedText" />
+
+            <com.oounabaramusic.android.widget.textview.TextViewMediumFont
+                android:id="@+id/my_favorite_music_title"
+                android:text="我喜欢的音乐"
+                android:textColor="@color/positive"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@id/my_favorite_music"
+                android:layout_alignTop="@id/my_favorite_music"
+                android:layout_marginTop="8dp"
+                android:layout_marginStart="15dp"
+                tools:ignore="HardcodedText"/>
+
+            <com.oounabaramusic.android.widget.textview.TextViewSmallFont
+                android:text="504首，播放4643次"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/my_favorite_music_title"
+                android:layout_alignStart="@id/my_favorite_music_title"
+                android:layout_marginTop="3dp"
+                tools:ignore="HardcodedText"/>
+        </RelativeLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="50dp">
+
+            <com.oounabaramusic.android.widget.textview.TextViewMediumFont
+                android:id="@+id/my_playlist_title"
+                android:text="创建的歌单"
+                android:textColor="@color/positive"
+                android:textStyle="bold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="22dp"
+                tools:ignore="HardcodedText" />
+
+            <com.oounabaramusic.android.widget.textview.TextViewSmallFont
+                android:id="@+id/my_playlist_cnt"
+                android:text="(11个)"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                tools:ignore="HardcodedText" />
+        </LinearLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/my_playlist_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="12dp"/>
+
+        <com.oounabaramusic.android.widget.textview.TextViewSmallFont
+            android:id="@+id/more_my_playlist"
+            android:text="更多歌单>"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:gravity="center_horizontal"
+            tools:ignore="HardcodedText" />
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp">
+
+            <com.oounabaramusic.android.widget.textview.TextViewMediumFont
+                android:id="@+id/favorite_playlist_title"
+                android:text="收藏的歌单"
+                android:textColor="@color/positive"
+                android:textStyle="bold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="22dp"
+                tools:ignore="HardcodedText" />
+
+            <com.oounabaramusic.android.widget.textview.TextViewSmallFont
+                android:id="@+id/favorite_playlist_cnt"
+                android:text="(12个)"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                tools:ignore="HardcodedText" />
+        </LinearLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/favorite_playlist_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="12dp"/>
+
+        <com.oounabaramusic.android.widget.textview.TextViewSmallFont
+            android:id="@+id/more_favorite_playlist"
+            android:text="更多歌单>"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:layout_marginTop="20dp"
+            tools:ignore="HardcodedText" />
+
+        <com.oounabaramusic.android.widget.textview.TextViewMediumFont
+            android:text="我的评论"
+            android:textColor="@color/positive"
+            android:textStyle="bold"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_marginStart="22dp"
+            tools:ignore="HardcodedText" />
+
+        <include layout="@layout/recyclerview_item_comment"/>
+
+        <com.oounabaramusic.android.widget.textview.TextViewSmallFont
+            android:id="@+id/more_comment"
+            android:text="更多评论>"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:layout_marginTop="20dp"
+            tools:ignore="HardcodedText" />
+
+        <com.oounabaramusic.android.widget.textview.TextViewMediumFont
+            android:text="基本信息"
+            android:textColor="@color/positive"
+            android:textStyle="bold"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_marginStart="22dp"
+            tools:ignore="HardcodedText" />
+
+        <com.oounabaramusic.android.widget.textview.TextViewSmallFont
+            android:text="乐龄：2年（2017年3月注册）"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginStart="22dp"
+            android:layout_marginBottom="100dp"
+            tools:ignore="HardcodedText" />
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>
