@@ -11,8 +11,16 @@
         android:supportsRtl="true"
         android:theme="@style/LightAppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".MyFriendActivity"
-            android:label="我的好友"/>
+        <activity
+            android:name=".UserInfoEditActivity"
+            android:label="我的资料"
+            android:windowSoftInputMode="adjustResize"/>
+        <activity
+            android:name=".MessageActivity"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".MyFriendActivity"
+            android:label="我的好友" />
         <activity
             android:name=".UserInfoActivity"
             android:label="" />

@@ -20,10 +20,10 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/user_header"
         android:layout_centerInParent="true"
-        android:paddingTop="5dp"
-        android:paddingBottom="5dp"
-        android:paddingStart="10dp"
-        android:paddingEnd="10dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        android:paddingStart="15dp"
+        android:paddingEnd="15dp"
         android:background="@drawable/btn_change_header"
         tools:ignore="HardcodedText" />
 </RelativeLayout>

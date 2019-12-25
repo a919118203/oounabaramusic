@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimaryDark"
+        app:elevation="0dp">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/action_bar_size"/>
+
+        <EditText
+            android:id="@+id/edit_user_name"
+            android:visibility="gone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <LinearLayout
+        android:id="@+id/layout_content"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="10dp"
+            android:background="@color/negative"/>
+
+        <LinearLayout
+            android:id="@+id/user_header"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:background="@drawable/view_ripple_rectangle"
+            android:layout_height="50dp">
+
+            <com.oounabaramusic.android.widget.textview.TextViewMediumFont
+                android:text="头像"
+                android:textColor="@color/positive"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_gravity="center_vertical"
+                tools:ignore="HardcodedText" />
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:src="@mipmap/choose_login"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                android:layout_marginEnd="20dp"/>
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/negative"/>
+
+        <LinearLayout
+            android:id="@+id/user_name"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:background="@drawable/view_ripple_rectangle"
+            android:layout_height="50dp">
+
+            <com.oounabaramusic.android.widget.textview.TextViewMediumFont
+                android:text="昵称"
+                android:textColor="@color/positive"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_gravity="center_vertical"
+                tools:ignore="HardcodedText" />
+
+            <com.oounabaramusic.android.widget.textview.TextViewMediumFont
+                android:src="@mipmap/choose_login"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="20dp"
+                android:layout_marginStart="50dp"
+                android:layout_gravity="center_vertical"
+                android:text="用户名"
+                android:gravity="end"
+                android:ellipsize="end"
+                android:maxLines="1"
+                tools:ignore="HardcodedText" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/negative"/>
+
+        <LinearLayout
+            android:id="@+id/user_sex"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:background="@drawable/view_ripple_rectangle"
+            android:layout_height="50dp">
+
+            <com.oounabaramusic.android.widget.textview.TextViewMediumFont
+                android:text="性别"
+                android:textColor="@color/positive"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_gravity="center_vertical"
+                tools:ignore="HardcodedText" />
+
+            <com.oounabaramusic.android.widget.textview.TextViewMediumFont
+                android:src="@mipmap/choose_login"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="20dp"
+                android:layout_marginStart="50dp"
+                android:layout_gravity="center_vertical"
+                android:text="男"
+                android:gravity="end"
+                android:ellipsize="end"
+                android:maxLines="1"
+                tools:ignore="HardcodedText" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/negative"/>
+
+        <LinearLayout
+            android:id="@+id/user_birthday"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:background="@drawable/view_ripple_rectangle"
+            android:layout_height="50dp">
+
+            <com.oounabaramusic.android.widget.textview.TextViewMediumFont
+                android:text="生日"
+                android:textColor="@color/positive"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_gravity="center_vertical"
+                tools:ignore="HardcodedText" />
+
+            <com.oounabaramusic.android.widget.textview.TextViewMediumFont
+                android:src="@mipmap/choose_login"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="20dp"
+                android:layout_marginStart="50dp"
+                android:layout_gravity="center_vertical"
+                android:text="1997-10-05"
+                android:gravity="end"
+                android:ellipsize="end"
+                android:maxLines="1"
+                tools:ignore="HardcodedText" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/negative"/>
+
+        <LinearLayout
+            android:id="@+id/user_introduction"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:background="@drawable/view_ripple_rectangle"
+            android:layout_height="50dp">
+
+            <com.oounabaramusic.android.widget.textview.TextViewMediumFont
+                android:text="签名"
+                android:textColor="@color/positive"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_gravity="center_vertical"
+                tools:ignore="HardcodedText" />
+
+            <com.oounabaramusic.android.widget.textview.TextViewMediumFont
+                android:src="@mipmap/choose_login"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="20dp"
+                android:layout_marginStart="50dp"
+                android:layout_gravity="center_vertical"
+                android:text="个人介绍"
+                android:gravity="end"
+                android:ellipsize="end"
+                android:maxLines="1"
+                tools:ignore="HardcodedText" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/edit_introduction"
+        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="start|top"/>
+
+        <com.oounabaramusic.android.widget.textview.TextViewMediumFont
+            android:text="300"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:layout_marginBottom="8dp"
+            tools:ignore="HardcodedText" />
+    </FrameLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

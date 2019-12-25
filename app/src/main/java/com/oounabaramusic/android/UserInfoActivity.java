@@ -34,6 +34,7 @@ import com.oounabaramusic.android.util.DensityUtil;
 import com.oounabaramusic.android.util.LogUtil;
 import com.oounabaramusic.android.util.ShowPopupWindow;
 import com.oounabaramusic.android.util.StatusBarUtil;
+import com.oounabaramusic.android.util.UserInfoActivityManager;
 import com.oounabaramusic.android.widget.popupwindow.MyPopupWindow;
 
 import java.util.ArrayList;
@@ -41,6 +42,9 @@ import java.util.List;
 
 public class UserInfoActivity extends BaseActivity implements View.OnClickListener{
 
+    public static final int MODE_SELF=1;
+    public static final int MODE_OTHER=2;
+    private int mode;
     private Toolbar toolbar;
     private ViewPager viewPager;
     private List<Fragment> fragments;
@@ -55,6 +59,7 @@ public class UserInfoActivity extends BaseActivity implements View.OnClickListen
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_info);
+        UserInfoActivityManager.addActivity(this);
         StatusBarUtil.setTranslucentStatus(this);
         StatusBarUtil.moveDownStatusBar(this,R.id.toolbar);
 
@@ -67,9 +72,12 @@ public class UserInfoActivity extends BaseActivity implements View.OnClickListen
         }
 
         init();
+
     }
 
     private void init() {
+        initMode();
+
         userFollowed=findViewById(R.id.user_followed);
         userToFollow=findViewById(R.id.user_to_follow);
         userHeader=findViewById(R.id.user_cover);
@@ -125,10 +133,33 @@ public class UserInfoActivity extends BaseActivity implements View.OnClickListen
 
     }
 
+    private void initMode() {
+        Intent intent=getIntent();
+        mode=intent.getIntExtra("mode",-1);
+        if(mode==MODE_SELF){
+            selfMode();
+        }else if(mode==MODE_OTHER){
+            otherMode();
+        }
+    }
+
+    private void selfMode() {
+        findViewById(R.id.user_follow).setVisibility(View.GONE);
+        findViewById(R.id.user_send_message).setVisibility(View.GONE);
+        TextView userEdit=findViewById(R.id.user_edit);
+        userEdit.setOnClickListener(this);
+    }
+
+    private void otherMode() {
+        findViewById(R.id.user_change_background).setVisibility(View.GONE);
+        findViewById(R.id.user_edit).setVisibility(View.GONE);
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if(item.getItemId()==android.R.id.home){
             finish();
+            UserInfoActivityManager.removeActivity(this);
         }
         return true;
     }
@@ -142,12 +173,16 @@ public class UserInfoActivity extends BaseActivity implements View.OnClickListen
                 break;
             case R.id.user_to_follow:         //点击关注时
                 intent=new Intent(this,MyFriendActivity.class);
-                intent.putExtra("from","toFollow");
+                intent.putExtra("from",MyFriendActivity.TO_FOLLOW);
                 startActivity(intent);
                 break;
             case R.id.user_followed:          //点击粉丝时
                 intent=new Intent(this,MyFriendActivity.class);
-                intent.putExtra("from","followed");
+                intent.putExtra("from",MyFriendActivity.FOLLOWED);
+                startActivity(intent);
+                break;
+            case R.id.user_edit:              //点击编辑
+                intent=new Intent(this,UserInfoEditActivity.class);
                 startActivity(intent);
                 break;
         }

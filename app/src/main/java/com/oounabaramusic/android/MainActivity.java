@@ -94,6 +94,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
                 break;
             case R.id.to_user_info:                     //点击NavigationView的header部分时
                 intent=new Intent(this,UserInfoActivity.class);
+                intent.putExtra("mode",UserInfoActivity.MODE_SELF);
                 startActivity(intent);
                 dl.closeDrawer(GravityCompat.START);
                 break;
@@ -122,17 +123,14 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
 
         @Override
         public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-            LogUtil.printLog("MainActivity","OnPageScrolled");
         }
 
         @Override
         public void onPageSelected(int position) {
-            LogUtil.printLog("MainActivity","onPageSelected");
         }
 
         @Override
         public void onPageScrollStateChanged(int state) {
-            LogUtil.printLog("MainActivity","onPageScrollStateChanged");
         }
     }
 

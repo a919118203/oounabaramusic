@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/popup_window_content"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="bottom"
+    android:background="@drawable/layout_card"
+    android:paddingStart="10dp"
+    android:paddingEnd="10dp"
+    android:paddingTop="20dp">
+
+    <com.oounabaramusic.android.widget.textview.TextViewSmallFont
+        android:id="@+id/name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:text="名字"
+        tools:ignore="HardcodedText" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/negative"/>
+
+    <LinearLayout
+        android:id="@+id/send_message"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:background="@drawable/view_ripple_rectangle"
+        android:layout_height="50dp">
+
+        <ImageView
+            android:src="@mipmap/send_message"
+            android:layout_width="50dp"
+            android:layout_height="match_parent"
+            android:padding="10dp"
+            tools:ignore="ContentDescription" />
+
+
+        <com.oounabaramusic.android.widget.textview.TextViewMediumFont
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="发送私信"
+            android:textColor="@color/positive"
+            android:gravity="center_vertical"
+            tools:ignore="HardcodedText" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/negative"/>
+
+    <LinearLayout
+        android:id="@+id/cancel_follow"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:background="@drawable/view_ripple_rectangle"
+        android:layout_height="50dp">
+
+        <ImageView
+            android:src="@mipmap/cancel_follow"
+            android:layout_width="50dp"
+            android:layout_height="match_parent"
+            android:padding="10dp"
+            tools:ignore="ContentDescription" />
+
+
+        <com.oounabaramusic.android.widget.textview.TextViewMediumFont
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="取消关注"
+            android:textColor="@color/positive"
+            android:gravity="center_vertical"
+            tools:ignore="HardcodedText" />
+    </LinearLayout>
+</LinearLayout>
+

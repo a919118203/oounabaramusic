@@ -20,6 +20,12 @@ public class MyPopupWindow extends PopupWindow {
         setContentView(createContentView(contentView,context,gravity));
     }
 
+    public MyPopupWindow(Context context,View contentView){
+        super(contentView,ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.MATCH_PARENT);
+        init();
+        setContentView(createContentView(contentView,context,Gravity.BOTTOM));
+    }
+
     private View createContentView(View contentView, Context context, int gravity) {
         FrameLayout layout=new FrameLayout(context);
         ViewGroup.LayoutParams layoutParams=new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.MATCH_PARENT);
