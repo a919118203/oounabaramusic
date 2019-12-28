@@ -13,9 +13,9 @@
 
         <RelativeLayout
             android:id="@+id/click_music_play_ranking"
-            android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:background="@drawable/view_ripple_rectangle">
 
             <ImageView
                 android:id="@+id/music_play_ranking"
@@ -26,6 +26,7 @@
                 android:layout_alignParentStart="true"
                 android:layout_marginStart="22dp"
                 android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
                 android:contentDescription="排行榜"
                 tools:ignore="HardcodedText" />
 
@@ -53,7 +54,8 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:background="@drawable/view_ripple_rectangle">
 
             <ImageView
                 android:id="@+id/my_favorite_music"
@@ -64,6 +66,7 @@
                 android:layout_alignParentStart="true"
                 android:layout_marginStart="22dp"
                 android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
                 android:contentDescription="排行榜"
                 tools:ignore="HardcodedText" />
 
@@ -126,15 +129,15 @@
             android:text="更多歌单>"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
+            android:padding="20dp"
+            android:background="@drawable/view_ripple_rectangle"
             android:gravity="center_horizontal"
             tools:ignore="HardcodedText" />
 
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp">
+            android:layout_height="wrap_content">
 
             <com.oounabaramusic.android.widget.textview.TextViewMediumFont
                 android:id="@+id/favorite_playlist_title"
@@ -168,7 +171,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
-            android:layout_marginTop="20dp"
+            android:padding="20dp"
+            android:background="@drawable/view_ripple_rectangle"
             tools:ignore="HardcodedText" />
 
         <com.oounabaramusic.android.widget.textview.TextViewMediumFont
@@ -181,7 +185,7 @@
             android:layout_marginStart="22dp"
             tools:ignore="HardcodedText" />
 
-        <include layout="@layout/recyclerview_item_comment"/>
+        <include layout="@layout/recyclerview_item_user_comment"/>
 
         <com.oounabaramusic.android.widget.textview.TextViewSmallFont
             android:id="@+id/more_comment"
@@ -189,7 +193,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
-            android:layout_marginTop="20dp"
+            android:padding="20dp"
+            android:background="@drawable/view_ripple_rectangle"
             tools:ignore="HardcodedText" />
 
         <com.oounabaramusic.android.widget.textview.TextViewMediumFont
@@ -208,7 +213,25 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:layout_marginStart="22dp"
+            tools:ignore="HardcodedText" />
+
+        <com.oounabaramusic.android.widget.textview.TextViewSmallFont
+            android:text="年龄：95后 天秤座"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginStart="22dp"
+            tools:ignore="HardcodedText" />
+
+        <com.oounabaramusic.android.widget.textview.TextViewSmallFont
+            android:id="@+id/more_user_info"
+            android:text="更多信息>"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginBottom="100dp"
+            android:gravity="center_horizontal"
+            android:padding="20dp"
+            android:background="@drawable/view_ripple_rectangle"
             tools:ignore="HardcodedText" />
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>

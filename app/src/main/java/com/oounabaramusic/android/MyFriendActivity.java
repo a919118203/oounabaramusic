@@ -78,6 +78,22 @@ public class MyFriendActivity extends AppCompatActivity {
 
         viewPager=findViewById(R.id.my_friend_view_pager);
         viewPager.setAdapter(new ViewPagerAdapter());
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                Objects.requireNonNull(tabLayout.getTabAt(position)).select();
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
 
         Intent intent=getIntent();
         int position=intent.getIntExtra("from",0);

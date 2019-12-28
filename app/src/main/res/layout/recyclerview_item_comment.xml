@@ -3,75 +3,136 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content"
+    android:background="@drawable/comment_item_background">
 
-    <ImageView
-        android:id="@+id/music_cover"
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/user_header"
         android:src="@mipmap/choose_login"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_alignParentTop="true"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
         android:layout_alignParentStart="true"
-        android:layout_marginTop="10dp"
-        android:layout_marginStart="22dp"/>
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginTop="10dp"/>
 
     <com.oounabaramusic.android.widget.textview.TextViewSmallFont
-        android:text="单曲"
+        android:id="@+id/user_name"
+        android:text="用户名"
+        android:textColor="@color/positive"
         android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:layout_toEndOf="@id/music_cover"
-        android:layout_alignTop="@id/music_cover"
-        android:layout_toStartOf="@id/good_cnt"
-        android:layout_marginStart="10dp"
-        android:gravity="center_vertical"
-        android:maxLines="1"
-        android:ellipsize="end"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@id/user_header"
+        android:layout_alignTop="@id/user_header"
         tools:ignore="HardcodedText" />
 
-    <com.oounabaramusic.android.widget.textview.TextViewSmallFont
-        android:text="2"
-        android:id="@+id/good_cnt"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_alignTop="@id/music_cover"
-        android:layout_toStartOf="@id/good"
-        android:gravity="center_vertical|end"
+    <com.oounabaramusic.android.widget.textview.TextViewSSmallFont
+        android:id="@+id/comment_date"
+        android:text="2017年7月5日"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@id/user_header"
+        android:layout_below="@id/user_name"
+        android:layout_marginTop="2dp"
+        tools:ignore="HardcodedText" />
+
+    <com.oounabaramusic.android.widget.textview.TextViewMediumFont
+        android:id="@+id/comment_content"
+        android:text="评论内容"
+        android:textColor="@color/positive"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@id/user_header"
+        android:layout_below="@id/comment_date"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="20dp"
         tools:ignore="HardcodedText" />
 
     <ImageView
         android:id="@+id/good"
         android:src="@mipmap/no_good"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
         android:layout_alignParentEnd="true"
-        android:layout_alignTop="@id/music_cover"
-        android:padding="10dp"
-        android:layout_marginEnd="22dp"
-        android:contentDescription="点赞图标"
-        tools:ignore="HardcodedText" />
-
-    <TextView
-        android:id="@+id/comment_content"
-        android:text="好优雅，我要睡觉了，帮我关下灯"
-        android:textSize="14sp"
-        android:textColor="@color/positive"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/music_cover"
-        android:layout_alignStart="@id/music_cover"
-        android:layout_marginEnd="22dp"
-        android:layout_marginTop="5dp"
-        android:maxLines="1"
-        android:ellipsize="end"
-        tools:ignore="HardcodedText" />
+        android:layout_alignParentTop="true"
+        android:layout_marginEnd="20dp"
+        android:layout_marginTop="20dp"/>
 
     <com.oounabaramusic.android.widget.textview.TextViewSmallFont
-        android:id="@+id/comment_date"
-        android:text="2017年11月13日"
+        android:id="@+id/good_cnt"
+        android:text="2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/comment_content"
-        android:layout_alignStart="@id/comment_content"
-        android:layout_marginTop="5dp"
+        android:layout_toStartOf="@id/good"
+        android:layout_alignBottom="@id/good"
+        android:layout_marginEnd="10dp"
         tools:ignore="HardcodedText" />
+
+    <LinearLayout
+        android:visibility="gone"
+        android:id="@+id/reply_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/comment_content"
+        android:layout_toEndOf="@id/user_header">
+
+        <com.oounabaramusic.android.widget.textview.TextViewSmallFont
+            android:id="@+id/reply_cnt"
+            android:text="3"
+            android:textColor="@color/colorPrimary"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:ignore="HardcodedText" />
+        <com.oounabaramusic.android.widget.textview.TextViewSmallFont
+            android:text="条回复 >"
+            android:textColor="@color/colorPrimary"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:ignore="HardcodedText" />
+    </LinearLayout>
+
+    <RelativeLayout
+        android:visibility="gone"
+        android:id="@+id/to_reply"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/comment_content"
+        android:layout_alignStart="@id/comment_content">
+
+        <View
+            android:id="@+id/side"
+            android:background="@color/negative"
+            android:layout_width="2dp"
+            android:layout_height="match_parent"
+            android:layout_alignTop="@id/to_reply_layout"
+            android:layout_alignBottom="@id/to_reply_layout"/>
+
+        <FrameLayout
+            android:id="@+id/to_reply_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/side"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="20dp">
+
+            <TextView
+                android:id="@+id/to_reply_content"
+                android:text="\@Mogeko：被回复的评论的内容被回复的评论的内容被回复的评论的内容被回复的评论的内容被回复的评论的内容被回复的评论的内容被回复的评论的内容被回复的评论的内容被回复的评论的内容被回复的评论的内容被回复的评论的内容"
+                android:textSize="12sp"
+                android:lineSpacingExtra="5dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:ignore="HardcodedText" />
+
+            <TextView
+                android:text="\@Mogeko："
+                android:textSize="12sp"
+                android:lineSpacingExtra="5dp"
+                android:textColor="@color/colorPrimary"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:ignore="HardcodedText" />
+        </FrameLayout>
+    </RelativeLayout>
 </RelativeLayout>

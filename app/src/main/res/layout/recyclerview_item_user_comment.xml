@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    android:id="@+id/comment_layout"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/comment_item_background">
+
+    <ImageView
+        android:id="@+id/music_cover"
+        android:src="@mipmap/choose_login"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="22dp"/>
+
+    <com.oounabaramusic.android.widget.textview.TextViewSmallFont
+        android:text="单曲"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_toEndOf="@id/music_cover"
+        android:layout_alignTop="@id/music_cover"
+        android:layout_toStartOf="@id/good_cnt"
+        android:layout_marginStart="10dp"
+        android:gravity="center_vertical"
+        android:maxLines="1"
+        android:ellipsize="end"
+        tools:ignore="HardcodedText" />
+
+    <com.oounabaramusic.android.widget.textview.TextViewSmallFont
+        android:text="2"
+        android:id="@+id/good_cnt"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignTop="@id/music_cover"
+        android:layout_toStartOf="@id/good"
+        android:gravity="center_vertical|end"
+        tools:ignore="HardcodedText" />
+
+    <ImageView
+        android:id="@+id/good"
+        android:src="@mipmap/no_good"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignTop="@id/music_cover"
+        android:padding="10dp"
+        android:layout_marginEnd="22dp"
+        android:contentDescription="点赞图标"
+        tools:ignore="HardcodedText" />
+
+    <LinearLayout
+        android:id="@+id/reee"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/music_cover"
+        android:layout_alignStart="@id/music_cover">
+
+        <TextView
+            android:id="@+id/comment_content"
+            android:text="好优雅，我要睡觉了，帮我关下灯"
+            android:textSize="14sp"
+            android:textColor="@color/positive"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="20dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:maxLines="1"
+            android:ellipsize="end"
+            tools:ignore="HardcodedText" />
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="20dp"
+            android:padding="5dp"
+            android:background="@color/negative">
+
+            <TextView
+                android:text="\@Mogeko：内容内容内容内容内容内容内容内容内容内容内容内容内容内容"
+                android:textSize="12sp"
+                android:lineSpacingExtra="5dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:ignore="HardcodedText" />
+
+            <TextView
+                android:text="\@Mogeko："
+                android:textSize="12sp"
+                android:lineSpacingExtra="5dp"
+                android:textColor="@color/colorPrimary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:ignore="HardcodedText" />
+        </FrameLayout>
+    </LinearLayout>
+
+    <com.oounabaramusic.android.widget.textview.TextViewSmallFont
+        android:id="@+id/comment_date"
+        android:text="2017年11月13日"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/reee"
+        android:layout_alignStart="@id/reee"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        tools:ignore="HardcodedText" />
+</RelativeLayout>

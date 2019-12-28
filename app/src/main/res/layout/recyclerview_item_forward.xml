@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/comment_item_background">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/user_header"
+        android:src="@mipmap/choose_login"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginTop="10dp"/>
+
+    <com.oounabaramusic.android.widget.textview.TextViewSmallFont
+        android:id="@+id/user_name"
+        android:text="用户名"
+        android:textColor="@color/positive"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@id/user_header"
+        android:layout_alignTop="@id/user_header"
+        tools:ignore="HardcodedText" />
+
+    <com.oounabaramusic.android.widget.textview.TextViewSSmallFont
+        android:id="@+id/forward_date"
+        android:text="2017年7月5日"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@id/user_header"
+        android:layout_below="@id/user_name"
+        android:layout_marginTop="2dp"
+        tools:ignore="HardcodedText" />
+
+    <com.oounabaramusic.android.widget.textview.TextViewMediumFont
+        android:id="@+id/forward_content"
+        android:text="转发时写的内容"
+        android:textColor="@color/positive"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@id/user_header"
+        android:layout_below="@id/forward_date"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="20dp"
+        tools:ignore="HardcodedText" />
+</RelativeLayout>

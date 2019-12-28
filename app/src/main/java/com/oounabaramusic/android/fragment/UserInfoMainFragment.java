@@ -1,20 +1,24 @@
 package com.oounabaramusic.android.fragment;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.oounabaramusic.android.CommentActivity;
+import com.oounabaramusic.android.ListenRankActivity;
+import com.oounabaramusic.android.MoreInfoActivity;
+import com.oounabaramusic.android.MorePlayListActivity;
 import com.oounabaramusic.android.R;
-import com.oounabaramusic.android.UserInfoActivity;
+import com.oounabaramusic.android.UserCommentActivity;
 import com.oounabaramusic.android.adapter.UserInfoFavoritePlayListAdapter;
 import com.oounabaramusic.android.adapter.UserInfoMyPlayListAdapter;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -25,6 +29,7 @@ public class UserInfoMainFragment extends Fragment {
     private RecyclerView myPlaylist,favoritePlaylist;
     private UserInfoMyPlayListAdapter myAdapter;
     private UserInfoFavoritePlayListAdapter favoriteAdapter;
+    private ImageView reSetFocus;
 
     public UserInfoMainFragment(Activity activity){
         this.activity=activity;
@@ -57,10 +62,59 @@ public class UserInfoMainFragment extends Fragment {
 
 
         //解决进入这个活动时画面的初始位置在奇怪的地方的问题
-        ImageView imageView=view.findViewById(R.id.music_play_ranking);
-        imageView.setFocusable(true);
-        imageView.setFocusableInTouchMode(true);
-        imageView.requestFocus();
+        reSetFocus =view.findViewById(R.id.music_play_ranking);
+        reSetFocus.setFocusable(true);
+        reSetFocus.setFocusableInTouchMode(true);
+        resizeFocus();
 
+        //点击听歌排行时
+        view.findViewById(R.id.click_music_play_ranking).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent=new Intent(activity, ListenRankActivity.class);
+                activity.startActivity(intent);
+            }
+        });
+
+        //创建的歌单下面的更多歌单时
+        view.findViewById(R.id.more_my_playlist).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent=new Intent(activity, MorePlayListActivity.class);
+                activity.startActivity(intent);
+            }
+        });
+
+        //点击我的评论下面的评论时
+        view.findViewById(R.id.comment_layout).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent=new Intent(activity, CommentActivity.class);
+                activity.startActivity(intent);
+            }
+        });
+
+        //点击更多评论时
+        view.findViewById(R.id.more_comment).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent=new Intent(activity, UserCommentActivity.class);
+                activity.startActivity(intent);
+            }
+        });
+
+        view.findViewById(R.id.more_user_info).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent=new Intent(activity, MoreInfoActivity.class);
+                activity.startActivity(intent);
+            }
+        });
+
+        view.findViewById(R.id.comment_layout).setBackground(activity.getResources().getDrawable(R.drawable.view_ripple_rectangle));
+    }
+
+    public void resizeFocus(){
+        reSetFocus.requestFocus();
     }
 }

@@ -7,15 +7,18 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.oounabaramusic.android.R;
+import com.oounabaramusic.android.adapter.UserInfoPostAdapter;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class UserInfoPostFragment extends Fragment {
 
     private Activity activity;
+    private UserInfoPostAdapter adapter;
 
     public UserInfoPostFragment(Activity activity){
         this.activity=activity;
@@ -31,6 +34,7 @@ public class UserInfoPostFragment extends Fragment {
 
     private void init(View view) {
         RecyclerView recyclerView= (RecyclerView) view;
-
+        recyclerView.setAdapter(adapter=new UserInfoPostAdapter(activity));
+        recyclerView.setLayoutManager(new LinearLayoutManager(activity));
     }
 }

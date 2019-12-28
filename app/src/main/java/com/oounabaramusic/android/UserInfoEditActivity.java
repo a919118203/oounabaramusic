@@ -16,6 +16,7 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
 import com.oounabaramusic.android.util.DensityUtil;
+import com.oounabaramusic.android.util.StatusBarUtil;
 import com.oounabaramusic.android.widget.popupwindow.MyPopupWindow;
 
 public class UserInfoEditActivity extends BaseActivity implements View.OnClickListener{
@@ -57,8 +58,6 @@ public class UserInfoEditActivity extends BaseActivity implements View.OnClickLi
         pw=new MyPopupWindow(
                 this,
                 createContentView(),
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.MATCH_PARENT,
                 Gravity.CENTER);
     }
 
@@ -89,6 +88,7 @@ public class UserInfoEditActivity extends BaseActivity implements View.OnClickLi
                 }else{
                     finish();
                 }
+                StatusBarUtil.hideSoftKeyboard(this);
                 break;
             case R.id.save_name:
                 break;

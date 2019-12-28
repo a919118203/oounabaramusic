@@ -14,8 +14,8 @@ import java.lang.reflect.Field;
 
 public class MyPopupWindow extends PopupWindow {
 
-    public MyPopupWindow(Context context,View contentView, int width, int height,int gravity){
-        super(contentView,width,height);
+    public MyPopupWindow(Context context,View contentView,int gravity){
+        super(contentView,ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.MATCH_PARENT);
         init();
         setContentView(createContentView(contentView,context,gravity));
     }

@@ -12,9 +12,31 @@
         android:theme="@style/LightAppTheme"
         tools:ignore="GoogleAppIndexingWarning">
         <activity
+            android:name=".ForwardActivity"
+            android:label="转发"
+            android:windowSoftInputMode="adjustResize"/>
+        <activity
+            android:name=".PostActivity"
+            android:label="动态" />
+        <activity
+            android:name=".MoreInfoActivity"
+            android:label="基本信息" />
+        <activity
+            android:name=".UserCommentActivity"
+            android:label="评论" />
+        <activity
+            android:name=".CommentActivity"
+            android:label="评论" />
+        <activity
+            android:name=".MorePlayListActivity"
+            android:label="歌单" />
+        <activity
+            android:name=".ListenRankActivity"
+            android:label="听歌排行" />
+        <activity
             android:name=".UserInfoEditActivity"
             android:label="我的资料"
-            android:windowSoftInputMode="adjustResize"/>
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".MessageActivity"
             android:windowSoftInputMode="adjustResize" />

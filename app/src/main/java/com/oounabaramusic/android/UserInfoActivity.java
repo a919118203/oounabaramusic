@@ -30,6 +30,7 @@ import com.oounabaramusic.android.adapter.UserInfoFavoritePlayListAdapter;
 import com.oounabaramusic.android.adapter.UserInfoMyPlayListAdapter;
 import com.oounabaramusic.android.fragment.MainMyFragment;
 import com.oounabaramusic.android.fragment.UserInfoMainFragment;
+import com.oounabaramusic.android.fragment.UserInfoPostFragment;
 import com.oounabaramusic.android.util.DensityUtil;
 import com.oounabaramusic.android.util.LogUtil;
 import com.oounabaramusic.android.util.ShowPopupWindow;
@@ -39,6 +40,7 @@ import com.oounabaramusic.android.widget.popupwindow.MyPopupWindow;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class UserInfoActivity extends BaseActivity implements View.OnClickListener{
 
@@ -86,6 +88,7 @@ public class UserInfoActivity extends BaseActivity implements View.OnClickListen
         tabLayout=findViewById(R.id.user_tab_layout);
         tabLayout.addTab(tabLayout.newTab().setText("主页"));
         tabLayout.addTab(tabLayout.newTab().setText("动态"));
+        tabLayout.addOnTabSelectedListener(new OnTabChangeListener());
 
         userHeader.setOnClickListener(this);
         userFollowed.setOnClickListener(this);
@@ -126,6 +129,7 @@ public class UserInfoActivity extends BaseActivity implements View.OnClickListen
 
         fragments=new ArrayList<>();
         fragments.add(new UserInfoMainFragment(this));
+        fragments.add(new UserInfoPostFragment(this));
         viewPager=findViewById(R.id.user_view_pager);
         viewPager.setAdapter(new UserFragmentPagerAdapter());
         viewPager.addOnPageChangeListener(new UserOnPagerChangeListener());
@@ -199,8 +203,6 @@ public class UserInfoActivity extends BaseActivity implements View.OnClickListen
 
         final MyPopupWindow pw=new MyPopupWindow(this,
                 contentView,
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.MATCH_PARENT,
                 Gravity.TOP);
 
         View.OnClickListener listener=new View.OnClickListener() {
@@ -239,6 +241,7 @@ public class UserInfoActivity extends BaseActivity implements View.OnClickListen
         }
     }
 
+
     class UserOnPagerChangeListener implements ViewPager.OnPageChangeListener{
 
         @Override
@@ -248,11 +251,33 @@ public class UserInfoActivity extends BaseActivity implements View.OnClickListen
 
         @Override
         public void onPageSelected(int position) {
-
+            Objects.requireNonNull(tabLayout.getTabAt(position)).select();
         }
 
         @Override
         public void onPageScrollStateChanged(int state) {
+
+        }
+    }
+
+    class OnTabChangeListener implements TabLayout.BaseOnTabSelectedListener{
+
+        @Override
+        public void onTabSelected(TabLayout.Tab tab) {
+            int position = tab.getPosition();
+            viewPager.setCurrentItem(position);
+            if(position==0){
+                ((UserInfoMainFragment)fragments.get(position)).resizeFocus();
+            }
+        }
+
+        @Override
+        public void onTabUnselected(TabLayout.Tab tab) {
+
+        }
+
+        @Override
+        public void onTabReselected(TabLayout.Tab tab) {
 
         }
     }
