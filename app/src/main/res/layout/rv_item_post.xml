@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:padding="20dp"
-    android:background="@drawable/comment_item_background">
+    android:background="@drawable/background_comment_item">
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/user_header"
@@ -22,7 +22,7 @@
         android:maxLines="1"
         android:ellipsize="end"
         android:layout_width="wrap_content"
-        android:maxWidth="200dp"
+        android:maxWidth="150dp"
         android:layout_height="wrap_content"
         android:layout_toEndOf="@id/user_header"
         android:layout_alignTop="@id/user_header"
@@ -178,7 +178,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
                 android:layout_marginTop="10dp"
-                android:background="@drawable/forward_music_background">
+                android:background="@drawable/background_forward_music">
 
                 <ImageView
                     android:id="@+id/forward_music_cover"

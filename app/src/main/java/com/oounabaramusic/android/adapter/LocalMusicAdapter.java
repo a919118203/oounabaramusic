@@ -1,13 +1,11 @@
 package com.oounabaramusic.android.adapter;
 
 import android.app.Activity;
-import android.content.Context;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -15,9 +13,8 @@ import com.oounabaramusic.android.LocalMusicActivity;
 import com.oounabaramusic.android.R;
 import com.oounabaramusic.android.bean.Music;
 import com.oounabaramusic.android.util.DensityUtil;
-import com.oounabaramusic.android.util.ShowPopupWindow;
+import com.oounabaramusic.android.widget.popupwindow.MyPopupWindow;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import androidx.annotation.NonNull;
@@ -30,18 +27,16 @@ import androidx.recyclerview.widget.RecyclerView;
  */
 public class LocalMusicAdapter extends RecyclerView.Adapter<LocalMusicAdapter.LocalMusicViewHolder>{
 
-    private ShowPopupWindow spwMusicMenu;
-    private ShowPopupWindow spwMusicInfo;
-    private ShowPopupWindow spwAddToPlaylist;
+    private MyPopupWindow spwMusicMenu;
+    private MyPopupWindow spwMusicInfo;
+    private MyPopupWindow spwAddToPlaylist;
     private List<Music> musicList;
-    private FrameLayout rootView;//用于spw的父View
     private boolean[] selected;//多选模式时记录多选的情况
     private int toolBarMode;
     private Activity activity;
 
-    public LocalMusicAdapter(Activity activity,FrameLayout rootView,List<Music> data){
+    public LocalMusicAdapter(Activity activity,List<Music> data){
         this.activity=activity;
-        this.rootView=rootView;
         musicList=data;
         selected=new boolean[data.size()+10];
     }
@@ -50,11 +45,11 @@ public class LocalMusicAdapter extends RecyclerView.Adapter<LocalMusicAdapter.Lo
     @Override
     public LocalMusicViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         final LocalMusicViewHolder vh=new LocalMusicViewHolder(
-                LayoutInflater.from(activity).inflate(R.layout.recyclerview_item_local_music,parent,false));
-        spwMusicMenu =new ShowPopupWindow(
-                createContextViewMenu(vh.getAdapterPosition(),vh),rootView);
-        spwMusicInfo =new ShowPopupWindow(
-                createContextViewInfo(vh.getAdapterPosition(),vh),rootView);
+                LayoutInflater.from(activity).inflate(R.layout.rv_item_local_music,parent,false));
+        spwMusicMenu =new MyPopupWindow(activity,
+                createContextViewMenu(vh.getAdapterPosition(),vh));
+        spwMusicInfo =new MyPopupWindow(activity,
+                createContextViewInfo(vh.getAdapterPosition(),vh));
 
         //每一项中的菜单被点击时
         vh.menu.setOnClickListener(new View.OnClickListener() {
@@ -62,7 +57,7 @@ public class LocalMusicAdapter extends RecyclerView.Adapter<LocalMusicAdapter.Lo
             public void onClick(View v) {
                 //给所有的popWindow的textView赋值
 
-                spwMusicMenu.showPopupMenu();
+                spwMusicMenu.showPopupWindow();
             }
         });
         return vh;
@@ -86,7 +81,7 @@ public class LocalMusicAdapter extends RecyclerView.Adapter<LocalMusicAdapter.Lo
      * @return         spw的contentView
      */
     private View createContextViewInfo(int position,LocalMusicViewHolder vh) {
-        View view=LayoutInflater.from(activity).inflate(R.layout.popupwindow_music_info,null);
+        View view=LayoutInflater.from(activity).inflate(R.layout.popupwindow_music_info, (ViewGroup) activity.getWindow().getDecorView(),false);
 
         //歌曲信息的“修改”被点击时
         view.findViewById(R.id.change_music_info).setOnClickListener(new View.OnClickListener() {
@@ -111,7 +106,7 @@ public class LocalMusicAdapter extends RecyclerView.Adapter<LocalMusicAdapter.Lo
      * @return         spw的contentView
      */
     private View createContextViewMenu(final int position, final LocalMusicViewHolder vh) {
-        View view=LayoutInflater.from(activity).inflate(R.layout.popupwindow_local_music_item_menu,null);
+        View view=LayoutInflater.from(activity).inflate(R.layout.popupwindow_local_music_item_menu, (ViewGroup) activity.getWindow().getDecorView(),false);
 
         //菜单中下一首播放被点击时
         view.findViewById(R.id.item_menu_next_play).setOnClickListener(new View.OnClickListener() {
@@ -126,10 +121,8 @@ public class LocalMusicAdapter extends RecyclerView.Adapter<LocalMusicAdapter.Lo
             @Override
             public void onClick(View v) {
                 spwMusicMenu.dismiss();
-                int width= (int) (DensityUtil.getDisplayWidth(activity)*0.9);
-                int height= (int) (DensityUtil.getDisplayHeight(activity)*0.6);
-                spwAddToPlaylist=new ShowPopupWindow(createContentViewAddToPlaylist(position),rootView,width,height);
-                spwAddToPlaylist.showPopupMenu(Gravity.CENTER);
+                spwAddToPlaylist=new MyPopupWindow(activity,createContentViewAddToPlaylist(position),Gravity.CENTER);
+                spwAddToPlaylist.showPopupWindow();
             }
         });
 
@@ -138,7 +131,7 @@ public class LocalMusicAdapter extends RecyclerView.Adapter<LocalMusicAdapter.Lo
             @Override
             public void onClick(View v) {
                 spwMusicMenu.dismiss();
-                spwMusicInfo.showPopupMenu();
+                spwMusicInfo.showPopupWindow();
             }
         });
 
@@ -160,7 +153,9 @@ public class LocalMusicAdapter extends RecyclerView.Adapter<LocalMusicAdapter.Lo
      * @return          contentView
      */
     private View createContentViewAddToPlaylist(int position){
-        View view=LayoutInflater.from(activity).inflate(R.layout.popupwindow_add_to_playlist,null);
+        View view=LayoutInflater.from(activity).inflate(R.layout.popupwindow_add_to_playlist, (ViewGroup) activity.getWindow().getDecorView(),false);
+        view.getLayoutParams().height= (int) (DensityUtil.getDisplayHeight(activity)*0.6);
+        view.getLayoutParams().width=(int) (DensityUtil.getDisplayWidth(activity)*0.9);
 
         RecyclerView playlist=view.findViewById(R.id.add_to_playlist_recycler_view);
         playlist.setLayoutManager(new LinearLayoutManager(activity));

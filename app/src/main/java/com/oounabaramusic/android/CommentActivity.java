@@ -12,7 +12,7 @@ import android.widget.ImageView;
 
 import com.oounabaramusic.android.adapter.CommentAdapter;
 
-public class CommentActivity extends AppCompatActivity {
+public class CommentActivity extends BaseActivity {
 
     private CommentAdapter wonderfulCommentsAdapter;
     private CommentAdapter latestCommentsAdapter;

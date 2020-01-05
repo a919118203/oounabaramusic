@@ -1,31 +1,21 @@
 package com.oounabaramusic.android;
 
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
-import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.WindowManager;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.google.android.material.navigation.NavigationView;
 import com.oounabaramusic.android.fragment.MainMyFragment;
-import com.oounabaramusic.android.util.DensityUtil;
-import com.oounabaramusic.android.util.LogUtil;
+import com.oounabaramusic.android.fragment.PrivateMessageFragment;
 import com.oounabaramusic.android.util.StatusBarUtil;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
@@ -59,7 +49,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
         mainSetting=findViewById(R.id.main_setting);
         mainSearch=findViewById(R.id.main_search);
 
-        fragments.add(new MainMyFragment((FrameLayout) findViewById(R.id.activity_main_layout),this));
+        fragments.add(new MainMyFragment(this));
         viewPager=findViewById(R.id.main_view_pager);
         viewPager.setAdapter(new MainFragmentPagerAdapter());
         viewPager.addOnPageChangeListener(new MainOnPagerChangeListener());
@@ -73,8 +63,26 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
         NavigationView view=findViewById(R.id.navigation_view);
         //view.findViewById(R.id.to_user_info).setOnClickListener(this);  //找不到该ID
         view.getHeaderView(0).setOnClickListener(this);
-
+        view.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+                Intent intent;
+                switch (menuItem.getItemId()){
+                    case R.id.my_friends:
+                        intent=new Intent(MainActivity.this,MyFriendActivity.class);
+                        startActivity(intent);
+                        break;
+                    case R.id.my_news:
+                        intent=new Intent(MainActivity.this, MyMessageActivity.class);
+                        startActivity(intent);
+                        break;
+                }
+                dl.closeDrawer(GravityCompat.START);
+                return true;
+            }
+        });
         findViewById(R.id.main_setting).setOnClickListener(this);
+
     }
 
     @Override
@@ -132,16 +140,5 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
         @Override
         public void onPageScrollStateChanged(int state) {
         }
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
-            case R.id.my_friends:
-                break;
-            case R.id.my_news:
-                break;
-        }
-        return true;
     }
 }

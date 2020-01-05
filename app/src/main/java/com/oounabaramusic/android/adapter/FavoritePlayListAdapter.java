@@ -6,15 +6,12 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.oounabaramusic.android.EditPlayListInfoActivity;
 import com.oounabaramusic.android.PlayListActivity;
 import com.oounabaramusic.android.R;
-import com.oounabaramusic.android.util.ShowPopupWindow;
+import com.oounabaramusic.android.widget.popupwindow.MyPopupWindow;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -22,17 +19,15 @@ import androidx.recyclerview.widget.RecyclerView;
 public class FavoritePlayListAdapter extends RecyclerView.Adapter<FavoritePlayListAdapter.ViewHolder> {
 
     private Activity activity;
-    private FrameLayout rootView;
 
-    public FavoritePlayListAdapter(Activity activity,FrameLayout rootView){
+    public FavoritePlayListAdapter(Activity activity){
         this.activity=activity;
-        this.rootView=rootView;
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view= LayoutInflater.from(activity).inflate(R.layout.recyclerview_item_playlist,parent,false);
+        View view= LayoutInflater.from(activity).inflate(R.layout.rv_item_play_list,parent,false);
         return new FavoritePlayListAdapter.ViewHolder(view);
     }
 
@@ -52,11 +47,11 @@ public class FavoritePlayListAdapter extends RecyclerView.Adapter<FavoritePlayLi
         TextView playListCnt;
         TextView popWindowTitle;
         ImageView playListItemMenu;
-        ShowPopupWindow spw;
+        MyPopupWindow spw;
         ViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            spw=new ShowPopupWindow(createContentView(),rootView);
+            spw=new MyPopupWindow(activity,createContentView());
 
             playListCover=itemView.findViewById(R.id.playlist_cover);
             playListName=itemView.findViewById(R.id.playlist_name);
@@ -65,7 +60,7 @@ public class FavoritePlayListAdapter extends RecyclerView.Adapter<FavoritePlayLi
             playListItemMenu.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    spw.showPopupMenu();
+                    spw.showPopupWindow();
                 }
             });
 
@@ -79,7 +74,7 @@ public class FavoritePlayListAdapter extends RecyclerView.Adapter<FavoritePlayLi
         }
 
         private View createContentView() {
-            View view=LayoutInflater.from(activity).inflate(R.layout.popupwindow_favorite_playlist_item_menu,null);
+            View view=LayoutInflater.from(activity).inflate(R.layout.popupwindow_favorite_playlist_item_menu, (ViewGroup) activity.getWindow().getDecorView(),false);
 
             //下载
             view.findViewById(R.id.item_menu_download).setOnClickListener(new View.OnClickListener() {

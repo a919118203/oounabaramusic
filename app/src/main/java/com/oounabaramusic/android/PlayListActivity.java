@@ -1,26 +1,23 @@
 package com.oounabaramusic.android;
 
 import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.FrameLayout;
-import android.widget.LinearLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.material.appbar.AppBarLayout;
 import com.oounabaramusic.android.adapter.MusicAdapter;
-import com.oounabaramusic.android.util.LogUtil;
+import com.oounabaramusic.android.util.ImageFilter;
 import com.oounabaramusic.android.util.StatusBarUtil;
 
 public class PlayListActivity extends BaseActivity implements View.OnClickListener{
@@ -34,7 +31,7 @@ public class PlayListActivity extends BaseActivity implements View.OnClickListen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_play_list);
         StatusBarUtil.setTranslucentStatus(this);
-        StatusBarUtil.moveDownStatusBar(this);
+        StatusBarUtil.moveDownStatusBar(this,R.id.header_content);
         StatusBarUtil.moveDownStatusBar(this,R.id.appbar_toolbar);
 
         Toolbar toolbar=findViewById(R.id.toolbar);
@@ -51,7 +48,7 @@ public class PlayListActivity extends BaseActivity implements View.OnClickListen
     private void init() {
         //初始化音乐列表
         musicRv=findViewById(R.id.music_recycler_view);
-        musicRv.setAdapter(adapter=new MusicAdapter(this, (FrameLayout) findViewById(R.id.rootLayout)));
+        musicRv.setAdapter(adapter=new MusicAdapter(this));
         musicRv.setLayoutManager(new LinearLayoutManager(this));
 
         findViewById(R.id.play_all).setOnClickListener(this);
@@ -59,12 +56,16 @@ public class PlayListActivity extends BaseActivity implements View.OnClickListen
         findViewById(R.id.user).setOnClickListener(this);
 
         //初始化appBar，监听滑动时的事件
-        appBarLayout=findViewById(R.id.appbar_toolbar);
-        appBarLayout.setBackgroundColor(getResources().getColor(R.color.blue));
-        appBarLayout.getBackground().mutate().setAlpha(0);
+        ImageView playListCover=findViewById(R.id.playlist_cover);
+        Bitmap bm=((BitmapDrawable)playListCover.getDrawable()).getBitmap();
+        Bitmap background= ImageFilter.blurBitmap(this,bm,25);
+        ImageView playListBG = findViewById(R.id.background);
+        playListBG.setImageBitmap(background);
+
         final AppBarLayout appBar=findViewById(R.id.appbar);
         final TextView playListName=findViewById(R.id.playlist_name);
         final TextView title=findViewById(R.id.title);
+        final View view=findViewById(R.id.top_content);
         appBar.addOnOffsetChangedListener(new AppBarLayout.BaseOnOffsetChangedListener() {
             boolean f=false;//true->折叠状态，false->未折叠状态
             @Override
@@ -78,15 +79,15 @@ public class PlayListActivity extends BaseActivity implements View.OnClickListen
                     title.setText("歌单");
                 }
                 int sum=appBar.getTotalScrollRange();
-                double p=((double)i/(double)sum)*255f;
-                PlayListActivity.this.appBarLayout.getBackground().mutate().setAlpha((int)p);
+                double p=(double)i/(double)sum;
+                view.setAlpha((float) (1f-p));
             }
         });
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.play_list_menu,menu);
+        getMenuInflater().inflate(R.menu.menu_play_list,menu);
         return true;
     }
 

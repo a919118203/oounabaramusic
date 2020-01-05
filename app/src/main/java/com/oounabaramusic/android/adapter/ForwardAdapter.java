@@ -6,7 +6,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.oounabaramusic.android.R;
-import com.oounabaramusic.android.fragment.ForwardFragment;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -22,7 +21,7 @@ public class ForwardAdapter extends RecyclerView.Adapter<ForwardAdapter.ViewHold
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view= LayoutInflater.from(activity).inflate(R.layout.recyclerview_item_forward,parent,false);
+        View view= LayoutInflater.from(activity).inflate(R.layout.rv_item_forward,parent,false);
         return new ViewHolder(view);
     }
 

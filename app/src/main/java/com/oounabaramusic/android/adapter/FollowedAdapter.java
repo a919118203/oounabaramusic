@@ -23,7 +23,7 @@ public class FollowedAdapter extends RecyclerView.Adapter<FollowedAdapter.ViewHo
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view= LayoutInflater.from(activity).inflate(R.layout.recyclerview_item_follow,parent,false);
+        View view= LayoutInflater.from(activity).inflate(R.layout.rv_item_follow,parent,false);
 
         return new ViewHolder(view);
     }

@@ -1,11 +1,13 @@
 package com.oounabaramusic.android;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.viewpager.widget.ViewPager;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
+import com.oounabaramusic.android.util.LogUtil;
 import com.oounabaramusic.android.util.StatusBarUtil;
 
 public class ChooseLoginActivity extends BaseActivity implements View.OnClickListener{

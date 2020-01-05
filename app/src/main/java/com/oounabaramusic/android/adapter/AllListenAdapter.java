@@ -21,7 +21,7 @@ public class AllListenAdapter extends RecyclerView.Adapter<AllListenAdapter.View
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view= LayoutInflater.from(activity).inflate(R.layout.recyclerview_item_music,parent,false);
+        View view= LayoutInflater.from(activity).inflate(R.layout.rv_item_music,parent,false);
         return new ViewHolder(view);
     }
 

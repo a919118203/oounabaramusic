@@ -12,6 +12,13 @@
         android:theme="@style/LightAppTheme"
         tools:ignore="GoogleAppIndexingWarning">
         <activity
+            android:name=".PlayListManagementActivity"
+            android:label="已选择0项"/>
+        <activity
+            android:name=".MyMessageActivity"
+            android:label="我的消息" />
+        <activity android:name=".MusicPlayActivity" />
+        <activity
             android:name=".ForwardActivity"
             android:label="转发"
             android:windowSoftInputMode="adjustResize"/>

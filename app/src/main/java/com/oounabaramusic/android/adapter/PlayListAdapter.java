@@ -6,7 +6,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.oounabaramusic.android.R;
 
@@ -25,7 +24,7 @@ public class PlayListAdapter extends RecyclerView.Adapter<PlayListAdapter.PlayLi
     @NonNull
     @Override
     public PlayListViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view=LayoutInflater.from(context).inflate(R.layout.recyclerview_item_playlist,parent,false);
+        View view=LayoutInflater.from(context).inflate(R.layout.rv_item_play_list,parent,false);
         return new PlayListViewHolder(view);
     }
 

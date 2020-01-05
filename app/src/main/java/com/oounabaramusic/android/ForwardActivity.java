@@ -1,10 +1,8 @@
 package com.oounabaramusic.android;
 
 import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -14,7 +12,7 @@ import android.widget.Toast;
 
 import com.oounabaramusic.android.util.DensityUtil;
 
-public class ForwardActivity extends AppCompatActivity {
+public class ForwardActivity extends BaseActivity{
 
     private EditText forwardContent;
 
@@ -31,6 +29,7 @@ public class ForwardActivity extends AppCompatActivity {
         }
 
         init();
+
     }
 
     private void init() {
@@ -39,7 +38,7 @@ public class ForwardActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.forward_menu,menu);
+        getMenuInflater().inflate(R.menu.menu_forward,menu);
         return true;
     }
 

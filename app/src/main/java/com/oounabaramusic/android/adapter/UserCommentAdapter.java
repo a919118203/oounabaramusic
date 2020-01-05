@@ -21,7 +21,7 @@ public class UserCommentAdapter extends RecyclerView.Adapter<UserCommentAdapter.
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view= LayoutInflater.from(activity).inflate(R.layout.recyclerview_item_user_comment,parent,false);
+        View view= LayoutInflater.from(activity).inflate(R.layout.rv_item_user_comment,parent,false);
         return new ViewHolder(view);
     }
 

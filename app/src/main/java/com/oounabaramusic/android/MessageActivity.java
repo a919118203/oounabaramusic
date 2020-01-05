@@ -31,6 +31,7 @@ public class MessageActivity extends BaseActivity {
         }
 
         init();
+
     }
 
     private void init() {

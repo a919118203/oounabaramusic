@@ -21,7 +21,7 @@ public class AllFavoritePlayListAdapter extends RecyclerView.Adapter<AllFavorite
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view= LayoutInflater.from(activity).inflate(R.layout.recyclerview_item_playlist,parent,false);
+        View view= LayoutInflater.from(activity).inflate(R.layout.rv_item_play_list,parent,false);
         return new ViewHolder(view);
     }
 

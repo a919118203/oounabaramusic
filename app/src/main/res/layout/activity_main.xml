@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
-    android:id="@+id/activity_main_layout"
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    android:id="@+id/outermost_layout"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
@@ -11,7 +11,12 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <include layout="@layout/activity_main_content"/>
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <include layout="@layout/activity_main_content"/>
+            <include layout="@layout/special_current_play_layout"/>
+        </FrameLayout>
 
         <com.google.android.material.navigation.NavigationView
             android:id="@+id/navigation_view"
@@ -20,6 +25,6 @@
             android:layout_gravity="start"
             app:insetForeground="@android:color/transparent"
             app:headerLayout="@layout/header_nav"
-            app:menu="@menu/nav_menu"/>
+            app:menu="@menu/menu_nav"/>
     </androidx.drawerlayout.widget.DrawerLayout>
-</FrameLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

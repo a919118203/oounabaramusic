@@ -185,7 +185,7 @@
             android:layout_marginStart="22dp"
             tools:ignore="HardcodedText" />
 
-        <include layout="@layout/recyclerview_item_user_comment"/>
+        <include layout="@layout/rv_item_user_comment"/>
 
         <com.oounabaramusic.android.widget.textview.TextViewSmallFont
             android:id="@+id/more_comment"

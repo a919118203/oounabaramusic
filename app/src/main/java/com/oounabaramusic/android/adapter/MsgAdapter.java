@@ -30,7 +30,7 @@ public class MsgAdapter extends RecyclerView.Adapter<MsgAdapter.ViewHolder>{
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view= LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.recyclerview_item_msg,parent,false);
+                .inflate(R.layout.rv_item_msg,parent,false);
         final ViewHolder viewHolder=new ViewHolder(view);
         viewHolder.leftMsg.setOnClickListener(new View.OnClickListener() {
             @Override

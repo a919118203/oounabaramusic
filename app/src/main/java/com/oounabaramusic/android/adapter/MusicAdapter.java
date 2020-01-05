@@ -1,41 +1,39 @@
 package com.oounabaramusic.android.adapter;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.oounabaramusic.android.MusicPlayActivity;
 import com.oounabaramusic.android.R;
-import com.oounabaramusic.android.util.ShowPopupWindow;
+import com.oounabaramusic.android.widget.popupwindow.MyPopupWindow;
 
 import androidx.annotation.NonNull;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.ViewHolder> {
 
     private Activity activity;
-    private ShowPopupWindow spw;
+    private MyPopupWindow spw;
 
-    public MusicAdapter(Activity activity, FrameLayout rootView){
+    public MusicAdapter(Activity activity){
         this.activity=activity;
-        spw=new ShowPopupWindow(createContentView(rootView),rootView);
+        spw=new MyPopupWindow(activity,createContentView());
     }
 
-    private View createContentView(ViewGroup rootView) {
-        View contentView=LayoutInflater.from(activity).inflate(R.layout.popupwindow_music_menu,rootView,false);
-
-        return contentView;
+    private View createContentView() {
+        return LayoutInflater.from(activity).inflate(R.layout.popupwindow_music_menu, (ViewGroup) activity.getWindow().getDecorView(),false);
     }
 
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view= LayoutInflater.from(activity).inflate(R.layout.recyclerview_item_music,parent,false);
+        View view= LayoutInflater.from(activity).inflate(R.layout.rv_item_music,parent,false);
         return new ViewHolder(view);
     }
 
@@ -60,7 +58,8 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.ViewHolder> 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
+                    Intent intent=new Intent(activity, MusicPlayActivity.class);
+                    activity.startActivity(intent);
                 }
             });
 
@@ -73,7 +72,7 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.ViewHolder> 
             musicMenu.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    spw.showPopupMenu();
+                    spw.showPopupWindow();
                 }
             });
         }

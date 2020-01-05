@@ -73,7 +73,7 @@ public class UserInfoEditActivity extends BaseActivity implements View.OnClickLi
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.user_info_edit_menu,menu);
+        getMenuInflater().inflate(R.menu.menu_user_info_edit,menu);
         menu.findItem(R.id.save_name).setVisible(mode==MODE_EDIT_NAME);
         menu.findItem(R.id.save_introduction).setVisible(mode==MODE_EDIT_INTRODUCTION);
         return true;

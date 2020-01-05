@@ -21,7 +21,7 @@ public class GoodAdapter extends RecyclerView.Adapter<GoodAdapter.ViewHolder> {
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view= LayoutInflater.from(activity).inflate(R.layout.recyclerview_item_good,parent,false);
+        View view= LayoutInflater.from(activity).inflate(R.layout.rv_item_good,parent,false);
         return new ViewHolder(view);
     }
 

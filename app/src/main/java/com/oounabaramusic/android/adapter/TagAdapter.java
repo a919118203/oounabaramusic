@@ -14,8 +14,6 @@ import com.oounabaramusic.android.util.DensityUtil;
 import com.oounabaramusic.android.widget.gridlayout.GridLayoutTagGrid;
 import com.oounabaramusic.android.widget.textview.TextViewCell;
 
-import java.util.List;
-import java.util.Map;
 import java.util.Random;
 
 import androidx.annotation.NonNull;
@@ -220,7 +218,7 @@ public class TagAdapter extends RecyclerView.Adapter<TagAdapter.ViewHolder> impl
 
             grid= (GridLayoutTagGrid) itemView;
 
-            View view= LayoutInflater.from(activity).inflate(R.layout.big_tag_layout,null);
+            View view= LayoutInflater.from(activity).inflate(R.layout.special_big_tag_layout,null);
             icon=view.findViewById(R.id.tag_icon);
             name=view.findViewById(R.id.tag_name);
             view.setBackground(activity.getDrawable(R.drawable.gridlayout_cell_right));

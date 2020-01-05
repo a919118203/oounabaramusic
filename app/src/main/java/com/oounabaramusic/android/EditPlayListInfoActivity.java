@@ -2,12 +2,10 @@ package com.oounabaramusic.android;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -21,19 +19,16 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.oounabaramusic.android.adapter.TagAdapter;
 import com.oounabaramusic.android.util.StatusBarUtil;
 
 import java.io.FileNotFoundException;
-import java.util.Objects;
 
 public class EditPlayListInfoActivity extends BaseActivity implements View.OnClickListener{
 
@@ -69,6 +64,7 @@ public class EditPlayListInfoActivity extends BaseActivity implements View.OnCli
             getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
         }
         init();
+
     }
 
     private void init() {
@@ -113,7 +109,7 @@ public class EditPlayListInfoActivity extends BaseActivity implements View.OnCli
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.edit_play_list_info_menu,menu);
+        getMenuInflater().inflate(R.menu.menu_edit_play_list_info,menu);
         menu.findItem(R.id.edit_info_save_name).setVisible(toolBarMode==TOOLBAR_MODE_EDIT_NAME);
         menu.findItem(R.id.edit_info_save_description).setVisible(toolBarMode==TOOLBAR_MODE_EDIT_DESCRIPTION);
         menu.findItem(R.id.edit_info_save_tag).setVisible(toolBarMode==TOOLBAR_MODE_EDIT_TAG);

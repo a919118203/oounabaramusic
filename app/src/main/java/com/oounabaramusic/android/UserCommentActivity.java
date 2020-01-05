@@ -11,7 +11,7 @@ import android.view.MenuItem;
 
 import com.oounabaramusic.android.adapter.UserCommentAdapter;
 
-public class UserCommentActivity extends AppCompatActivity {
+public class UserCommentActivity extends BaseActivity {
 
     private UserCommentAdapter adapter;
 
@@ -26,7 +26,6 @@ public class UserCommentActivity extends AppCompatActivity {
         if(actionBar!=null){
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
-
         init();
     }
 

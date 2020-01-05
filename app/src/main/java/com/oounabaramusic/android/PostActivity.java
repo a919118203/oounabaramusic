@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class PostActivity extends AppCompatActivity {
+public class PostActivity extends BaseActivity {
 
     private TabLayout tabLayout;
     private ViewPager viewPager;
@@ -40,7 +40,6 @@ public class PostActivity extends AppCompatActivity {
         if(actionBar!=null){
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
-
         init();
     }
 

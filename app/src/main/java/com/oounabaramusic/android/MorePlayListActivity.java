@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class MorePlayListActivity extends AppCompatActivity {
+public class MorePlayListActivity extends BaseActivity {
 
     private List<Fragment> fragments;
     private FragmentPagerAdapter adapter;
@@ -39,6 +39,7 @@ public class MorePlayListActivity extends AppCompatActivity {
         }
 
         init();
+
     }
 
     private void init() {

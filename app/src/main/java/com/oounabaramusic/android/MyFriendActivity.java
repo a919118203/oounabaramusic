@@ -22,10 +22,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class MyFriendActivity extends AppCompatActivity {
+public class MyFriendActivity extends BaseActivity {
 
-    public static final int TO_FOLLOW=0;
-    public static final int FOLLOWED=1;
+    public static final int TO_FOLLOW=0;       //关注
+    public static final int FOLLOWED=1;        //粉丝
     private TabLayout tabLayout;
     private List<Fragment> fragments;
     private ViewPager viewPager;

@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:tools="http://schemas.android.com/tools"
+<menu
+    xmlns:tools="http://schemas.android.com/tools"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/play_list_search"
         android:title="从歌单中检索"
-        android:icon="@mipmap/search"
+        android:icon="@mipmap/search_light"
         app:showAsAction="ifRoom"
         tools:ignore="HardcodedText" />
 

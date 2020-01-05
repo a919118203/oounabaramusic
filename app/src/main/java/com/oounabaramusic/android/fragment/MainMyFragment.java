@@ -10,15 +10,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.oounabaramusic.android.LocalMusicActivity;
+import com.oounabaramusic.android.PlayListManagementActivity;
 import com.oounabaramusic.android.R;
 import com.oounabaramusic.android.adapter.FavoritePlayListAdapter;
 import com.oounabaramusic.android.adapter.MyPlayListAdapter;
 import com.oounabaramusic.android.anim.OpenListAnimation;
-import com.oounabaramusic.android.util.ShowPopupWindow;
+import com.oounabaramusic.android.widget.popupwindow.MyPopupWindow;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -30,25 +30,23 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class MainMyFragment extends Fragment implements View.OnClickListener{
 
-    private ShowPopupWindow pwMyPlaylistMenu;
-    private ShowPopupWindow pwFavoritePlaylistMenu;
+    private MyPopupWindow pwMyPlaylistMenu;
+    private MyPopupWindow pwFavoritePlaylistMenu;
     private OpenListAnimation myPlaylistAnim,favoritePlaylistAnim;
-    private FrameLayout rootView;
     private MyPlayListAdapter myPlayListAdapter;
     private RecyclerView myPlayListRv;
     private FavoritePlayListAdapter favoritePlayListAdapter;
     private RecyclerView favoritePlayListRv;
     private Activity activity;
 
-    public MainMyFragment(FrameLayout rootView,Activity activity){
-        this.rootView=rootView;
+    public MainMyFragment(Activity activity){
         this.activity=activity;
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view=inflater.inflate(R.layout.fragment_main_my,null);
+        View view=inflater.inflate(R.layout.fragment_main_my,container,false);
         init(view);
         return view;
     }
@@ -68,27 +66,50 @@ public class MainMyFragment extends Fragment implements View.OnClickListener{
         favoritePlaylistAnim=new OpenListAnimation(view.findViewById(R.id.open_favorite_playlist),activity);
 
         myPlayListRv=view.findViewById(R.id.my_playlist_recycler_view);
-        myPlayListRv.setAdapter(myPlayListAdapter=new MyPlayListAdapter(activity,rootView));
+        myPlayListRv.setAdapter(myPlayListAdapter=new MyPlayListAdapter(activity));
         myPlayListRv.setLayoutManager(new LinearLayoutManager(activity));
 
         favoritePlayListRv=view.findViewById(R.id.favorite_playlist_recycler_view);
-        favoritePlayListRv.setAdapter(favoritePlayListAdapter=new FavoritePlayListAdapter(activity,rootView));
+        favoritePlayListRv.setAdapter(favoritePlayListAdapter=new FavoritePlayListAdapter(activity));
         favoritePlayListRv.setLayoutManager(new LinearLayoutManager(activity));
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        pwMyPlaylistMenu=new ShowPopupWindow(createMyContentView(),rootView);
-        pwFavoritePlaylistMenu=new ShowPopupWindow(createFavoriteContentView(),rootView);
+        pwMyPlaylistMenu=new MyPopupWindow(activity,createMyContentView());
+        pwFavoritePlaylistMenu=new MyPopupWindow(activity,createFavoriteContentView());
     }
 
     private View createFavoriteContentView() {
-        return LayoutInflater.from(getContext()).inflate(R.layout.popupwindow_favorite_playlist_menu,null);
+        return LayoutInflater.from(getContext()).inflate(R.layout.popupwindow_favorite_playlist_menu, (ViewGroup) activity.getWindow().getDecorView(),false);
     }
 
     private View createMyContentView() {
-        return LayoutInflater.from(getContext()).inflate(R.layout.popupwindow_my_playlist_menu,null);
+        View view=LayoutInflater.from(getContext()).inflate(
+                R.layout.popupwindow_my_playlist_menu,
+                (ViewGroup) activity.getWindow().getDecorView(),
+                false);
+
+        //点击创建新歌单
+        view.findViewById(R.id.menu_add_playlist).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showDialog();
+                pwMyPlaylistMenu.dismiss();
+            }
+        });
+
+        //点击管理歌单
+        view.findViewById(R.id.menu_management_playlist).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent=new Intent(activity, PlayListManagementActivity.class);
+                activity.startActivity(intent);
+            }
+        });
+
+        return view;
     }
 
     @Override
@@ -96,10 +117,10 @@ public class MainMyFragment extends Fragment implements View.OnClickListener{
         Intent intent;
         switch (view.getId()){
             case R.id.my_playlist_menu:            //创建的歌单中的菜单按钮
-                pwMyPlaylistMenu.showPopupMenu();
+                pwMyPlaylistMenu.showPopupWindow();
                 break;
             case R.id.favorite_playlist_menu:      //收藏的歌单中的菜单按钮
-                pwFavoritePlaylistMenu.showPopupMenu();
+                pwFavoritePlaylistMenu.showPopupWindow();
                 break;
             case R.id.add_playlist:           //创建的歌单中的添加按钮（＋）
                 showDialog();
@@ -124,7 +145,7 @@ public class MainMyFragment extends Fragment implements View.OnClickListener{
 
     private void showDialog() {
 
-        View contentView=LayoutInflater.from(activity).inflate(R.layout.alterdialog_add_playlist,null);
+        View contentView=LayoutInflater.from(activity).inflate(R.layout.alterdialog_add_playlist, (ViewGroup) activity.getWindow().getDecorView(),false);
         final EditText ct=contentView.findViewById(R.id.dialog_playlist_name);
         final TextView tv=contentView.findViewById(R.id.dialog_edit_count);
 

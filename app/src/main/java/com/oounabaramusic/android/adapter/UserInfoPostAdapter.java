@@ -24,7 +24,7 @@ public class UserInfoPostAdapter extends RecyclerView.Adapter<UserInfoPostAdapte
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view= LayoutInflater.from(activity).inflate(R.layout.recyclerview_item_post,parent,false);
+        View view= LayoutInflater.from(activity).inflate(R.layout.rv_item_post,parent,false);
         return new ViewHolder(view);
     }
 

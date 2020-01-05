@@ -1,6 +1,5 @@
 package com.oounabaramusic.android;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -9,23 +8,16 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.oounabaramusic.android.adapter.LocalMusicAdapter;
 import com.oounabaramusic.android.bean.Music;
-import com.oounabaramusic.android.util.ShowPopupWindow;
 import com.oounabaramusic.android.util.StatusBarUtil;
 
 import java.util.ArrayList;
@@ -66,7 +58,7 @@ public class LocalMusicActivity extends BaseActivity implements View.OnClickList
     }
 
     private void init() {
-        View view=findViewById(R.id.activity_local_music_content);
+        View view=findViewById(R.id.outermost_layout);
         view.setPadding(
                 view.getPaddingLeft(),
                 view.getPaddingTop()+StatusBarUtil.getStatusBarHeight(this),
@@ -74,7 +66,7 @@ public class LocalMusicActivity extends BaseActivity implements View.OnClickList
                 view.getPaddingBottom());
 
         rv=findViewById(R.id.local_music_recycler_view);
-        adapter=new LocalMusicAdapter(this, (FrameLayout) findViewById(R.id.activity_local_music_layout),createMusicList());
+        adapter=new LocalMusicAdapter(this,createMusicList());
         rv.setAdapter(adapter);
         LinearLayoutManager llm=new LinearLayoutManager(this);
         rv.setLayoutManager(llm);
@@ -101,7 +93,7 @@ public class LocalMusicActivity extends BaseActivity implements View.OnClickList
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.local_music_menu,menu);
+        getMenuInflater().inflate(R.menu.menu_local_music,menu);
         for(int i=0;i<menu.size();i++){
             MenuItem item=menu.getItem(i);
             switch(item.getItemId()){

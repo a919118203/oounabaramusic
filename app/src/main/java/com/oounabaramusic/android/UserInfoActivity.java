@@ -2,38 +2,27 @@ package com.oounabaramusic.android;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentPagerAdapter;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.tabs.TabLayout;
-import com.oounabaramusic.android.adapter.UserInfoFavoritePlayListAdapter;
-import com.oounabaramusic.android.adapter.UserInfoMyPlayListAdapter;
-import com.oounabaramusic.android.fragment.MainMyFragment;
 import com.oounabaramusic.android.fragment.UserInfoMainFragment;
 import com.oounabaramusic.android.fragment.UserInfoPostFragment;
 import com.oounabaramusic.android.util.DensityUtil;
-import com.oounabaramusic.android.util.LogUtil;
-import com.oounabaramusic.android.util.ShowPopupWindow;
 import com.oounabaramusic.android.util.StatusBarUtil;
 import com.oounabaramusic.android.util.UserInfoActivityManager;
 import com.oounabaramusic.android.widget.popupwindow.MyPopupWindow;

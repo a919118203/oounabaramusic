@@ -4,7 +4,7 @@
     <color name="colorPrimaryDark">#FAFAFA</color>
     <color name="colorAccent">#D81B60</color>
     <color name="blue">#4278A8</color>
-    <color name="negative">#E6E5E5</color>
+    <color name="negative">#D6D6D6</color>
     <color name="positive">#000</color>
     <color name="clickable">#4E13FF</color>
     <color name="alpha_background">#00000000</color>

@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    android:id="@id/outermost_layout"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -23,7 +25,7 @@
                 android:minHeight="@dimen/action_bar_size"
                 app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
-                <include layout="@layout/recyclerview_item_post"/>
+                <include layout="@layout/rv_item_post"/>
 
                 <com.google.android.material.tabs.TabLayout
                     android:id="@+id/tab_layout"
@@ -113,4 +115,4 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/action_bar_size"/>
     </com.google.android.material.appbar.AppBarLayout>
-</FrameLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

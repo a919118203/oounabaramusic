@@ -12,25 +12,33 @@ import com.oounabaramusic.android.R;
 
 import java.lang.reflect.Field;
 
+/**
+ * 废弃
+ */
+
 public class MyPopupWindow extends PopupWindow {
 
-    public MyPopupWindow(Context context,View contentView,int gravity){
+    private Activity activity;
+
+    public MyPopupWindow(Activity activity,View contentView,int gravity){
         super(contentView,ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.MATCH_PARENT);
+        this.activity=activity;
         init();
-        setContentView(createContentView(contentView,context,gravity));
+        setContentView(createContentView(contentView,gravity));
     }
 
-    public MyPopupWindow(Context context,View contentView){
+    public MyPopupWindow(Activity activity,View contentView){
         super(contentView,ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.MATCH_PARENT);
+        this.activity=activity;
         init();
-        setContentView(createContentView(contentView,context,Gravity.BOTTOM));
+        setContentView(createContentView(contentView,Gravity.BOTTOM));
     }
 
-    private View createContentView(View contentView, Context context, int gravity) {
-        FrameLayout layout=new FrameLayout(context);
+    private View createContentView(View contentView,int gravity) {
+        FrameLayout layout=new FrameLayout(activity);
         ViewGroup.LayoutParams layoutParams=new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.MATCH_PARENT);
         layout.setLayoutParams(layoutParams);
-        layout.setBackgroundColor(context.getResources().getColor(R.color.alpha_black_background));
+        layout.setBackgroundColor(activity.getResources().getColor(R.color.alpha_black_background));
 
         FrameLayout.LayoutParams fllp= (FrameLayout.LayoutParams) contentView.getLayoutParams();
         fllp.gravity=gravity;
@@ -47,8 +55,10 @@ public class MyPopupWindow extends PopupWindow {
 
     private void init() {
         fillScreen(this);
+    }
 
-
+    public void showPopupWindow(){
+        showAtLocation(activity.getWindow().getDecorView(),Gravity.BOTTOM,0,0);
     }
 
     private void fillScreen(PopupWindow pw){

@@ -2,8 +2,12 @@ package com.oounabaramusic.android.util;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Build;
+import android.util.DisplayMetrics;
+import android.view.Display;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -14,6 +18,8 @@ import android.widget.ProgressBar;
 import android.widget.Toolbar;
 
 import com.oounabaramusic.android.R;
+
+import java.lang.reflect.Method;
 
 import androidx.annotation.RequiresApi;
 
@@ -29,6 +35,8 @@ import androidx.annotation.RequiresApi;
  * View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION    导航栏显示，布局延伸到导航栏
  */
 public class StatusBarUtil {
+    private boolean hasNavigationBar=false;
+
     /**
      * 设置状态栏为透明
      * @param activity
@@ -151,5 +159,55 @@ public class StatusBarUtil {
             Window window = activity.getWindow();
             window.getDecorView().setSystemUiVisibility(f);
         }
+    }
+
+
+    /**
+     * 获取是否存在NavigationBar
+     * @param context
+     * @return
+     */
+    public static boolean checkDeviceHasNavigationBar(Context context) {
+        boolean hasNavigationBar = false;
+        Resources rs = context.getResources();
+        int id = rs.getIdentifier("config_showNavigationBar", "bool", "android");
+        if (id > 0) {
+            hasNavigationBar = rs.getBoolean(id);
+        }
+        try {
+            Class systemPropertiesClass = Class.forName("android.os.SystemProperties");
+            Method m = systemPropertiesClass.getMethod("get", String.class);
+            String navBarOverride = (String) m.invoke(systemPropertiesClass, "qemu.hw.mainkeys");
+            if ("1".equals(navBarOverride)) {
+                hasNavigationBar = false;
+            } else if ("0".equals(navBarOverride)) {
+                hasNavigationBar = true;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return hasNavigationBar;
+    }
+    /**
+     * 获取虚拟功能键高度
+     * @param context
+     * @return
+     */
+    public static int getVirtualBarHeigh(Context context) {
+        int vh = 0;
+        WindowManager windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        Display display = windowManager.getDefaultDisplay();
+        DisplayMetrics dm = new DisplayMetrics();
+        try {
+            @SuppressWarnings("rawtypes")
+            Class c = Class.forName("android.view.Display");
+            @SuppressWarnings("unchecked")
+            Method method = c.getMethod("getRealMetrics", DisplayMetrics.class);
+            method.invoke(display, dm);
+            vh = dm.heightPixels - windowManager.getDefaultDisplay().getHeight();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return vh;
     }
 }
