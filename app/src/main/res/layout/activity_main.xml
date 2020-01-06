@@ -11,12 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-            <include layout="@layout/activity_main_content"/>
-            <include layout="@layout/special_current_play_layout"/>
-        </FrameLayout>
+        <include layout="@layout/activity_main_content"/>
 
         <com.google.android.material.navigation.NavigationView
             android:id="@+id/navigation_view"

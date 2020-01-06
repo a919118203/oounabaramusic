@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:tools="http://schemas.android.com/tools"
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/outermost_layout"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -16,7 +17,7 @@
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/local_music_toolbar"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
+            android:layout_height="@dimen/action_bar_size"
             app:layout_scrollFlags="snap|scroll|enterAlways">
 
             <EditText
@@ -32,21 +33,22 @@
             android:orientation="horizontal"
             android:id="@+id/local_music_play_all"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
+            android:layout_height="@dimen/action_bar_size"
             android:background="@drawable/view_ripple_rectangle">
 
             <ImageView
                 android:src="@mipmap/play"
-                android:layout_width="?attr/actionBarSize"
+                android:layout_width="@dimen/action_bar_size"
                 android:layout_height="match_parent"
                 android:padding="15dp"/>
 
-            <com.oounabaramusic.android.widget.textview.TextViewMediumFont
+            <TextView
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:text="@string/play_all"
                 android:textColor="@color/positive"
+                android:textSize="@dimen/font_medium_size"
                 android:gravity="center_vertical"/>
 
             <LinearLayout
@@ -58,15 +60,16 @@
 
                 <ImageView
                     android:src="@mipmap/setting"
-                    android:layout_width="?attr/actionBarSize"
+                    android:layout_width="@dimen/action_bar_size"
                     android:layout_height="match_parent"
                     android:padding="18dp"/>
 
-                <com.oounabaramusic.android.widget.textview.TextViewSmallFont
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
+                <TextView
                     android:text="@string/multiple_choice"
                     android:textColor="@color/positive"
+                    android:textSize="@dimen/font_small_size"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_marginEnd="10dp"
                     android:gravity="center_vertical"/>
             </LinearLayout>

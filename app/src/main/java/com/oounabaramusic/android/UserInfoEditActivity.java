@@ -63,7 +63,7 @@ public class UserInfoEditActivity extends BaseActivity implements View.OnClickLi
 
     private View createContentView() {
         View contentView= LayoutInflater.from(this).inflate(
-                R.layout.popupwindow_choose_sex,
+                R.layout.pw_choose_sex,
                 (ViewGroup) getWindow().getDecorView(),
                 false);
 

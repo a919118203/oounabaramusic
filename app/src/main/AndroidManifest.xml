@@ -12,8 +12,14 @@
         android:theme="@style/LightAppTheme"
         tools:ignore="GoogleAppIndexingWarning">
         <activity
+            android:name=".RecentlyPlayedActivity"
+            android:label="最近播放"/>
+        <activity
+            android:name=".ResumePlayListActivity"
+            android:label="恢复歌单" />
+        <activity
             android:name=".PlayListManagementActivity"
-            android:label="已选择0项"/>
+            android:label="已选择0项" />
         <activity
             android:name=".MyMessageActivity"
             android:label="我的消息" />
@@ -21,7 +27,7 @@
         <activity
             android:name=".ForwardActivity"
             android:label="转发"
-            android:windowSoftInputMode="adjustResize"/>
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".PostActivity"
             android:label="动态" />

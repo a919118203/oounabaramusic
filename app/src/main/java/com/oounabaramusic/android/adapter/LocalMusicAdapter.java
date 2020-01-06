@@ -81,7 +81,7 @@ public class LocalMusicAdapter extends RecyclerView.Adapter<LocalMusicAdapter.Lo
      * @return         spw的contentView
      */
     private View createContextViewInfo(int position,LocalMusicViewHolder vh) {
-        View view=LayoutInflater.from(activity).inflate(R.layout.popupwindow_music_info, (ViewGroup) activity.getWindow().getDecorView(),false);
+        View view=LayoutInflater.from(activity).inflate(R.layout.pw_music_info, (ViewGroup) activity.getWindow().getDecorView(),false);
 
         //歌曲信息的“修改”被点击时
         view.findViewById(R.id.change_music_info).setOnClickListener(new View.OnClickListener() {
@@ -106,7 +106,7 @@ public class LocalMusicAdapter extends RecyclerView.Adapter<LocalMusicAdapter.Lo
      * @return         spw的contentView
      */
     private View createContextViewMenu(final int position, final LocalMusicViewHolder vh) {
-        View view=LayoutInflater.from(activity).inflate(R.layout.popupwindow_local_music_item_menu, (ViewGroup) activity.getWindow().getDecorView(),false);
+        View view=LayoutInflater.from(activity).inflate(R.layout.pw_local_music_item_menu, (ViewGroup) activity.getWindow().getDecorView(),false);
 
         //菜单中下一首播放被点击时
         view.findViewById(R.id.item_menu_next_play).setOnClickListener(new View.OnClickListener() {
@@ -153,7 +153,7 @@ public class LocalMusicAdapter extends RecyclerView.Adapter<LocalMusicAdapter.Lo
      * @return          contentView
      */
     private View createContentViewAddToPlaylist(int position){
-        View view=LayoutInflater.from(activity).inflate(R.layout.popupwindow_add_to_playlist, (ViewGroup) activity.getWindow().getDecorView(),false);
+        View view=LayoutInflater.from(activity).inflate(R.layout.pw_add_to_playlist, (ViewGroup) activity.getWindow().getDecorView(),false);
         view.getLayoutParams().height= (int) (DensityUtil.getDisplayHeight(activity)*0.6);
         view.getLayoutParams().width=(int) (DensityUtil.getDisplayWidth(activity)*0.9);
 

@@ -74,7 +74,7 @@ public class FavoritePlayListAdapter extends RecyclerView.Adapter<FavoritePlayLi
         }
 
         private View createContentView() {
-            View view=LayoutInflater.from(activity).inflate(R.layout.popupwindow_favorite_playlist_item_menu, (ViewGroup) activity.getWindow().getDecorView(),false);
+            View view=LayoutInflater.from(activity).inflate(R.layout.pw_favorite_playlist_item_menu, (ViewGroup) activity.getWindow().getDecorView(),false);
 
             //下载
             view.findViewById(R.id.item_menu_download).setOnClickListener(new View.OnClickListener() {

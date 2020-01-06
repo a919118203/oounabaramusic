@@ -26,7 +26,7 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.ViewHolder> 
     }
 
     private View createContentView() {
-        return LayoutInflater.from(activity).inflate(R.layout.popupwindow_music_menu, (ViewGroup) activity.getWindow().getDecorView(),false);
+        return LayoutInflater.from(activity).inflate(R.layout.pw_music_menu, (ViewGroup) activity.getWindow().getDecorView(),false);
     }
 
 

@@ -142,7 +142,7 @@ public class TagAdapter extends RecyclerView.Adapter<TagAdapter.ViewHolder> impl
         }
 
         //设置大标签的图标和名字
-        holder.icon.setImageResource(R.mipmap.isplaying);
+        holder.icon.setImageResource(R.mipmap.is_playing);
         holder.name.setText("名字");
     }
 

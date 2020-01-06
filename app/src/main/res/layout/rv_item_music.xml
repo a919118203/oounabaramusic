@@ -23,7 +23,7 @@
 
         <ImageView
             android:id="@+id/is_playing"
-            android:src="@mipmap/isplaying"
+            android:src="@mipmap/is_playing"
             android:visibility="gone"
             android:layout_width="60dp"
             android:layout_height="60dp"

@@ -2,26 +2,16 @@ package com.oounabaramusic.android;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.PersistableBundle;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
-import android.widget.LinearLayout;
-import android.widget.PopupWindow;
-import android.widget.RelativeLayout;
 
 import com.oounabaramusic.android.adapter.MusicPlayListAdapter;
-import com.oounabaramusic.android.bean.Music;
-import com.oounabaramusic.android.util.DensityUtil;
-import com.oounabaramusic.android.util.StatusBarUtil;
 import com.oounabaramusic.android.widget.customview.PlayButton;
 import com.oounabaramusic.android.widget.popupwindow.MyPopupWindow;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -74,7 +64,7 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     private View createContentView() {
-        View view=LayoutInflater.from(this).inflate(R.layout.popupwindow_play_list, (ViewGroup) getWindow().getDecorView(),false);
+        View view=LayoutInflater.from(this).inflate(R.layout.pw_play_list, (ViewGroup) getWindow().getDecorView(),false);
 
         RecyclerView recyclerView=view.findViewById(R.id.recycler_view);
         recyclerView.setAdapter(new MusicPlayListAdapter(this));

@@ -15,6 +15,8 @@ import android.widget.TextView;
 import com.oounabaramusic.android.LocalMusicActivity;
 import com.oounabaramusic.android.PlayListManagementActivity;
 import com.oounabaramusic.android.R;
+import com.oounabaramusic.android.RecentlyPlayedActivity;
+import com.oounabaramusic.android.ResumePlayListActivity;
 import com.oounabaramusic.android.adapter.FavoritePlayListAdapter;
 import com.oounabaramusic.android.adapter.MyPlayListAdapter;
 import com.oounabaramusic.android.anim.OpenListAnimation;
@@ -81,13 +83,34 @@ public class MainMyFragment extends Fragment implements View.OnClickListener{
         pwFavoritePlaylistMenu=new MyPopupWindow(activity,createFavoriteContentView());
     }
 
+
+    /**
+     * 收藏的歌单的菜单
+     * @return
+     */
     private View createFavoriteContentView() {
-        return LayoutInflater.from(getContext()).inflate(R.layout.popupwindow_favorite_playlist_menu, (ViewGroup) activity.getWindow().getDecorView(),false);
+        View view=LayoutInflater.from(getContext()).inflate(R.layout.pw_favorite_playlist_menu, (ViewGroup) activity.getWindow().getDecorView(),false);
+
+        //点击管理歌单
+        view.findViewById(R.id.menu_management_playlist).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent=new Intent(activity, PlayListManagementActivity.class);
+                activity.startActivity(intent);
+                pwFavoritePlaylistMenu.dismiss();
+            }
+        });
+
+        return view;
     }
 
+    /**
+     * 创建的歌单的菜单
+     * @return
+     */
     private View createMyContentView() {
         View view=LayoutInflater.from(getContext()).inflate(
-                R.layout.popupwindow_my_playlist_menu,
+                R.layout.pw_my_playlist_menu,
                 (ViewGroup) activity.getWindow().getDecorView(),
                 false);
 
@@ -106,6 +129,17 @@ public class MainMyFragment extends Fragment implements View.OnClickListener{
             public void onClick(View v) {
                 Intent intent=new Intent(activity, PlayListManagementActivity.class);
                 activity.startActivity(intent);
+                pwMyPlaylistMenu.dismiss();
+            }
+        });
+
+        //点击恢复歌单
+        view.findViewById(R.id.menu_restore_playlist).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent=new Intent(activity, ResumePlayListActivity.class);
+                activity.startActivity(intent);
+                pwMyPlaylistMenu.dismiss();
             }
         });
 
@@ -126,10 +160,16 @@ public class MainMyFragment extends Fragment implements View.OnClickListener{
                 showDialog();
                 break;
 
-            case R.id.local_music:           //点击“本地音乐”
+            case R.id.local_music:           //点击本地音乐
                 intent=new Intent(activity, LocalMusicActivity.class);
                 activity.startActivity(intent);
                 break;
+
+            case R.id.recently_played:      //点击最近播放
+                intent=new Intent(activity, RecentlyPlayedActivity.class);
+                activity.startActivity(intent);
+                break;
+
             case R.id.download_manager:      //点击“下载管理”
                 break;
             case R.id.my_playlist:           //点击“创建的歌单”

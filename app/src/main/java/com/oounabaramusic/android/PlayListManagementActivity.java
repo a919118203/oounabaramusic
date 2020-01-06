@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.view.MenuItem;
 
 import com.oounabaramusic.android.adapter.ManagementPlayListAdapter;
+import com.oounabaramusic.android.util.StatusBarUtil;
 
 public class PlayListManagementActivity extends BaseActivity {
 
@@ -19,6 +20,7 @@ public class PlayListManagementActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_play_list_management);
+        StatusBarUtil.setWhiteStyleStatusBar(this);
 
         Toolbar toolbar=findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);

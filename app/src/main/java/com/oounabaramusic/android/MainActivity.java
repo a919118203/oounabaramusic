@@ -9,7 +9,6 @@ import android.widget.TextView;
 
 import com.google.android.material.navigation.NavigationView;
 import com.oounabaramusic.android.fragment.MainMyFragment;
-import com.oounabaramusic.android.fragment.PrivateMessageFragment;
 import com.oounabaramusic.android.util.StatusBarUtil;
 
 import java.util.ArrayList;
@@ -35,7 +34,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        StatusBarUtil.changeStatusBarContentColor(this);
+        StatusBarUtil.setTranslucentStatusAndDarkContent(this);
         StatusBarUtil.moveDownStatusBar(this);
         init();
     }

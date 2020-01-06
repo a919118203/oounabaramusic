@@ -72,7 +72,7 @@ public class ToFollowAdapter extends RecyclerView.Adapter<ToFollowAdapter.ViewHo
         }
 
         private View createContentView() {
-            View view=LayoutInflater.from(activity).inflate(R.layout.popupwindow_friend_menu, (ViewGroup) activity.getWindow().getDecorView(),false);
+            View view=LayoutInflater.from(activity).inflate(R.layout.pw_friend_menu, (ViewGroup) activity.getWindow().getDecorView(),false);
 
             view.findViewById(R.id.send_message).setOnClickListener(new View.OnClickListener() {
                 @Override

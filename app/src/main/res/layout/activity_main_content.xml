@@ -10,13 +10,13 @@
         android:id="@+id/appbar"
         android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize">
+        android:layout_height="@dimen/action_bar_size">
 
         <ImageView
             android:id="@+id/main_setting"
             android:src="@mipmap/setting"
-            android:layout_width="?attr/actionBarSize"
-            android:layout_height="?attr/actionBarSize"
+            android:layout_width="@dimen/action_bar_size"
+            android:layout_height="@dimen/action_bar_size"
             android:layout_gravity="center_vertical"
             android:padding="15dp"
             android:contentDescription="主界面菜单"
@@ -29,7 +29,7 @@
 
         <com.oounabaramusic.android.widget.textview.TextViewBigFont
             android:id="@+id/fragment_main_my"
-            android:layout_width="?attr/actionBarSize"
+            android:layout_width="@dimen/action_bar_size"
             android:layout_height="match_parent"
             android:background="@drawable/toolbar_ripple_oval"
             android:textColor="@color/positive"
@@ -39,7 +39,7 @@
 
         <com.oounabaramusic.android.widget.textview.TextViewBigFont
             android:id="@+id/fragment_main_search"
-            android:layout_width="?attr/actionBarSize"
+            android:layout_width="@dimen/action_bar_size"
             android:layout_height="match_parent"
             android:background="@drawable/toolbar_ripple_oval"
             android:gravity="center"
@@ -47,7 +47,7 @@
 
         <com.oounabaramusic.android.widget.textview.TextViewBigFont
             android:id="@+id/fragment_main_now"
-            android:layout_width="?attr/actionBarSize"
+            android:layout_width="@dimen/action_bar_size"
             android:layout_height="match_parent"
             android:background="@drawable/toolbar_ripple_oval"
             android:gravity="center"
@@ -55,7 +55,7 @@
 
         <com.oounabaramusic.android.widget.textview.TextViewBigFont
             android:id="@+id/fragment_main_video"
-            android:layout_width="?attr/actionBarSize"
+            android:layout_width="@dimen/action_bar_size"
             android:layout_height="match_parent"
             android:background="@drawable/toolbar_ripple_oval"
             android:gravity="center"
@@ -69,8 +69,8 @@
         <ImageView
             android:id="@+id/main_search"
             android:src="@mipmap/search"
-            android:layout_width="?attr/actionBarSize"
-            android:layout_height="?attr/actionBarSize"
+            android:layout_width="@dimen/action_bar_size"
+            android:layout_height="@dimen/action_bar_size"
             android:padding="15dp"
             android:layout_gravity="center"
             android:background="@drawable/toolbar_ripple_oval"
@@ -81,6 +81,9 @@
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/main_view_pager"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
+
+    <include layout="@layout/special_current_play_layout"/>
 
 </LinearLayout>

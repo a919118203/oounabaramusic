@@ -184,7 +184,7 @@ public class UserInfoActivity extends BaseActivity implements View.OnClickListen
     private void showChangeHeaderPopupWindow() {
         View contentView= LayoutInflater
                 .from(this)
-                .inflate(R.layout.popupwindow_change_header, (ViewGroup) getWindow().getDecorView(),false);
+                .inflate(R.layout.pw_change_header, (ViewGroup) getWindow().getDecorView(),false);
 
         ImageView iv=contentView.findViewById(R.id.user_header);
         iv.getLayoutParams().height=DensityUtil.getDisplayWidth(this);

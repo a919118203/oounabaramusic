@@ -8,7 +8,7 @@
     android:background="@drawable/view_ripple_rectangle">
 
     <CheckBox
-        android:id="@+id/local_music_choose"
+        android:id="@+id/checkbox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="15dp"
@@ -16,7 +16,7 @@
         android:layout_gravity="center" />
 
     <ImageView
-        android:id="@+id/recycler_view_item_is_playing"
+        android:id="@+id/is_playing"
         android:src="@mipmap/is_playing"
         android:layout_width="@dimen/action_bar_size"
         android:layout_height="match_parent"
@@ -33,7 +33,7 @@
         android:layout_marginStart="15dp">
 
         <TextView
-            android:id="@+id/recycler_view_item_music_name"
+            android:id="@+id/music_name"
             android:text="名字名字名字"
             android:textColor="@color/positive"
             android:textSize="@dimen/font_medium_size"
@@ -44,6 +44,7 @@
             tools:ignore="HardcodedText,NestedWeights" />
 
         <TextView
+            android:id="@+id/music_singer"
             android:text="歌手"
             android:textSize="@dimen/font_small_size"
             android:layout_width="match_parent"
@@ -54,7 +55,7 @@
     </LinearLayout>
 
     <ImageView
-        android:id="@+id/recycler_view_local_music_menu"
+        android:id="@+id/menu"
         android:src="@mipmap/my_playlist_menu"
         android:layout_width="@dimen/action_bar_size"
         android:layout_height="match_parent"

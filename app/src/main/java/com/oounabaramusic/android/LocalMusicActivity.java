@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.oounabaramusic.android.adapter.LocalMusicAdapter;
@@ -28,7 +29,6 @@ public class LocalMusicActivity extends BaseActivity implements View.OnClickList
     public final static int TOOLBAR_MODE_EDIT=0;//检索编辑模式
     public final static int TOOLBAR_MODE_NORMAL=1;//普通模式
     public final static int TOOLBAR_MODE_MULTIPLE_CHOICE=2;//多选模式
-    private final int MUSIC_MAX_COUNT=10001;
     private int toolbarMode=TOOLBAR_MODE_NORMAL;//ToolBar现在的模式
     private RecyclerView rv;//显示歌曲列表
     private LocalMusicAdapter adapter;//歌曲列表的适配器
@@ -40,12 +40,13 @@ public class LocalMusicActivity extends BaseActivity implements View.OnClickList
     private LinearLayout playAll;//ToolBar下方的播放全部
     private LinearLayout multipleChoice;//ToolBar下方的多选
     private List<Music> musicList;//存歌曲列表的List
+    private RelativeLayout musicPlayTool;//画面下方的播放器
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_local_music);
-        StatusBarUtil.changeStatusBarContentColor(this);
+        StatusBarUtil.setTranslucentStatusAndDarkContent(this);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
 
         Toolbar toolBar=findViewById(R.id.local_music_toolbar);
@@ -78,6 +79,7 @@ public class LocalMusicActivity extends BaseActivity implements View.OnClickList
         nextPlay=findViewById(R.id.bottom_tool_next_play);
         addToPlaylist=findViewById(R.id.bottom_tool_add_to_playlist);
         delete=findViewById(R.id.bottom_tool_delete);
+        musicPlayTool=findViewById(R.id.tool_current_play_layout);
 
         playAll.setOnClickListener(this);
         multipleChoice.setOnClickListener(this);
@@ -182,17 +184,20 @@ public class LocalMusicActivity extends BaseActivity implements View.OnClickList
                 playAll.setVisibility(View.VISIBLE);
                 edit.setVisibility(View.GONE);
                 bottomToolBar.setVisibility(View.GONE);
+                musicPlayTool.setVisibility(View.VISIBLE);
                 actionBarTitle="本地音乐";
                 break;
             case TOOLBAR_MODE_EDIT:
                 playAll.setVisibility(View.GONE);
                 edit.setVisibility(View.VISIBLE);
                 bottomToolBar.setVisibility(View.GONE);
+                musicPlayTool.setVisibility(View.VISIBLE);
                 break;
             case TOOLBAR_MODE_MULTIPLE_CHOICE:
                 playAll.setVisibility(View.GONE);
                 edit.setVisibility(View.GONE);
                 bottomToolBar.setVisibility(View.VISIBLE);
+                musicPlayTool.setVisibility(View.GONE);
                 actionBarTitle="已选择0项";
                 break;
         }

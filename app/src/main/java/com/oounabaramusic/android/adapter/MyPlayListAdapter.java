@@ -75,7 +75,7 @@ public class MyPlayListAdapter extends RecyclerView.Adapter<MyPlayListAdapter.Vi
         }
 
         private View createContentView() {
-            View view=LayoutInflater.from(activity).inflate(R.layout.popupwindow_my_playlist_item_menu, (ViewGroup) activity.getWindow().getDecorView(),false);
+            View view=LayoutInflater.from(activity).inflate(R.layout.pw_my_playlist_item_menu, (ViewGroup) activity.getWindow().getDecorView(),false);
 
             //下载
             view.findViewById(R.id.item_menu_download).setOnClickListener(new View.OnClickListener() {

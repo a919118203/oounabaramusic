@@ -55,7 +55,7 @@ public class StatusBarUtil {
      * 将状态栏的内容设为深色&设置状态栏为透明
      * @param activity
      */
-    public static void changeStatusBarContentColor(Activity activity){
+    public static void setTranslucentStatusAndDarkContent(Activity activity){
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             Window window = activity.getWindow();
             window.getDecorView().setSystemUiVisibility(
@@ -66,8 +66,19 @@ public class StatusBarUtil {
     }
 
     /**
+     * 将状态栏设置为白底内容黑色
+     * @param activity
+     */
+    public static void setWhiteStyleStatusBar(Activity activity){
+        Window window=activity.getWindow();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+            window.setStatusBarColor(activity.getResources().getColor(R.color.colorPrimaryDark));
+        }
+    }
+
+    /**
      * 隐藏状态栏
-     * @param f
      * @param activity
      */
 
