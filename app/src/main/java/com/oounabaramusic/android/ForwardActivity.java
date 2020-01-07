@@ -11,6 +11,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.oounabaramusic.android.util.DensityUtil;
+import com.oounabaramusic.android.util.StatusBarUtil;
 
 public class ForwardActivity extends BaseActivity{
 
@@ -20,6 +21,7 @@ public class ForwardActivity extends BaseActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_forward);
+        StatusBarUtil.setWhiteStyleStatusBar(this);
 
         Toolbar toolbar=findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);

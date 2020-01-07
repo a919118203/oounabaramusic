@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/search"
+        android:title="检索"
+        android:icon="@mipmap/search"
+        app:showAsAction="always"
+        tools:ignore="HardcodedText" />
+
+    <item
+        android:id="@+id/select_all"
+        android:title="全选"
+        app:showAsAction="ifRoom"
+        tools:ignore="HardcodedText" />
+
+    <item
+        android:visible="false"
+        android:id="@+id/cancel_select_all"
+        android:title="取消全选"
+        app:showAsAction="ifRoom"
+        tools:ignore="HardcodedText" />
+</menu>

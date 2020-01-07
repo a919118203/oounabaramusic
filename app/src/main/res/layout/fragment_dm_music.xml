@@ -115,31 +115,6 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/bottom_tool_download"
-            android:orientation="vertical"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="match_parent"
-            android:background="@drawable/view_ripple_rectangle">
-
-            <ImageView
-                android:src="@mipmap/download"
-                android:layout_width="match_parent"
-                android:layout_height="30dp"
-                android:gravity="center"
-                android:paddingTop="5dp"
-                tools:ignore="ContentDescription" />
-
-            <TextView
-                android:text="下载"
-                android:textSize="@dimen/font_small_size"
-                android:layout_width="match_parent"
-                android:layout_height="30dp"
-                android:gravity="center"
-                tools:ignore="HardcodedText" />
-        </LinearLayout>
-
-        <LinearLayout
             android:id="@+id/bottom_tool_delete"
             android:orientation="vertical"
             android:layout_width="0dp"

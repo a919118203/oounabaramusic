@@ -12,7 +12,9 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.oounabaramusic.android.DownloadManagementActivity;
 import com.oounabaramusic.android.LocalMusicActivity;
+import com.oounabaramusic.android.MyCollectionActivity;
 import com.oounabaramusic.android.PlayListManagementActivity;
 import com.oounabaramusic.android.R;
 import com.oounabaramusic.android.RecentlyPlayedActivity;
@@ -170,13 +172,20 @@ public class MainMyFragment extends Fragment implements View.OnClickListener{
                 activity.startActivity(intent);
                 break;
 
-            case R.id.download_manager:      //点击“下载管理”
+            case R.id.download_manager:      //点击下载管理
+                intent=new Intent(activity, DownloadManagementActivity.class);
+                activity.startActivity(intent);
                 break;
-            case R.id.my_playlist:           //点击“创建的歌单”
+
+            case R.id.my_collection:        //点击我的收藏
+                intent=new Intent(activity, MyCollectionActivity.class);
+                activity.startActivity(intent);
+                break;
+            case R.id.my_playlist:           //点击创建的歌单
                 myPlaylistAnim.changeStatus();
                 myPlayListRv.setVisibility(myPlaylistAnim.getStatus()==OpenListAnimation.STATUS_OPEN?View.VISIBLE:View.GONE);
                 break;
-            case R.id.favorite_playlist:     //点击“收藏的歌单”
+            case R.id.favorite_playlist:     //点击收藏的歌单
                 favoritePlaylistAnim.changeStatus();
                 favoritePlayListRv.setVisibility(favoritePlaylistAnim.getStatus()==OpenListAnimation.STATUS_OPEN?View.VISIBLE:View.GONE);
                 break;

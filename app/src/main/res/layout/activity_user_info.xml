@@ -41,7 +41,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:background="@drawable/layout_card"
-                    android:layout_gravity="bottom"/>
+                    android:layout_gravity="bottom"
+                    app:tabIndicatorColor="@color/colorPrimary"
+                    app:tabIndicatorFullWidth="false"/>
             </FrameLayout>
         </com.google.android.material.appbar.AppBarLayout>
 

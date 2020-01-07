@@ -16,6 +16,7 @@ import android.view.MenuItem;
 import com.google.android.material.tabs.TabLayout;
 import com.oounabaramusic.android.fragment.FollowedFragment;
 import com.oounabaramusic.android.fragment.ToFollowFragment;
+import com.oounabaramusic.android.util.StatusBarUtil;
 import com.oounabaramusic.android.util.UserInfoActivityManager;
 
 import java.util.ArrayList;
@@ -35,6 +36,7 @@ public class MyFriendActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_friend);
         UserInfoActivityManager.addActivity(this);
+        StatusBarUtil.setWhiteStyleStatusBar(this);
 
         Toolbar toolbar=findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);

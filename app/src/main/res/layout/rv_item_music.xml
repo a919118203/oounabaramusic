@@ -6,30 +6,13 @@
     android:layout_height="60dp"
     android:background="@drawable/view_ripple_rectangle">
 
-    <FrameLayout
-        android:id="@+id/neee"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true">
-
-        <com.oounabaramusic.android.widget.textview.TextViewMediumFont
-            android:id="@+id/index"
-            android:text="1"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:gravity="center"
-            tools:ignore="HardcodedText" />
-
-        <ImageView
-            android:id="@+id/is_playing"
-            android:src="@mipmap/is_playing"
-            android:visibility="gone"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:padding="15dp"
-            tools:ignore="ContentDescription" />
-    </FrameLayout>
+    <com.oounabaramusic.android.widget.textview.TextViewMediumFont
+        android:id="@+id/index"
+        android:text="1"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:gravity="center"
+        tools:ignore="HardcodedText" />
 
     <com.oounabaramusic.android.widget.textview.TextViewMediumFont
         android:id="@+id/music_name"
@@ -40,7 +23,7 @@
         android:layout_marginTop="10dp"
         android:maxLines="1"
         android:ellipsize="end"
-        android:layout_toEndOf="@id/neee"
+        android:layout_toEndOf="@id/index"
         android:layout_toStartOf="@id/neee2"
         tools:ignore="HardcodedText" />
 
@@ -51,7 +34,7 @@
         android:layout_height="wrap_content"
         android:maxLines="1"
         android:ellipsize="end"
-        android:layout_toEndOf="@id/neee"
+        android:layout_toEndOf="@id/index"
         android:layout_toStartOf="@id/neee2"
         android:layout_below="@id/music_name"
         android:layout_marginTop="5dp"

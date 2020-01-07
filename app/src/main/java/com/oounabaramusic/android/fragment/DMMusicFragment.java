@@ -6,34 +6,34 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
+import com.oounabaramusic.android.DownloadManagementActivity;
 import com.oounabaramusic.android.R;
-import com.oounabaramusic.android.RecentlyPlayedActivity;
-import com.oounabaramusic.android.adapter.RPMusicChoiceAdapter;
-import com.oounabaramusic.android.adapter.RPMusicNormalAdapter;
+import com.oounabaramusic.android.adapter.DMMusicChoiceAdapter;
+import com.oounabaramusic.android.adapter.DMMusicNormalAdapter;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class RPMusicFragment extends BaseFragment implements View.OnClickListener{
+public class DMMusicFragment extends BaseFragment implements View.OnClickListener{
 
-    private RecentlyPlayedActivity activity;
-    private RPMusicNormalAdapter normalAdapter;
-    private RPMusicChoiceAdapter choiceAdapter;
+    private DownloadManagementActivity activity;
+    private DMMusicNormalAdapter normalAdapter;
+    private DMMusicChoiceAdapter choiceAdapter;
     private LinearLayout playAll;
     private LinearLayout bottomTool;
     private RecyclerView rv;
 
-    public RPMusicFragment(RecentlyPlayedActivity activity){
+    public DMMusicFragment(DownloadManagementActivity activity){
         this.activity=activity;
-        setTitle("歌曲");
+        setTitle("单曲");
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view=LayoutInflater.from(activity).inflate(R.layout.fragment_rp_music,container,false);
+        View view=inflater.inflate(R.layout.fragment_dm_music,container,false);
         init(view);
         return view;
     }
@@ -44,9 +44,9 @@ public class RPMusicFragment extends BaseFragment implements View.OnClickListene
         playAll=view.findViewById(R.id.play_all);
         bottomTool=view.findViewById(R.id.bottom_toolbar);
 
-        rv.setAdapter(normalAdapter=new RPMusicNormalAdapter(activity));
+        rv.setAdapter(normalAdapter=new DMMusicNormalAdapter(activity));
         rv.setLayoutManager(new LinearLayoutManager(activity));
-        choiceAdapter=new RPMusicChoiceAdapter(activity);
+        choiceAdapter=new DMMusicChoiceAdapter(activity);
 
     }
 
@@ -54,19 +54,19 @@ public class RPMusicFragment extends BaseFragment implements View.OnClickListene
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.multiple_choice:
-                activity.switchMode(RecentlyPlayedActivity.MODE_CHOICE);
+                activity.switchMode(DownloadManagementActivity.MODE_CHOICE);
                 break;
         }
     }
 
     public void switchMode(int mode){
         switch (mode){
-            case RecentlyPlayedActivity.MODE_NORMAL:
+            case DownloadManagementActivity.MODE_NORMAL:
                 playAll.setVisibility(View.VISIBLE);
                 bottomTool.setVisibility(View.GONE);
                 rv.setAdapter(normalAdapter);
                 break;
-            case RecentlyPlayedActivity.MODE_CHOICE:
+            case DownloadManagementActivity.MODE_CHOICE:
                 playAll.setVisibility(View.GONE);
                 bottomTool.setVisibility(View.VISIBLE);
                 rv.setAdapter(choiceAdapter);

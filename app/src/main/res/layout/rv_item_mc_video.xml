@@ -5,16 +5,15 @@
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingTop="5dp"
-    android:paddingBottom="5dp"
-    android:paddingStart="20dp"
-    android:paddingEnd="20dp"
     android:background="@drawable/view_ripple_rectangle">
 
     <ImageView
         android:src="@mipmap/choose_login"
         android:layout_width="160dp"
         android:layout_height="90dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
         android:scaleType="centerCrop"/>
 
     <LinearLayout
@@ -56,13 +55,15 @@
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
                 tools:ignore="HardcodedText" />
-
-            <TextView
-                android:text="2019年12月28日"
-                android:textSize="@dimen/font_small_size"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                tools:ignore="HardcodedText" />
         </LinearLayout>
     </LinearLayout>
+
+    <ImageView
+        android:src="@mipmap/my_playlist_menu"
+        android:layout_width="60dp"
+        android:layout_height="100dp"
+        android:paddingTop="40dp"
+        android:paddingBottom="40dp"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"/>
 </LinearLayout>

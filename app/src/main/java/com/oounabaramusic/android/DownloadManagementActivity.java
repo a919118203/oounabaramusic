@@ -2,8 +2,6 @@ package com.oounabaramusic.android;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentPagerAdapter;
@@ -14,21 +12,19 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import com.google.android.material.tabs.TabLayout;
 import com.oounabaramusic.android.fragment.BaseFragment;
-import com.oounabaramusic.android.fragment.RPMusicFragment;
-import com.oounabaramusic.android.fragment.RPPlayListFragment;
-import com.oounabaramusic.android.fragment.RPVideoFragment;
+import com.oounabaramusic.android.fragment.DMMusicFragment;
+import com.oounabaramusic.android.fragment.DMDownloadingFragment;
 import com.oounabaramusic.android.util.StatusBarUtil;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class RecentlyPlayedActivity extends BaseActivity {
+public class DownloadManagementActivity extends BaseActivity {
 
     public static final int MODE_NORMAL=0;
     public static final int MODE_CHOICE=1;
@@ -53,9 +49,8 @@ public class RecentlyPlayedActivity extends BaseActivity {
 
     private void init() {
         fragments=new ArrayList<>();
-        fragments.add(new RPMusicFragment(this));
-        fragments.add(new RPVideoFragment(this));
-        fragments.add(new RPPlayListFragment(this));
+        fragments.add(new DMMusicFragment(this));
+        fragments.add(new DMDownloadingFragment(this));
 
         vp=findViewById(R.id.view_pager);
         tl=findViewById(R.id.tab_layout);
@@ -74,7 +69,7 @@ public class RecentlyPlayedActivity extends BaseActivity {
             case MODE_NORMAL:
                 tl.setVisibility(View.VISIBLE);
                 playControl.setVisibility(View.VISIBLE);
-                title="最近播放";
+                title="下载管理";
                 break;
             case MODE_CHOICE:
                 tl.setVisibility(View.GONE);
@@ -85,15 +80,15 @@ public class RecentlyPlayedActivity extends BaseActivity {
 
         Objects.requireNonNull(getSupportActionBar()).setTitle(title);
 
-        ((RPMusicFragment)fragments.get(0)).switchMode(mode);
+        ((DMMusicFragment)fragments.get(0)).switchMode(mode);
     }
 
 
 
-    class ViewPagerAdapter extends FragmentPagerAdapter{
+    class ViewPagerAdapter extends FragmentPagerAdapter {
 
         ViewPagerAdapter(){
-            super(RecentlyPlayedActivity.this.getSupportFragmentManager(), FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
+            super(DownloadManagementActivity.this.getSupportFragmentManager(), FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
         }
 
         @NonNull
@@ -116,7 +111,7 @@ public class RecentlyPlayedActivity extends BaseActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_rp_activity,menu);
+        getMenuInflater().inflate(R.menu.menu_dm_activity,menu);
         menu.getItem(0).setVisible(mode==MODE_NORMAL);
         menu.getItem(1).setVisible(mode==MODE_CHOICE);
         return true;
@@ -131,12 +126,6 @@ public class RecentlyPlayedActivity extends BaseActivity {
                     break;
                 }
                 finish();
-                break;
-            case R.id.clear:
-                break;
-            case R.id.select_all:
-                break;
-            case R.id.cancel_select_all:
                 break;
         }
         return true;

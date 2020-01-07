@@ -12,12 +12,12 @@ import com.oounabaramusic.android.widget.popupwindow.MyPopupWindow;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class RPMusicAdapter extends RecyclerView.Adapter<RPMusicAdapter.ViewHolder> {
+public class DMMusicNormalAdapter extends RecyclerView.Adapter<DMMusicNormalAdapter.ViewHolder> {
 
     private Activity activity;
     private MyPopupWindow spw;
 
-    public RPMusicAdapter(Activity activity){
+    public DMMusicNormalAdapter(Activity activity){
         this.activity=activity;
         spw=new MyPopupWindow(activity,createContentView());
     }
@@ -29,7 +29,7 @@ public class RPMusicAdapter extends RecyclerView.Adapter<RPMusicAdapter.ViewHold
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view= LayoutInflater.from(activity).inflate(R.layout.rv_item_rp_music,parent,false);
+        View view= LayoutInflater.from(activity).inflate(R.layout.rv_item_dm_music,parent,false);
         return new ViewHolder(view);
     }
 

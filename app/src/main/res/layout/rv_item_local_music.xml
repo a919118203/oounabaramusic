@@ -15,16 +15,6 @@
         android:visibility="gone"
         android:layout_gravity="center" />
 
-    <ImageView
-        android:id="@+id/recycler_view_item_is_playing"
-        android:src="@mipmap/is_playing"
-        android:layout_width="@dimen/action_bar_size"
-        android:layout_height="match_parent"
-        android:padding="15dp"
-        android:visibility="gone"
-        android:contentDescription="是否在播放"
-        tools:ignore="HardcodedText" />
-
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="0dp"

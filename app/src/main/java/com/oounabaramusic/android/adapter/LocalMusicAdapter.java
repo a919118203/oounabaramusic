@@ -170,7 +170,7 @@ public class LocalMusicAdapter extends RecyclerView.Adapter<LocalMusicAdapter.Lo
 
     class LocalMusicViewHolder extends RecyclerView.ViewHolder{
 
-        ImageView isPlaying,menu;
+        ImageView menu;
         TextView musicName;
         TextView musicMenuMusicName;
         TextView musicInfoMusicName,musicInfoFileName,musicInfoPlayLength,musicInfoFileSize,musicInfoFilePath;
@@ -178,7 +178,6 @@ public class LocalMusicAdapter extends RecyclerView.Adapter<LocalMusicAdapter.Lo
 
         LocalMusicViewHolder(@NonNull View itemView) {
             super(itemView);
-            isPlaying=itemView.findViewById(R.id.recycler_view_item_is_playing);
             menu=itemView.findViewById(R.id.recycler_view_local_music_menu);
             musicName=itemView.findViewById(R.id.recycler_view_item_music_name);
             checkBox=itemView.findViewById(R.id.local_music_choose);
