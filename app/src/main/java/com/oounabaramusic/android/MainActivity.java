@@ -50,7 +50,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
         mainSearch=findViewById(R.id.main_search);
 
         fragments.add(new MainMyFragment(this));
-        fragments.add(new MainNewDiscoveryFragment(this,getSupportFragmentManager()));
+        fragments.add(new MainNewDiscoveryFragment(this));
         fragments.add(new MainNowFragment(this));
         fragments.add(new MainVideoFragment(this));
 

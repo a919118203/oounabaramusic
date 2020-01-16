@@ -24,6 +24,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 public class MainNewDiscoveryFragment extends BaseFragment{
@@ -33,14 +34,12 @@ public class MainNewDiscoveryFragment extends BaseFragment{
     private NDRecommendAdapter adapter1;         //每日推荐
     private NDPlayListAdapter adapter2;          //推荐歌单
     private NDRankAdapter adapter3;              //排行榜
-    private FragmentManager fm;
     private ViewPager imageVp;
     private List<Fragment> images;
     private boolean f;                 //开始滚动图片
 
-    public MainNewDiscoveryFragment(Activity activity, FragmentManager fm){
+    public MainNewDiscoveryFragment(Activity activity){
         this.activity=activity;
-        this.fm=fm;
     }
 
     @Nullable
@@ -67,13 +66,13 @@ public class MainNewDiscoveryFragment extends BaseFragment{
         rv3.setLayoutManager(new LinearLayoutManager(activity,LinearLayoutManager.HORIZONTAL,false));
 
         imageVp=view.findViewById(R.id.view_pager);
-        imageVp.setOverScrollMode(ViewPager.OVER_SCROLL_ALWAYS);
+        //imageVp.setOverScrollMode(ViewPager.OVER_SCROLL_ALWAYS);
         images=new ArrayList<>();
         images.add(new ImageFragment(R.drawable.mogeko1));
         images.add(new ImageFragment(R.drawable.mogeko2));
         images.add(new ImageFragment(R.drawable.mogeko3));
         images.add(new ImageFragment(R.drawable.mogeko4));
-        imageVp.setAdapter(new FragmentPagerAdapter(fm,FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
+        imageVp.setAdapter(new FragmentPagerAdapter(getChildFragmentManager(),FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
 
             @NonNull
             @Override
