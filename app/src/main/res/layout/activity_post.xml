@@ -77,9 +77,10 @@
                     android:background="@null"
                     tools:ignore="HardcodedText,RtlSymmetry" />
 
-                <com.oounabaramusic.android.widget.textview.TextViewMediumFont
+                <TextView
                     android:visibility="gone"
                     android:text="发送"
+                    android:textSize="@dimen/font_medium_size"
                     android:textColor="@color/positive"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

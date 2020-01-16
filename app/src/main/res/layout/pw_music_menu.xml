@@ -23,9 +23,10 @@
             android:layout_width="50dp"
             android:layout_height="50dp"/>
 
-        <com.oounabaramusic.android.widget.textview.TextViewMediumFont
+        <TextView
             android:id="@+id/music_name"
             android:text="歌曲：津軽海峡・冬景色"
+            android:textSize="@dimen/font_medium_size"
             android:textColor="@color/positive"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -34,16 +35,17 @@
             android:layout_marginTop="5dp"
             tools:ignore="HardcodedText" />
 
-        <com.oounabaramusic.android.widget.textview.TextViewSmallFont
+        <TextView
             android:id="@+id/music_singer_in_title"
             android:text="石川さゆり"
+            android:textSize="@dimen/font_small_size"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            tools:ignore="HardcodedText"
             android:layout_toEndOf="@id/music_cover"
             android:layout_below="@id/music_name"
             android:layout_alignStart="@id/music_name"
-            android:layout_marginTop="3dp"/>
+            android:layout_marginTop="3dp"
+            tools:ignore="HardcodedText"/>
     </RelativeLayout>
 
     <View
@@ -65,11 +67,12 @@
             android:padding="10dp"/>
 
 
-        <com.oounabaramusic.android.widget.textview.TextViewMediumFont
+        <TextView
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:text="@string/next_play"
+            android:textSize="@dimen/font_medium_size"
             android:textColor="@color/positive"
             android:gravity="center_vertical"/>
     </LinearLayout>
@@ -88,11 +91,12 @@
             android:padding="10dp"/>
 
 
-        <com.oounabaramusic.android.widget.textview.TextViewMediumFont
+        <TextView
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:text="@string/add_to_playlist"
+            android:textSize="@dimen/font_medium_size"
             android:textColor="@color/positive"
             android:gravity="center_vertical"/>
     </LinearLayout>
@@ -111,11 +115,12 @@
             android:padding="10dp"/>
 
 
-        <com.oounabaramusic.android.widget.textview.TextViewMediumFont
+        <TextView
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:text="@string/download"
+            android:textSize="@dimen/font_medium_size"
             android:textColor="@color/positive"
             android:gravity="center_vertical"/>
     </LinearLayout>
@@ -134,11 +139,12 @@
             android:padding="10dp"/>
 
 
-        <com.oounabaramusic.android.widget.textview.TextViewMediumFont
+        <TextView
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:text="@string/comment"
+            android:textSize="@dimen/font_medium_size"
             android:textColor="@color/positive"
             android:gravity="center_vertical"/>
     </LinearLayout>
@@ -157,12 +163,13 @@
             android:padding="10dp"/>
 
 
-        <com.oounabaramusic.android.widget.textview.TextViewMediumFont
+        <TextView
             android:id="@+id/music_singer"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:text="歌手：石川さゆり"
+            android:textSize="@dimen/font_medium_size"
             android:textColor="@color/positive"
             android:gravity="center_vertical"
             tools:ignore="HardcodedText" />
@@ -182,11 +189,12 @@
             android:padding="10dp"/>
 
 
-        <com.oounabaramusic.android.widget.textview.TextViewMediumFont
+        <TextView
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:text="@string/delete_music"
+            android:textSize="@dimen/font_medium_size"
             android:textColor="@color/positive"
             android:gravity="center_vertical"/>
     </LinearLayout>

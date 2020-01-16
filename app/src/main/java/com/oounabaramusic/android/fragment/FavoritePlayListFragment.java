@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 public class FavoritePlayListFragment extends Fragment {
 
     private Activity activity;
+    private View rootView;
     private AllFavoritePlayListAdapter adapter;
 
     public FavoritePlayListFragment(Activity activity){
@@ -28,9 +29,11 @@ public class FavoritePlayListFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view=LayoutInflater.from(activity).inflate(R.layout.fragment_my_playlist,container,false);
-        init(view);
-        return view;
+        if(rootView==null){
+            rootView=LayoutInflater.from(activity).inflate(R.layout.fragment_my_playlist,container,false);
+            init(rootView);
+        }
+        return rootView;
     }
 
     private void init(View view) {

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/action_bar_size"
+    android:background="@drawable/view_ripple_rectangle">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="match_parent"
+        android:layout_marginStart="15dp">
+
+        <TextView
+            android:id="@+id/music_name"
+            android:text="名字名字名字"
+            android:textColor="@color/positive"
+            android:textSize="@dimen/font_medium_size"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="2"
+            android:gravity="center_vertical"
+            tools:ignore="HardcodedText,NestedWeights" />
+
+        <TextView
+            android:id="@+id/music_singer"
+            android:text="歌手"
+            android:textSize="@dimen/font_small_size"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            tools:ignore="HardcodedText" />
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/menu"
+        android:src="@mipmap/my_playlist_menu"
+        android:layout_width="@dimen/action_bar_size"
+        android:layout_height="match_parent"
+        android:background="@drawable/view_ripple_rectangle"
+        android:padding="15dp"
+        android:contentDescription="菜单"
+        tools:ignore="HardcodedText" />
+</LinearLayout>

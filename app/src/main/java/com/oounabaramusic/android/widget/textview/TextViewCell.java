@@ -1,18 +1,23 @@
 package com.oounabaramusic.android.widget.textview;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.nfc.Tag;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.oounabaramusic.android.R;
 import com.oounabaramusic.android.adapter.TagAdapter;
 import com.oounabaramusic.android.widget.gridlayout.GridLayoutTagGrid;
 
-public class TextViewCell extends TextViewSmallFont{
+@SuppressLint("AppCompatCustomView")
+public class TextViewCell extends TextView {
 
     private Activity activity;
     private String name;
@@ -20,6 +25,16 @@ public class TextViewCell extends TextViewSmallFont{
     private Drawable notSelect;
     private View.OnClickListener listener;
     private boolean selected=false;
+
+    /**
+     *
+     * @param context         上下文
+     * @param name            标签名
+     * @param row             tableLayout中的位置
+     * @param col             tableLayout中的位置
+     * @param position        第position个tableLayout
+     * @param listener
+     */
     public  TextViewCell(Context context,String name,int row,int col,int position,View.OnClickListener listener){
         super(context);
         activity= (Activity) context;
@@ -94,5 +109,11 @@ public class TextViewCell extends TextViewSmallFont{
     @Override
     public void setSelected(boolean selected) {
         this.selected = selected;
+    }
+
+    @Override
+    protected void onDraw(Canvas canvas) {
+        setTextSize(12);
+        super.onDraw(canvas);
     }
 }

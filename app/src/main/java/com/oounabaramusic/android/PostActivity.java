@@ -18,6 +18,7 @@ import com.oounabaramusic.android.fragment.ForwardFragment;
 import com.oounabaramusic.android.fragment.GoodFragment;
 import com.oounabaramusic.android.fragment.PostCommentFragment;
 import com.oounabaramusic.android.fragment.UserInfoMainFragment;
+import com.oounabaramusic.android.util.StatusBarUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +34,7 @@ public class PostActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post);
+        StatusBarUtil.setWhiteStyleStatusBar(this);
 
         Toolbar toolbar=findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);

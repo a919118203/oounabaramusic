@@ -28,7 +28,7 @@
         android:id="@+id/music_name"
         android:text="歌名"
         android:textColor="@color/positive"
-        android:textSize="16sp"
+        android:textSize="@dimen/font_medium_size"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_toEndOf="@id/music_cover"
@@ -36,8 +36,9 @@
         android:layout_alignTop="@id/music_cover"
         tools:ignore="HardcodedText" />
 
-    <com.oounabaramusic.android.widget.textview.TextViewSmallFont
+    <TextView
         android:text="歌手名和歌词"
+        android:textSize="@dimen/font_small_size"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/music_name"

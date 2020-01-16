@@ -12,10 +12,6 @@ import com.oounabaramusic.android.R;
 
 import java.lang.reflect.Field;
 
-/**
- * 废弃
- */
-
 public class MyPopupWindow extends PopupWindow {
 
     private Activity activity;

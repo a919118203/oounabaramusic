@@ -1,12 +1,16 @@
 package com.oounabaramusic.android.widget.textview;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Canvas;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 
-public class TextViewMarqueeTitle extends TextViewBigFont {
+@SuppressLint("AppCompatCustomView")
+public class TextViewMarqueeTitle extends TextView {
     public TextViewMarqueeTitle(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         init();

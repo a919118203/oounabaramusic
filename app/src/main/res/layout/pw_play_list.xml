@@ -28,11 +28,12 @@
                 android:layout_margin="10dp"
                 android:src="@mipmap/random_play" />
 
-            <com.oounabaramusic.android.widget.textview.TextViewMediumFont
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:text="随机播放"
+                android:textSize="@dimen/font_medium_size"
                 android:textColor="@color/positive"
                 tools:ignore="HardcodedText" />
         </LinearLayout>
@@ -52,11 +53,12 @@
                 android:layout_margin="10dp"
                 android:src="@mipmap/single_loop" />
 
-            <com.oounabaramusic.android.widget.textview.TextViewMediumFont
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:text="单曲循环"
+                android:textSize="@dimen/font_medium_size"
                 android:textColor="@color/positive"
                 tools:ignore="HardcodedText" />
         </LinearLayout>
@@ -76,11 +78,12 @@
                 android:layout_margin="10dp"
                 android:src="@mipmap/list_loop" />
 
-            <com.oounabaramusic.android.widget.textview.TextViewMediumFont
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:text="列表循环"
+                android:textSize="@dimen/font_medium_size"
                 android:textColor="@color/positive"
                 tools:ignore="HardcodedText" />
         </LinearLayout>
@@ -98,12 +101,13 @@
                 android:layout_margin="10dp"
                 android:src="@mipmap/collection_all" />
 
-            <com.oounabaramusic.android.widget.textview.TextViewMediumFont
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:layout_marginEnd="10dp"
                 android:text="收藏全部"
+                android:textSize="@dimen/font_medium_size"
                 android:textColor="@color/positive"
                 tools:ignore="HardcodedText" />
         </LinearLayout>

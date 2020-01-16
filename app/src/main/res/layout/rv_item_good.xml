@@ -17,9 +17,10 @@
         android:layout_height="30dp"
         android:layout_marginEnd="10dp"/>
 
-    <com.oounabaramusic.android.widget.textview.TextViewMediumFont
+    <TextView
         android:id="@+id/user_name"
         android:text="用户名"
+        android:textSize="@dimen/font_medium_size"
         android:textColor="@color/positive"
         android:maxLines="1"
         android:ellipsize="end"

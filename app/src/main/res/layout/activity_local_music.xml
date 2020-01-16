@@ -106,10 +106,11 @@
                 android:gravity="center"
                 android:paddingTop="5dp"/>
 
-            <com.oounabaramusic.android.widget.textview.TextViewSmallFont
+            <TextView
+                android:text="@string/next_play"
+                android:textSize="@dimen/font_small_size"
                 android:layout_width="match_parent"
                 android:layout_height="30dp"
-                android:text="@string/next_play"
                 android:gravity="center"/>
         </LinearLayout>
 
@@ -128,10 +129,11 @@
                 android:gravity="center"
                 android:paddingTop="5dp"/>
 
-            <com.oounabaramusic.android.widget.textview.TextViewSmallFont
+            <TextView
+                android:text="@string/add_to_playlist"
+                android:textSize="@dimen/font_small_size"
                 android:layout_width="match_parent"
                 android:layout_height="30dp"
-                android:text="@string/add_to_playlist"
                 android:gravity="center"/>
         </LinearLayout>
 
@@ -151,10 +153,11 @@
                 android:paddingTop="5dp"
                 tools:ignore="ContentDescription" />
 
-            <com.oounabaramusic.android.widget.textview.TextViewSmallFont
+            <TextView
+                android:text="@string/delete_music"
+                android:textSize="@dimen/font_small_size"
                 android:layout_width="match_parent"
                 android:layout_height="30dp"
-                android:text="@string/delete_music"
                 android:gravity="center"/>
         </LinearLayout>
     </LinearLayout>

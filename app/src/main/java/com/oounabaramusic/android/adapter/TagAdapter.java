@@ -21,9 +21,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class TagAdapter extends RecyclerView.Adapter<TagAdapter.ViewHolder> implements View.OnClickListener{
 
-    public static final int SELECT=1;               //选中
-    public static final int INVERT_SELECTION=2;     //反选
-    public static final int SELECT_FAIL=3;          //选中失败
+    private static final int SELECT=1;               //选中
+    private static final int INVERT_SELECTION=2;     //反选
+    private static final int SELECT_FAIL=3;          //选中失败
     private Activity activity;
     private boolean[][][] selected=new boolean[100][100][GridLayoutTagGrid.COL_COUNT];
     private int selectedCnt=0;
@@ -35,7 +35,7 @@ public class TagAdapter extends RecyclerView.Adapter<TagAdapter.ViewHolder> impl
         this.tagCnt=tagCnt;
     }
 
-    public int selectCell(int position,int i,int j){
+    private int selectCell(int position,int i,int j){
         if(selected[position][i][j]){
             selected[position][i][j]=false;
             selectedCnt--;
@@ -227,8 +227,8 @@ public class TagAdapter extends RecyclerView.Adapter<TagAdapter.ViewHolder> impl
             GridLayout.Spec rowSpec=GridLayout.spec(0,2,1f);
             GridLayout.Spec columnSpec=GridLayout.spec(0,1,1f);
             GridLayout.LayoutParams params=new GridLayout.LayoutParams(rowSpec,columnSpec);
-            params.height=0;
-            params.width=0;
+//            params.height=0;
+//            params.width=0;
             grid.addView(view,params);
         }
     }

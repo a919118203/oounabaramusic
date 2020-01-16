@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 public class MCSingerFragment extends BaseFragment {
 
     private Activity activity;
+    private View rootView;
     private MCSingerAdapter adapter;
 
     public MCSingerFragment(Activity activity){
@@ -27,9 +28,11 @@ public class MCSingerFragment extends BaseFragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view=inflater.inflate(R.layout.fragment_mc_singer,container,false);
-        init(view);
-        return view;
+        if(rootView==null){
+            rootView=inflater.inflate(R.layout.fragment_mc_singer,container,false);
+            init(rootView);
+        }
+        return rootView;
     }
 
     private void init(View view) {

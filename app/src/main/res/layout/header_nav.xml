@@ -13,14 +13,15 @@
         android:layout_height="70dp"
         android:layout_centerInParent="true"/>
 
-    <com.oounabaramusic.android.widget.textview.TextViewBigFont
+    <TextView
+        android:text="Mogeko"
+        android:textColor="@color/positive"
+        android:textSize="@dimen/font_big_size"
         android:layout_width="180dp"
         android:layout_height="wrap_content"
         android:layout_below="@+id/user_header"
         android:layout_marginTop="20dp"
         android:layout_centerHorizontal="true"
         android:gravity="center"
-        android:text="Mogeko"
-        android:textColor="@color/positive"
         tools:ignore="HardcodedText" />
 </RelativeLayout>

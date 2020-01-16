@@ -42,6 +42,7 @@ public class MainMyFragment extends Fragment implements View.OnClickListener{
     private FavoritePlayListAdapter favoritePlayListAdapter;
     private RecyclerView favoritePlayListRv;
     private Activity activity;
+    private View rootView;
 
     public MainMyFragment(Activity activity){
         this.activity=activity;
@@ -50,9 +51,11 @@ public class MainMyFragment extends Fragment implements View.OnClickListener{
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view=inflater.inflate(R.layout.fragment_main_my,container,false);
-        init(view);
-        return view;
+        if(rootView==null){
+            rootView=inflater.inflate(R.layout.fragment_main_my,container,false);
+            init(rootView);
+        }
+        return rootView;
     }
 
     private void init(View view) {

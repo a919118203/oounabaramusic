@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimaryDark"
+        app:elevation="0dp">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/action_bar_size"
+            app:layout_scrollFlags=""/>
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+
+        <GridLayout
+            android:id="@+id/grid_layout"
+            android:layout_width="match_parent"
+            android:layout_height="65dp"
+            android:rowCount="2"
+            android:columnCount="6">
+
+            <TextView
+                android:text="华语"
+                android:textSize="@dimen/font_medium_size"
+                android:textColor="@color/colorPrimary"
+                android:layout_columnWeight="1"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                android:gravity="center"
+                android:background="@drawable/view_ripple_rectangle"
+                tools:ignore="HardcodedText"/>
+
+            <TextView
+                android:text="欧美"
+                android:textSize="@dimen/font_medium_size"
+                android:layout_columnWeight="1"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                android:gravity="center"
+                android:background="@drawable/view_ripple_rectangle"
+                tools:ignore="HardcodedText"/>
+
+            <TextView
+                android:text="日本"
+                android:textSize="@dimen/font_medium_size"
+                android:layout_columnWeight="1"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                android:gravity="center"
+                android:background="@drawable/view_ripple_rectangle"
+                tools:ignore="HardcodedText"/>
+
+            <TextView
+                android:text="韩国"
+                android:textSize="@dimen/font_medium_size"
+                android:layout_columnWeight="1"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                android:gravity="center"
+                android:background="@drawable/view_ripple_rectangle"
+                tools:ignore="HardcodedText"/>
+
+            <TextView
+                android:text="其他"
+                android:textSize="@dimen/font_medium_size"
+                android:layout_columnWeight="1"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                android:gravity="center"
+                android:background="@drawable/view_ripple_rectangle"
+                tools:ignore="HardcodedText"/>
+
+            <TextView
+                android:text=""
+                android:textSize="@dimen/font_medium_size"
+                android:layout_columnWeight="1"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                android:gravity="center"
+                tools:ignore="HardcodedText"/>
+
+            <TextView
+                android:text="男"
+                android:textSize="@dimen/font_medium_size"
+                android:textColor="@color/colorPrimary"
+                android:layout_columnWeight="1"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                android:gravity="center"
+                android:background="@drawable/view_ripple_rectangle"
+                tools:ignore="HardcodedText"/>
+
+            <TextView
+                android:text="女"
+                android:textSize="@dimen/font_medium_size"
+                android:layout_columnWeight="1"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                android:gravity="center"
+                android:background="@drawable/view_ripple_rectangle"
+                tools:ignore="HardcodedText"/>
+
+            <TextView
+                android:text="乐队/组合"
+                android:textSize="@dimen/font_medium_size"
+                android:layout_columnWeight="1"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                android:gravity="center"
+                android:background="@drawable/view_ripple_rectangle"
+                tools:ignore="HardcodedText"/>
+        </GridLayout>
+
+        <LinearLayout
+            android:id="@+id/filter"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
+            android:paddingBottom="10dp"
+            android:onClick="openFilter"
+            android:background="@drawable/view_ripple_rectangle">
+
+            <TextView
+                android:text="日本-女"
+                android:textSize="@dimen/font_medium_size"
+                android:textColor="@color/positive"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                tools:ignore="HardcodedText" />
+
+            <ImageView
+                android:src="@mipmap/open"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginEnd="5dp"
+                android:layout_gravity="center_vertical"/>
+
+            <TextView
+                android:text="筛选"
+                android:textSize="@dimen/font_medium_size"
+                android:textColor="@color/positive"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                tools:ignore="HardcodedText" />
+        </LinearLayout>
+
+        <View
+            android:background="@color/negative"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"/>
+
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:focusableInTouchMode="true">
+
+                <TextView
+                    android:id="@+id/hot"
+                    android:text="热门歌手"
+                    android:textSize="@dimen/font_small_size"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="10dp"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp"
+                    android:background="@color/negative"
+                    android:gravity="center_vertical"
+                    tools:ignore="HardcodedText" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recycler_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"/>
+            </LinearLayout>
+        </androidx.core.widget.NestedScrollView>
+
+        <include layout="@layout/special_current_play_layout"/>
+    </LinearLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

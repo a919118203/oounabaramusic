@@ -12,11 +12,12 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.oounabaramusic.android.widget.textview.TextViewBigFont
+        <TextView
+            android:text="@string/add_to_playlist"
+            android:textSize="@dimen/font_big_size"
+            android:textColor="@color/positive"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/add_to_playlist"
-            android:textColor="@color/positive"
             android:layout_marginTop="20dp"
             android:layout_marginBottom="10dp"
             android:layout_marginStart="10dp"

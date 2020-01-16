@@ -48,9 +48,10 @@
                     android:layout_marginBottom="10dp"
                     android:scaleType="centerCrop"/>
 
-                <com.oounabaramusic.android.widget.textview.TextViewBigFont
+                <TextView
                     android:id="@+id/name"
                     android:text="名字"
+                    android:textSize="@dimen/font_big_size"
                     android:maxLines="1"
                     android:ellipsize="end"
                     android:textColor="@color/positive"
@@ -62,9 +63,10 @@
                     android:layout_marginTop="10dp"
                     tools:ignore="HardcodedText" />
 
-                <com.oounabaramusic.android.widget.textview.TextViewMediumFont
+                <TextView
                     android:id="@+id/author"
                     android:text="作者"
+                    android:textSize="@dimen/font_medium_size"
                     android:maxLines="1"
                     android:ellipsize="end"
                     android:textColor="@color/colorPrimary"
@@ -99,8 +101,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <com.oounabaramusic.android.widget.textview.TextViewMediumFont
+                <TextView
                     android:text="当前评论"
+                    android:textSize="@dimen/font_medium_size"
                     android:textColor="@color/positive"
                     android:textStyle="bold"
                     android:layout_width="match_parent"
@@ -113,8 +116,9 @@
                 <include layout="@layout/rv_item_comment"/>
             </LinearLayout>
 
-            <com.oounabaramusic.android.widget.textview.TextViewMediumFont
+            <TextView
                 android:text="精彩评论"
+                android:textSize="@dimen/font_medium_size"
                 android:textColor="@color/positive"
                 android:textStyle="bold"
                 android:layout_width="match_parent"
@@ -129,8 +133,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 
-            <com.oounabaramusic.android.widget.textview.TextViewMediumFont
+            <TextView
                 android:text="最新评论"
+                android:textSize="@dimen/font_medium_size"
                 android:textColor="@color/positive"
                 android:textStyle="bold"
                 android:layout_width="match_parent"
@@ -176,8 +181,9 @@
                 android:background="@null"
                 tools:ignore="HardcodedText" />
 
-            <com.oounabaramusic.android.widget.textview.TextViewMediumFont
+            <TextView
                 android:text="发送"
+                android:textSize="@dimen/font_medium_size"
                 android:textColor="@color/positive"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

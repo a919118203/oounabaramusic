@@ -17,9 +17,10 @@
         android:layout_marginEnd="10dp"
         android:layout_marginTop="10dp"/>
 
-    <com.oounabaramusic.android.widget.textview.TextViewSmallFont
+    <TextView
         android:id="@+id/user_name"
         android:text="用户名"
+        android:textSize="@dimen/font_small_size"
         android:textColor="@color/positive"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -27,9 +28,10 @@
         android:layout_alignTop="@id/user_header"
         tools:ignore="HardcodedText" />
 
-    <com.oounabaramusic.android.widget.textview.TextViewSSmallFont
+    <TextView
         android:id="@+id/forward_date"
         android:text="2017年7月5日"
+        android:textSize="@dimen/font_ssmall_size"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_toEndOf="@id/user_header"
@@ -37,9 +39,10 @@
         android:layout_marginTop="2dp"
         tools:ignore="HardcodedText" />
 
-    <com.oounabaramusic.android.widget.textview.TextViewMediumFont
+    <TextView
         android:id="@+id/forward_content"
         android:text="转发时写的内容"
+        android:textSize="@dimen/font_medium_size"
         android:textColor="@color/positive"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

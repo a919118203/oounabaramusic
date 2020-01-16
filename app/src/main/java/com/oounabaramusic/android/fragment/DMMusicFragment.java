@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 public class DMMusicFragment extends BaseFragment implements View.OnClickListener{
 
     private DownloadManagementActivity activity;
+    private View rootView;
     private DMMusicNormalAdapter normalAdapter;
     private DMMusicChoiceAdapter choiceAdapter;
     private LinearLayout playAll;
@@ -33,9 +34,11 @@ public class DMMusicFragment extends BaseFragment implements View.OnClickListene
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view=inflater.inflate(R.layout.fragment_dm_music,container,false);
-        init(view);
-        return view;
+        if(rootView==null){
+            rootView=inflater.inflate(R.layout.fragment_dm_music,container,false);
+            init(rootView);
+        }
+        return rootView;
     }
 
     private void init(View view) {

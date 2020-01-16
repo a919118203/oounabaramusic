@@ -32,7 +32,7 @@ public class MCVideoAdapter extends RecyclerView.Adapter<MCVideoAdapter.ViewHold
 
     @Override
     public int getItemCount() {
-        return 0;
+        return 20;
     }
 
     class ViewHolder extends RecyclerView.ViewHolder{

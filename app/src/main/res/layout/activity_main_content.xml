@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
     xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
     android:layout_height="match_parent"
     android:layout_width="match_parent">
 
@@ -19,6 +19,7 @@
             android:layout_height="@dimen/action_bar_size"
             android:layout_gravity="center_vertical"
             android:padding="15dp"
+            android:layout_marginStart="5dp"
             android:contentDescription="主界面菜单"
             tools:ignore="HardcodedText" />
 
@@ -27,39 +28,46 @@
             android:layout_weight="1"
             android:layout_height="match_parent"/>
 
-        <com.oounabaramusic.android.widget.textview.TextViewBigFont
+        <TextView
             android:id="@+id/fragment_main_my"
-            android:layout_width="@dimen/action_bar_size"
-            android:layout_height="match_parent"
-            android:background="@drawable/toolbar_ripple_oval"
+            android:text="@string/main_my"
             android:textColor="@color/positive"
-            android:gravity="center"
+            android:textSize="@dimen/font_big_size"
             android:textStyle="bold"
-            android:text="@string/main_my" />
-
-        <com.oounabaramusic.android.widget.textview.TextViewBigFont
-            android:id="@+id/fragment_main_search"
             android:layout_width="@dimen/action_bar_size"
             android:layout_height="match_parent"
             android:background="@drawable/toolbar_ripple_oval"
-            android:gravity="center"
-            android:text="@string/main_search"/>
+            android:gravity="center" />
 
-        <com.oounabaramusic.android.widget.textview.TextViewBigFont
+        <TextView
+            android:id="@+id/fragment_main_new_discovery"
+            android:text="@string/main_search"
+            android:textSize="@dimen/font_medium_size"
+            android:textColor="@color/top_tool_bar_un_select"
+            android:layout_width="@dimen/action_bar_size"
+            android:layout_height="match_parent"
+            android:background="@drawable/toolbar_ripple_oval"
+            android:gravity="center"/>
+
+        <TextView
             android:id="@+id/fragment_main_now"
+            android:text="@string/main_now"
+            android:textSize="@dimen/font_medium_size"
+            android:textColor="@color/top_tool_bar_un_select"
             android:layout_width="@dimen/action_bar_size"
             android:layout_height="match_parent"
             android:background="@drawable/toolbar_ripple_oval"
-            android:gravity="center"
-            android:text="@string/main_now"/>
+            android:gravity="center"/>
 
-        <com.oounabaramusic.android.widget.textview.TextViewBigFont
+        <TextView
             android:id="@+id/fragment_main_video"
+            android:text="@string/main_video"
+            android:textSize="@dimen/font_medium_size"
+            android:textColor="@color/top_tool_bar_un_select"
             android:layout_width="@dimen/action_bar_size"
             android:layout_height="match_parent"
             android:background="@drawable/toolbar_ripple_oval"
-            android:gravity="center"
-            android:text="@string/main_video"/>
+            android:gravity="center"/>
 
         <View
             android:layout_width="0dp"
@@ -72,6 +80,7 @@
             android:layout_width="@dimen/action_bar_size"
             android:layout_height="@dimen/action_bar_size"
             android:padding="15dp"
+            android:layout_marginEnd="5dp"
             android:layout_gravity="center"
             android:background="@drawable/toolbar_ripple_oval"
             android:contentDescription="检索歌曲"

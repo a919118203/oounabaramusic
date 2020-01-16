@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView;
 public class ResumePlayListFragment extends BaseFragment {
 
     private Activity activity;
+    private View rootView;
     private ResumePlayListAdapter adapter;
 
     public ResumePlayListFragment(Activity activity){
@@ -30,9 +31,11 @@ public class ResumePlayListFragment extends BaseFragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view=LayoutInflater.from(activity).inflate(R.layout.fragment_resume_item,container,false);
-        init(view);
-        return view;
+        if(rootView==null){
+            rootView=LayoutInflater.from(activity).inflate(R.layout.fragment_resume_item,container,false);
+            init(rootView);
+        }
+        return rootView;
     }
 
     private void init(View view) {

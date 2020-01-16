@@ -12,12 +12,13 @@
     android:paddingEnd="10dp"
     android:paddingTop="20dp">
 
-    <com.oounabaramusic.android.widget.textview.TextViewSmallFont
+    <TextView
         android:id="@+id/name"
+        android:text="名字"
+        android:textSize="@dimen/font_small_size"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="10dp"
-        android:text="名字"
         tools:ignore="HardcodedText" />
 
     <View
@@ -40,11 +41,12 @@
             tools:ignore="ContentDescription" />
 
 
-        <com.oounabaramusic.android.widget.textview.TextViewMediumFont
+        <TextView
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:text="发送私信"
+            android:textSize="@dimen/font_medium_size"
             android:textColor="@color/positive"
             android:gravity="center_vertical"
             tools:ignore="HardcodedText" />
@@ -70,11 +72,12 @@
             tools:ignore="ContentDescription" />
 
 
-        <com.oounabaramusic.android.widget.textview.TextViewMediumFont
+        <TextView
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:text="取消关注"
+            android:textSize="@dimen/font_medium_size"
             android:textColor="@color/positive"
             android:gravity="center_vertical"
             tools:ignore="HardcodedText" />

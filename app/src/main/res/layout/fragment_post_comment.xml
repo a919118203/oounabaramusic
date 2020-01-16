@@ -10,9 +10,10 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.oounabaramusic.android.widget.textview.TextViewMediumFont
+        <TextView
             android:id="@+id/re"
             android:text="最新评论"
+            android:textSize="@dimen/font_medium_size"
             android:textColor="@color/positive"
             android:textStyle="bold"
             android:layout_width="match_parent"

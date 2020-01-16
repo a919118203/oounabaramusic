@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 public class NoticeFragment extends BaseFragment {
 
     private Activity activity;
+    private View rootView;
     private NoticeAdapter adapter;
 
     public NoticeFragment(Activity activity){
@@ -27,9 +28,11 @@ public class NoticeFragment extends BaseFragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view=LayoutInflater.from(activity).inflate(R.layout.fragment_notice,container,false);
-        init(view);
-        return view;
+        if(rootView==null){
+            rootView=LayoutInflater.from(activity).inflate(R.layout.fragment_notice,container,false);
+            init(rootView);
+        }
+        return rootView;
     }
 
     private void init(View view) {

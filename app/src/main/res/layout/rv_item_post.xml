@@ -15,9 +15,10 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="true"/>
 
-    <com.oounabaramusic.android.widget.textview.TextViewMediumFont
+    <TextView
         android:id="@+id/user_name"
         android:text="用户名用户名用户名用户名用户名用户名用户名用户名用户名用户名用户名"
+        android:textSize="@dimen/font_medium_size"
         android:textColor="@color/colorPrimary"
         android:maxLines="1"
         android:ellipsize="end"
@@ -29,9 +30,10 @@
         android:layout_marginStart="10dp"
         tools:ignore="HardcodedText" />
 
-    <com.oounabaramusic.android.widget.textview.TextViewMediumFont
+    <TextView
         android:id="@+id/theme"
         android:text="分享单曲："
+        android:textSize="@dimen/font_medium_size"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="30dp"
@@ -39,9 +41,10 @@
         android:layout_alignTop="@id/user_name"
         tools:ignore="HardcodedText" />
 
-    <com.oounabaramusic.android.widget.textview.TextViewSmallFont
+    <TextView
         android:id="@+id/post_time"
         android:text="06:52"
+        android:textSize="@dimen/font_small_size"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/user_name"
@@ -50,9 +53,10 @@
         android:gravity="bottom"
         tools:ignore="HardcodedText" />
 
-    <com.oounabaramusic.android.widget.textview.TextViewMediumFont
+    <TextView
         android:id="@+id/post_content"
         android:text="内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容"
+        android:textSize="@dimen/font_medium_size"
         android:textColor="@color/positive"
         android:maxLines="8"
         android:lineSpacingExtra="5dp"
@@ -89,7 +93,7 @@
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:layout_marginTop="15dp"
-            android:background="@drawable/post_music_background">
+            android:background="@drawable/background_post_music">
 
             <ImageView
                 android:id="@+id/music_cover"
@@ -99,9 +103,10 @@
                 android:layout_alignParentStart="true"
                 android:layout_margin="10dp"/>
 
-            <com.oounabaramusic.android.widget.textview.TextViewMediumFont
+            <TextView
                 android:id="@+id/music_name"
                 android:text="歌名"
+                android:textSize="@dimen/font_medium_size"
                 android:textColor="@color/positive"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -112,9 +117,10 @@
                 android:ellipsize="end"
                 tools:ignore="HardcodedText" />
 
-            <com.oounabaramusic.android.widget.textview.TextViewSmallFont
+            <TextView
                 android:id="@+id/music_singer"
                 android:text="歌手"
+                android:textSize="@dimen/font_small_size"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/music_name"
@@ -132,14 +138,15 @@
             android:layout_height="wrap_content"
             android:padding="10dp"
             android:layout_marginTop="15dp"
-            android:background="@drawable/post_music_background">
+            android:background="@drawable/background_post_music">
 
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <com.oounabaramusic.android.widget.textview.TextViewMediumFont
+                <TextView
                     android:text="\@Mogeko：内容"
+                    android:textSize="@dimen/font_medium_size"
                     android:maxLines="10"
                     android:ellipsize="end"
                     android:lineSpacingExtra="5dp"
@@ -147,8 +154,9 @@
                     android:layout_height="wrap_content"
                     tools:ignore="HardcodedText" />
 
-                <com.oounabaramusic.android.widget.textview.TextViewMediumFont
+                <TextView
                     android:text="\@Mogeko："
+                    android:textSize="@dimen/font_medium_size"
                     android:textColor="@color/colorPrimary"
                     android:lineSpacingExtra="5dp"
                     android:layout_width="match_parent"
@@ -156,9 +164,10 @@
                     tools:ignore="HardcodedText" />
             </FrameLayout>
 
-            <com.oounabaramusic.android.widget.textview.TextViewMediumFont
+            <TextView
                 android:visibility="gone"
                 android:text="查看全文"
+                android:textSize="@dimen/font_medium_size"
                 android:textColor="@color/colorPrimary"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -188,9 +197,10 @@
                     android:layout_alignParentStart="true"
                     android:layout_margin="10dp"/>
 
-                <com.oounabaramusic.android.widget.textview.TextViewMediumFont
+                <TextView
                     android:id="@+id/forward_music_name"
                     android:text="歌名"
+                    android:textSize="@dimen/font_medium_size"
                     android:textColor="@color/positive"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -201,9 +211,10 @@
                     android:ellipsize="end"
                     tools:ignore="HardcodedText" />
 
-                <com.oounabaramusic.android.widget.textview.TextViewSmallFont
+                <TextView
                     android:id="@+id/forward_music_singer"
                     android:text="歌手"
+                    android:textSize="@dimen/font_small_size"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/forward_music_name"
@@ -225,9 +236,10 @@
         android:layout_alignStart="@id/post_content"
         android:layout_marginTop="15dp"/>
 
-    <com.oounabaramusic.android.widget.textview.TextViewSmallFont
+    <TextView
         android:id="@+id/post_forward_1"
         android:text="转发"
+        android:textSize="@dimen/font_small_size"
         android:layout_width="wrap_content"
         android:layout_height="20dp"
         android:layout_toEndOf="@id/post_forward"
@@ -245,9 +257,10 @@
         android:layout_alignBottom="@id/post_forward_1"
         android:layout_marginStart="30dp"/>
 
-    <com.oounabaramusic.android.widget.textview.TextViewSmallFont
+    <TextView
         android:id="@+id/post_comment_1"
         android:text="评论"
+        android:textSize="@dimen/font_small_size"
         android:layout_width="wrap_content"
         android:layout_height="20dp"
         android:layout_toEndOf="@id/post_comment"
@@ -265,9 +278,10 @@
         android:layout_alignBottom="@id/post_comment_1"
         android:layout_marginStart="30dp"/>
 
-    <com.oounabaramusic.android.widget.textview.TextViewSmallFont
+    <TextView
         android:id="@+id/post_good_1"
         android:text="赞"
+        android:textSize="@dimen/font_small_size"
         android:layout_width="wrap_content"
         android:layout_height="20dp"
         android:layout_toEndOf="@id/post_good"
@@ -285,9 +299,10 @@
         android:layout_alignBottom="@id/post_good_1"
         android:layout_marginStart="30dp"/>
 
-    <com.oounabaramusic.android.widget.textview.TextViewSmallFont
+    <TextView
         android:id="@+id/post_delete_1"
         android:text="删除"
+        android:textSize="@dimen/font_small_size"
         android:layout_width="wrap_content"
         android:layout_height="20dp"
         android:layout_toEndOf="@id/post_delete"

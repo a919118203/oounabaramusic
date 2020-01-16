@@ -7,8 +7,17 @@ import android.renderscript.Element;
 import android.renderscript.RenderScript;
 import android.renderscript.ScriptIntrinsicBlur;
 
+
+
 public class ImageFilter {
 
+    /**
+     *
+     * @param context        上下文
+     * @param bitmap         原图片
+     * @param blurRadius     模糊程度
+     * @return               模糊图片
+     */
     public static Bitmap blurBitmap(Context context,Bitmap bitmap,float blurRadius){
         Bitmap in=bitmap.copy(Bitmap.Config.ARGB_8888,true);
         Bitmap out=Bitmap.createBitmap(in);

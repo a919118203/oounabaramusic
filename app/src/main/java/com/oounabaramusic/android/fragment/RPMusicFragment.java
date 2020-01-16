@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 public class RPMusicFragment extends BaseFragment implements View.OnClickListener{
 
     private RecentlyPlayedActivity activity;
+    private View rootView;
     private RPMusicNormalAdapter normalAdapter;
     private RPMusicChoiceAdapter choiceAdapter;
     private LinearLayout playAll;
@@ -33,9 +34,11 @@ public class RPMusicFragment extends BaseFragment implements View.OnClickListene
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view=LayoutInflater.from(activity).inflate(R.layout.fragment_rp_music,container,false);
-        init(view);
-        return view;
+        if(rootView==null){
+            rootView=LayoutInflater.from(activity).inflate(R.layout.fragment_rp_music,container,false);
+            init(rootView);
+        }
+        return rootView;
     }
 
     private void init(View view) {

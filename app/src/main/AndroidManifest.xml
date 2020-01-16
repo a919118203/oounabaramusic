@@ -11,9 +11,21 @@
         android:supportsRtl="true"
         android:theme="@style/LightAppTheme"
         tools:ignore="GoogleAppIndexingWarning">
+        <activity android:name=".PlayListTagActivity"
+            android:label="歌单标签"/>
+        <activity
+            android:name=".PlayListSquareActivity"
+            android:label="歌单广场" />
+        <activity
+            android:name=".SingerClassificationActivity"
+            android:label="歌手分类" />
+        <activity
+            android:name=".SearchActivity"
+            android:label=""
+            android:windowSoftInputMode="adjustNothing" />
         <activity
             android:name=".MyCollectionActivity"
-            android:label="我的收藏"/>
+            android:label="我的收藏" />
         <activity
             android:name=".DownloadManagementActivity"
             android:label="下载管理" />

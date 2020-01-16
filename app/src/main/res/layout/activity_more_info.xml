@@ -26,25 +26,28 @@
         android:layout_margin="20dp"
         app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
 
-        <com.oounabaramusic.android.widget.textview.TextViewMediumFont
+        <TextView
             android:text="个人信息"
+            android:textSize="@dimen/font_medium_size"
             android:textColor="@color/positive"
             android:textStyle="bold"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             tools:ignore="HardcodedText" />
 
-        <com.oounabaramusic.android.widget.textview.TextViewSmallFont
+        <TextView
             android:id="@+id/user_info"
             android:text="信息正文\nMogeko\nMogeko\nMogeko"
+            android:textSize="@dimen/font_small_size"
             android:lineSpacingExtra="5dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             tools:ignore="HardcodedText" />
 
-        <com.oounabaramusic.android.widget.textview.TextViewMediumFont
+        <TextView
             android:text="个人介绍"
+            android:textSize="@dimen/font_medium_size"
             android:textColor="@color/positive"
             android:textStyle="bold"
             android:layout_width="match_parent"
@@ -52,9 +55,10 @@
             android:layout_marginTop="30dp"
             tools:ignore="HardcodedText" />
 
-        <com.oounabaramusic.android.widget.textview.TextViewSmallFont
+        <TextView
             android:id="@+id/user_introduction"
             android:text="信息正文"
+            android:textSize="@dimen/font_small_size"
             android:lineSpacingExtra="5dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

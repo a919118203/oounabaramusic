@@ -10,11 +10,13 @@ import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 import android.os.Bundle;
+import android.view.MenuItem;
 
 import com.google.android.material.tabs.TabLayout;
 import com.oounabaramusic.android.fragment.BaseFragment;
 import com.oounabaramusic.android.fragment.MCSingerFragment;
 import com.oounabaramusic.android.fragment.MCVideoFragment;
+import com.oounabaramusic.android.fragment.TestFragment;
 import com.oounabaramusic.android.util.StatusBarUtil;
 
 import java.util.ArrayList;
@@ -42,11 +44,18 @@ public class MyCollectionActivity extends AppCompatActivity {
         fragments=new ArrayList<>();
         fragments.add(new MCSingerFragment(this));
         fragments.add(new MCVideoFragment(this));
+        fragments.add(new TestFragment(this));
 
         TabLayout tl=findViewById(R.id.tab_layout);
         ViewPager vp=findViewById(R.id.view_pager);
         vp.setAdapter(new ViewPagerAdapter());
         tl.setupWithViewPager(vp);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        finish();
+        return true;
     }
 
     private class ViewPagerAdapter extends FragmentPagerAdapter{

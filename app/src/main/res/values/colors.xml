@@ -11,4 +11,5 @@
     <color name="alpha_btn">#50ffffff</color>
     <color name="alpha_black_background">#A0000000</color>
     <color name="selected">#706868</color>
+    <color name="top_tool_bar_un_select">#A5A5A5</color>
 </resources>

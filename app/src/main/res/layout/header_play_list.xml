@@ -41,17 +41,18 @@
                 android:layout_marginStart="22dp"
                 android:layout_marginTop="10dp"/>
 
-            <com.oounabaramusic.android.widget.textview.TextViewBigFont
+            <TextView
                 android:id="@+id/playlist_name"
+                android:text="我喜欢的音乐我喜欢的音乐我喜欢的音乐我喜欢的音乐我喜欢的音乐我喜欢的音乐我喜欢的音乐"
+                android:textSize="@dimen/font_big_size"
+                android:ellipsize="end"
+                android:maxLines="2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignTop="@id/playlist_cover"
                 android:layout_marginStart="22dp"
                 android:layout_marginEnd="25dp"
                 android:layout_toEndOf="@id/playlist_cover"
-                android:ellipsize="end"
-                android:maxLines="2"
-                android:text="我喜欢的音乐我喜欢的音乐我喜欢的音乐我喜欢的音乐我喜欢的音乐我喜欢的音乐我喜欢的音乐"
                 tools:ignore="HardcodedText" />
 
             <LinearLayout
@@ -71,7 +72,7 @@
                     android:layout_width="30dp"
                     android:layout_height="30dp"/>
 
-                <com.oounabaramusic.android.widget.textview.TextViewMediumFont
+                <TextView
                     android:id="@+id/user_name"
                     android:layout_width="0dp"
                     android:layout_weight="1"
@@ -81,24 +82,27 @@
                     android:maxLines="1"
                     android:ellipsize="end"
                     android:text="取一个昵称让大家认识你"
+                    android:textSize="@dimen/font_medium_size"
                     tools:ignore="HardcodedText" />
 
-                <com.oounabaramusic.android.widget.textview.TextViewMediumFont
+                <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="30dp"
                     android:text=">"
+                    android:textSize="@dimen/font_medium_size"
                     tools:ignore="HardcodedText" />
             </LinearLayout>
 
-            <com.oounabaramusic.android.widget.textview.TextViewSmallFont
+            <TextView
                 android:id="@+id/edit_play_list_info"
+                android:text="编辑信息 >"
+                android:textSize="@dimen/font_small_size"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignStart="@id/user"
                 android:layout_alignBottom="@id/playlist_cover"
                 android:layout_marginBottom="5dp"
                 android:layout_toEndOf="@id/playlist_cover"
-                android:text="编辑信息 >"
                 tools:ignore="HardcodedText" />
 
             <LinearLayout
@@ -125,10 +129,11 @@
                         android:layout_height="30dp"
                         android:gravity="center"/>
 
-                    <com.oounabaramusic.android.widget.textview.TextViewSmallFont
+                    <TextView
+                        android:text="评论"
+                        android:textSize="@dimen/font_small_size"
                         android:layout_width="match_parent"
                         android:layout_height="30dp"
-                        android:text="评论"
                         android:gravity="center"
                         tools:ignore="HardcodedText" />
                 </LinearLayout>
@@ -148,10 +153,11 @@
                         android:layout_height="30dp"
                         android:gravity="center"/>
 
-                    <com.oounabaramusic.android.widget.textview.TextViewSmallFont
+                    <TextView
+                        android:text="下载"
+                        android:textSize="@dimen/font_small_size"
                         android:layout_width="match_parent"
                         android:layout_height="30dp"
-                        android:text="下载"
                         android:gravity="center"
                         tools:ignore="HardcodedText" />
                 </LinearLayout>
@@ -171,10 +177,11 @@
                         android:layout_height="30dp"
                         android:gravity="center"/>
 
-                    <com.oounabaramusic.android.widget.textview.TextViewSmallFont
+                    <TextView
+                        android:text="多选"
+                        android:textSize="@dimen/font_small_size"
                         android:layout_width="match_parent"
                         android:layout_height="30dp"
-                        android:text="多选"
                         android:gravity="center"
                         tools:ignore="HardcodedText" />
                 </LinearLayout>
@@ -197,8 +204,9 @@
                 android:layout_height="30dp"
                 android:layout_gravity="center"/>
 
-            <com.oounabaramusic.android.widget.textview.TextViewMediumFont
+            <TextView
                 android:text="播放全部"
+                android:textSize="@dimen/font_medium_size"
                 android:textColor="@color/positive"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
@@ -206,8 +214,9 @@
                 android:layout_marginStart="5dp"
                 tools:ignore="HardcodedText" />
 
-            <com.oounabaramusic.android.widget.textview.TextViewMediumFont
+            <TextView
                 android:text="(共0首)"
+                android:textSize="@dimen/font_medium_size"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:gravity="center_vertical"

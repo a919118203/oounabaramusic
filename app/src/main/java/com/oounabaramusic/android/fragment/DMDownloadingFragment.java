@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 public class DMDownloadingFragment extends BaseFragment {
 
     private Activity activity;
+    private View rootView;
     private DMDownloadingAdapter adapter;
 
     public DMDownloadingFragment(Activity activity){
@@ -27,9 +28,11 @@ public class DMDownloadingFragment extends BaseFragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view=inflater.inflate(R.layout.fragment_downloading,container,false);
-        init(view);
-        return view;
+        if(rootView==null){
+            rootView=inflater.inflate(R.layout.fragment_downloading,container,false);
+            init(rootView);
+        }
+        return rootView;
     }
 
     private void init(View view) {

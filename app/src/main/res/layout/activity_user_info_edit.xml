@@ -44,8 +44,9 @@
             android:background="@drawable/view_ripple_rectangle"
             android:layout_height="50dp">
 
-            <com.oounabaramusic.android.widget.textview.TextViewMediumFont
+            <TextView
                 android:text="头像"
+                android:textSize="@dimen/font_medium_size"
                 android:textColor="@color/positive"
                 android:layout_width="0dp"
                 android:layout_weight="1"
@@ -75,8 +76,9 @@
             android:background="@drawable/view_ripple_rectangle"
             android:layout_height="50dp">
 
-            <com.oounabaramusic.android.widget.textview.TextViewMediumFont
+            <TextView
                 android:text="昵称"
+                android:textSize="@dimen/font_medium_size"
                 android:textColor="@color/positive"
                 android:layout_width="0dp"
                 android:layout_weight="1"
@@ -85,7 +87,7 @@
                 android:layout_gravity="center_vertical"
                 tools:ignore="HardcodedText" />
 
-            <com.oounabaramusic.android.widget.textview.TextViewMediumFont
+            <TextView
                 android:src="@mipmap/choose_login"
                 android:layout_width="150dp"
                 android:layout_height="wrap_content"
@@ -93,6 +95,7 @@
                 android:layout_marginStart="50dp"
                 android:layout_gravity="center_vertical"
                 android:text="用户名"
+                android:textSize="@dimen/font_medium_size"
                 android:gravity="end"
                 android:ellipsize="end"
                 android:maxLines="1"
@@ -111,8 +114,9 @@
             android:background="@drawable/view_ripple_rectangle"
             android:layout_height="50dp">
 
-            <com.oounabaramusic.android.widget.textview.TextViewMediumFont
+            <TextView
                 android:text="性别"
+                android:textSize="@dimen/font_medium_size"
                 android:textColor="@color/positive"
                 android:layout_width="0dp"
                 android:layout_weight="1"
@@ -121,7 +125,7 @@
                 android:layout_gravity="center_vertical"
                 tools:ignore="HardcodedText" />
 
-            <com.oounabaramusic.android.widget.textview.TextViewMediumFont
+            <TextView
                 android:src="@mipmap/choose_login"
                 android:layout_width="150dp"
                 android:layout_height="wrap_content"
@@ -129,6 +133,7 @@
                 android:layout_marginStart="50dp"
                 android:layout_gravity="center_vertical"
                 android:text="男"
+                android:textSize="@dimen/font_medium_size"
                 android:gravity="end"
                 android:ellipsize="end"
                 android:maxLines="1"
@@ -147,8 +152,9 @@
             android:background="@drawable/view_ripple_rectangle"
             android:layout_height="50dp">
 
-            <com.oounabaramusic.android.widget.textview.TextViewMediumFont
+            <TextView
                 android:text="生日"
+                android:textSize="@dimen/font_medium_size"
                 android:textColor="@color/positive"
                 android:layout_width="0dp"
                 android:layout_weight="1"
@@ -157,7 +163,7 @@
                 android:layout_gravity="center_vertical"
                 tools:ignore="HardcodedText" />
 
-            <com.oounabaramusic.android.widget.textview.TextViewMediumFont
+            <TextView
                 android:src="@mipmap/choose_login"
                 android:layout_width="150dp"
                 android:layout_height="wrap_content"
@@ -165,6 +171,7 @@
                 android:layout_marginStart="50dp"
                 android:layout_gravity="center_vertical"
                 android:text="1997-10-05"
+                android:textSize="@dimen/font_medium_size"
                 android:gravity="end"
                 android:ellipsize="end"
                 android:maxLines="1"
@@ -183,8 +190,9 @@
             android:background="@drawable/view_ripple_rectangle"
             android:layout_height="50dp">
 
-            <com.oounabaramusic.android.widget.textview.TextViewMediumFont
+            <TextView
                 android:text="签名"
+                android:textSize="@dimen/font_medium_size"
                 android:textColor="@color/positive"
                 android:layout_width="0dp"
                 android:layout_weight="1"
@@ -193,7 +201,7 @@
                 android:layout_gravity="center_vertical"
                 tools:ignore="HardcodedText" />
 
-            <com.oounabaramusic.android.widget.textview.TextViewMediumFont
+            <TextView
                 android:src="@mipmap/choose_login"
                 android:layout_width="150dp"
                 android:layout_height="wrap_content"
@@ -201,6 +209,7 @@
                 android:layout_marginStart="50dp"
                 android:layout_gravity="center_vertical"
                 android:text="个人介绍"
+                android:textSize="@dimen/font_medium_size"
                 android:gravity="end"
                 android:ellipsize="end"
                 android:maxLines="1"
@@ -220,8 +229,9 @@
             android:layout_height="match_parent"
             android:gravity="start|top"/>
 
-        <com.oounabaramusic.android.widget.textview.TextViewMediumFont
+        <TextView
             android:text="300"
+            android:textSize="@dimen/font_medium_size"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|end"

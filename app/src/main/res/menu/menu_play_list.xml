@@ -13,7 +13,7 @@
     <item
         android:id="@+id/play_list_add_music"
         android:title="添加歌曲"
-        android:icon="@mipmap/add_playlist"
+        android:icon="@mipmap/add"
         app:showAsAction="never"
         tools:ignore="HardcodedText" />
 

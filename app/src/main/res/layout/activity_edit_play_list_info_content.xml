@@ -21,11 +21,12 @@
         android:layout_height="60dp"
         android:layout_gravity="top">
 
-        <com.oounabaramusic.android.widget.textview.TextViewMediumFont
+        <TextView
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="match_parent"
             android:text="更换封面"
+            android:textSize="@dimen/font_medium_size"
             android:textColor="@color/positive"
             android:gravity="center_vertical"
             android:layout_marginStart="10dp"
@@ -52,22 +53,24 @@
         android:layout_height="60dp"
         android:layout_gravity="top">
 
-        <com.oounabaramusic.android.widget.textview.TextViewMediumFont
+        <TextView
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="match_parent"
             android:text="名称"
+            android:textSize="@dimen/font_medium_size"
             android:textColor="@color/positive"
             android:gravity="center_vertical"
             android:layout_marginStart="10dp"
             tools:ignore="HardcodedText" />
 
-        <com.oounabaramusic.android.widget.textview.TextViewMediumFont
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:gravity="center_vertical"
             android:layout_marginEnd="10dp"
             android:text="大海原"
+            android:textSize="@dimen/font_medium_size"
             tools:ignore="HardcodedText" />
     </LinearLayout>
 
@@ -84,22 +87,24 @@
         android:layout_height="60dp"
         android:layout_gravity="top">
 
-        <com.oounabaramusic.android.widget.textview.TextViewMediumFont
+        <TextView
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="match_parent"
             android:text="标签"
+            android:textSize="@dimen/font_medium_size"
             android:textColor="@color/positive"
             android:gravity="center_vertical"
             android:layout_marginStart="10dp"
             tools:ignore="HardcodedText" />
 
-        <com.oounabaramusic.android.widget.textview.TextViewMediumFont
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:gravity="center_vertical"
             android:layout_marginEnd="10dp"
             android:text="大海原"
+            android:textSize="@dimen/font_medium_size"
             tools:ignore="HardcodedText" />
     </LinearLayout>
 
@@ -116,22 +121,24 @@
         android:layout_height="60dp"
         android:layout_gravity="top">
 
-        <com.oounabaramusic.android.widget.textview.TextViewMediumFont
+        <TextView
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="match_parent"
             android:text="描述"
+            android:textSize="@dimen/font_medium_size"
             android:textColor="@color/positive"
             android:gravity="center_vertical"
             android:layout_marginStart="10dp"
             tools:ignore="HardcodedText" />
 
-        <com.oounabaramusic.android.widget.textview.TextViewMediumFont
+        <TextView
             android:layout_width="100dp"
             android:layout_height="match_parent"
             android:gravity="center_vertical|end"
             android:layout_marginEnd="10dp"
             android:text="大海原"
+            android:textSize="@dimen/font_medium_size"
             tools:ignore="HardcodedText" />
     </LinearLayout>
 </LinearLayout>

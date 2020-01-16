@@ -23,6 +23,11 @@ public class DensityUtil {
         return (int) (pxValue / scale + 0.5f);
     }
 
+    public static int px2sp(Context context, float pxValue) {
+        final float fontScale = context.getResources().getDisplayMetrics().scaledDensity;
+        return (int) (pxValue / fontScale + 0.5f);
+    }
+
     /**
      * 获取屏幕宽度
      * @param activity  活动

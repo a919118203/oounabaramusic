@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 public class PostCommentFragment extends Fragment {
 
     private Activity activity;
+    private View rootView;
     private CommentAdapter adapter;
     private View reSetFocus;
 
@@ -28,9 +29,11 @@ public class PostCommentFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view=LayoutInflater.from(activity).inflate(R.layout.fragment_post_comment,container,false);
-        init(view);
-        return view;
+        if(rootView==null){
+            View view=LayoutInflater.from(activity).inflate(R.layout.fragment_post_comment,container,false);
+            init(rootView);
+        }
+        return rootView;
     }
 
     private void init(View view) {

@@ -165,14 +165,6 @@ public class StatusBarUtil {
         }
     }
 
-    public static void setSystemUiVisibility(Activity activity,int f){
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            Window window = activity.getWindow();
-            window.getDecorView().setSystemUiVisibility(f);
-        }
-    }
-
-
     /**
      * 获取是否存在NavigationBar
      * @param context

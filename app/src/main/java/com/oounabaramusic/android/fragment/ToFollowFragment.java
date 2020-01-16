@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 public class ToFollowFragment extends Fragment {
 
     private Activity activity;
+    private View rootView;
     private ToFollowAdapter adapter;
 
     public ToFollowFragment(Activity activity){
@@ -27,9 +28,11 @@ public class ToFollowFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view=LayoutInflater.from(activity).inflate(R.layout.fragment_to_follow,container,false);
-        init(view);
-        return view;
+        if(rootView==null){
+            rootView=LayoutInflater.from(activity).inflate(R.layout.fragment_to_follow,container,false);
+            init(rootView);
+        }
+        return rootView;
     }
 
     private void init(View view) {

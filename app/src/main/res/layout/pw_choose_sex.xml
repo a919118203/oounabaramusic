@@ -21,8 +21,9 @@
             android:paddingEnd="20dp"
             android:background="@drawable/view_ripple_rectangle">
 
-            <com.oounabaramusic.android.widget.textview.TextViewMediumFont
+            <TextView
                 android:text="男"
+                android:textSize="@dimen/font_medium_size"
                 android:textColor="@color/positive"
                 android:layout_width="0dp"
                 android:layout_weight="1"
@@ -30,8 +31,9 @@
                 android:layout_gravity="center_vertical"
                 tools:ignore="HardcodedText" />
 
-            <com.oounabaramusic.android.widget.textview.TextViewMediumFont
+            <TextView
                 android:text="√"
+                android:textSize="@dimen/font_medium_size"
                 android:textColor="@color/colorPrimary"
                 android:visibility="gone"
                 android:layout_width="wrap_content"
@@ -48,8 +50,9 @@
             android:paddingEnd="20dp"
             android:background="@drawable/view_ripple_rectangle">
 
-            <com.oounabaramusic.android.widget.textview.TextViewMediumFont
+            <TextView
                 android:text="女"
+                android:textSize="@dimen/font_medium_size"
                 android:textColor="@color/positive"
                 android:layout_width="0dp"
                 android:layout_weight="1"
@@ -57,8 +60,9 @@
                 android:layout_gravity="center_vertical"
                 tools:ignore="HardcodedText" />
 
-            <com.oounabaramusic.android.widget.textview.TextViewMediumFont
+            <TextView
                 android:text="√"
+                android:textSize="@dimen/font_medium_size"
                 android:textColor="@color/colorPrimary"
                 android:visibility="gone"
                 android:layout_width="wrap_content"

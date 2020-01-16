@@ -15,9 +15,10 @@
         android:layout_width="70dp"
         android:layout_height="70dp"/>
 
-    <com.oounabaramusic.android.widget.textview.TextViewMediumFont
+    <TextView
         android:id="@+id/user_name"
         android:text="取一个昵称让大家记住你"
+        android:textSize="@dimen/font_medium_size"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:maxLines="1"
@@ -27,32 +28,37 @@
         android:layout_marginTop="10dp"
         tools:ignore="HardcodedText" />
 
-    <com.oounabaramusic.android.widget.textview.TextViewSmallFont
+    <TextView
         android:id="@+id/user_to_follow"
         android:text="关注 11"
+        android:textSize="@dimen/font_small_size"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/user_name"
         android:layout_marginTop="5dp"
-        android:layout_alignStart="@id/user_name"/>
+        android:layout_alignStart="@id/user_name"
+        tools:ignore="HardcodedText" />
 
-    <com.oounabaramusic.android.widget.textview.TextViewSmallFont
+    <TextView
         android:id="@+id/user_followed"
         android:text="粉丝 4"
+        android:textSize="@dimen/font_small_size"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_toEndOf="@id/user_to_follow"
         android:layout_alignTop="@id/user_to_follow"
-        android:layout_marginStart="10dp"/>
+        android:layout_marginStart="10dp"
+        tools:ignore="HardcodedText" />
 
-    <com.oounabaramusic.android.widget.textview.TextViewSmallFont
+    <TextView
         android:id="@+id/user_change_background"
         android:text="更换背景"
+        android:textSize="@dimen/font_small_size"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/user_name"
         android:layout_alignParentEnd="true"
-        android:background="@drawable/btn_edit_user"
+        android:background="@drawable/btn_white_transparent"
         android:layout_marginEnd="22dp"
         android:paddingTop="5dp"
         android:paddingBottom="5dp"
@@ -60,9 +66,10 @@
         android:paddingEnd="10dp"
         tools:ignore="HardcodedText" />
 
-    <com.oounabaramusic.android.widget.textview.TextViewSmallFont
+    <TextView
         android:id="@+id/user_edit"
         android:text="编辑"
+        android:textSize="@dimen/font_small_size"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/user_name"
@@ -72,17 +79,18 @@
         android:paddingBottom="5dp"
         android:paddingStart="10dp"
         android:paddingEnd="10dp"
-        android:background="@drawable/btn_edit_user"
+        android:background="@drawable/btn_white_transparent"
         tools:ignore="HardcodedText" />
 
-    <com.oounabaramusic.android.widget.textview.TextViewSmallFont
+    <TextView
         android:id="@+id/user_send_message"
         android:text="发私信"
+        android:textSize="@dimen/font_small_size"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/user_name"
         android:layout_alignParentEnd="true"
-        android:background="@drawable/btn_edit_user"
+        android:background="@drawable/btn_white_transparent"
         android:layout_marginEnd="22dp"
         android:paddingTop="5dp"
         android:paddingBottom="5dp"
@@ -90,9 +98,10 @@
         android:paddingEnd="10dp"
         tools:ignore="HardcodedText" />
 
-    <com.oounabaramusic.android.widget.textview.TextViewSmallFont
+    <TextView
         android:id="@+id/user_follow"
         android:text="关注"
+        android:textSize="@dimen/font_small_size"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/user_name"
@@ -102,12 +111,13 @@
         android:paddingBottom="5dp"
         android:paddingStart="10dp"
         android:paddingEnd="10dp"
-        android:background="@drawable/btn_edit_user"
+        android:background="@drawable/btn_white_transparent"
         tools:ignore="HardcodedText" />
 
-    <com.oounabaramusic.android.widget.textview.TextViewSmallFont
+    <TextView
         android:id="@+id/user_cancel_follow"
         android:text="取消关注"
+        android:textSize="@dimen/font_small_size"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/user_name"
@@ -117,7 +127,7 @@
         android:paddingBottom="5dp"
         android:paddingStart="10dp"
         android:paddingEnd="10dp"
-        android:background="@drawable/btn_edit_user"
+        android:background="@drawable/btn_white_transparent"
         android:visibility="gone"
         tools:ignore="HardcodedText" />
 </RelativeLayout>

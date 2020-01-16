@@ -6,17 +6,19 @@
     android:layout_height="60dp"
     android:background="@drawable/view_ripple_rectangle">
 
-    <com.oounabaramusic.android.widget.textview.TextViewMediumFont
+    <TextView
         android:id="@+id/index"
         android:text="1"
+        android:textSize="@dimen/font_medium_size"
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:gravity="center"
         tools:ignore="HardcodedText" />
 
-    <com.oounabaramusic.android.widget.textview.TextViewMediumFont
+    <TextView
         android:id="@+id/music_name"
         android:text="歌名"
+        android:textSize="@dimen/font_medium_size"
         android:textColor="@color/positive"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -27,9 +29,10 @@
         android:layout_toStartOf="@id/neee2"
         tools:ignore="HardcodedText" />
 
-    <com.oounabaramusic.android.widget.textview.TextViewSmallFont
+    <TextView
         android:id="@+id/music_singer"
         android:text="歌手名"
+        android:textSize="@dimen/font_small_size"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:maxLines="1"
@@ -67,8 +70,9 @@
                 android:layout_height="10dp"
                 android:layout_gravity="center_vertical"/>
 
-            <com.oounabaramusic.android.widget.textview.TextViewSmallFont
+            <TextView
                 android:text="3次"
+                android:textSize="@dimen/font_small_size"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"

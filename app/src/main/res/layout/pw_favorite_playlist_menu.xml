@@ -11,11 +11,12 @@
     android:paddingEnd="10dp"
     android:paddingTop="20dp">
 
-    <com.oounabaramusic.android.widget.textview.TextViewSmallFont
+    <TextView
+        android:text="@string/favorite_playlist"
+        android:textSize="@dimen/font_small_size"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
-        android:text="@string/favorite_playlist"/>
+        android:layout_marginBottom="10dp"/>
 
     <View
         android:layout_width="match_parent"
@@ -36,11 +37,12 @@
             android:padding="10dp"/>
 
 
-        <com.oounabaramusic.android.widget.textview.TextViewMediumFont
+        <TextView
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:text="@string/management_playlist"
+            android:textSize="@dimen/font_medium_size"
             android:textColor="@color/positive"
             android:gravity="center_vertical"/>
     </LinearLayout>

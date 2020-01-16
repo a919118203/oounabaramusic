@@ -34,6 +34,7 @@ public class UserInfoEditActivity extends BaseActivity implements View.OnClickLi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_info_edit);
+        StatusBarUtil.setWhiteStyleStatusBar(this);
 
         Toolbar toolbar=findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);

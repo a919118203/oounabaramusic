@@ -9,6 +9,11 @@ import android.widget.TextView;
 
 import com.google.android.material.navigation.NavigationView;
 import com.oounabaramusic.android.fragment.MainMyFragment;
+import com.oounabaramusic.android.fragment.MainNewDiscoveryFragment;
+import com.oounabaramusic.android.fragment.MainNowFragment;
+import com.oounabaramusic.android.fragment.MainVideoFragment;
+import com.oounabaramusic.android.util.LinksTextViewAndViewPager;
+import com.oounabaramusic.android.util.LogUtil;
 import com.oounabaramusic.android.util.StatusBarUtil;
 
 import java.util.ArrayList;
@@ -24,11 +29,11 @@ import androidx.viewpager.widget.ViewPager;
 public class MainActivity extends BaseActivity implements View.OnClickListener{
 
 
-    private TextView fragmentMainMy, fragmentMainSearch, fragmentMainNow, fragmentMainVideo;
     private ImageView mainSetting,mainSearch;
     private ViewPager viewPager;
     private DrawerLayout dl;
     private List<Fragment> fragments=new ArrayList<>();
+    private LinksTextViewAndViewPager link;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,22 +46,17 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
 
     private void init() {
         dl=findViewById(R.id.main_drawer_layout);
-        fragmentMainMy =findViewById(R.id.fragment_main_my);
-        fragmentMainSearch =findViewById(R.id.fragment_main_search);
-        fragmentMainNow =findViewById(R.id.fragment_main_now);
-        fragmentMainVideo =findViewById(R.id.fragment_main_video);
         mainSetting=findViewById(R.id.main_setting);
         mainSearch=findViewById(R.id.main_search);
 
         fragments.add(new MainMyFragment(this));
+        fragments.add(new MainNewDiscoveryFragment(this,getSupportFragmentManager()));
+        fragments.add(new MainNowFragment(this));
+        fragments.add(new MainVideoFragment(this));
+
         viewPager=findViewById(R.id.main_view_pager);
         viewPager.setAdapter(new MainFragmentPagerAdapter());
-        viewPager.addOnPageChangeListener(new MainOnPagerChangeListener());
 
-        fragmentMainMy.setOnClickListener(this);
-        fragmentMainSearch.setOnClickListener(this);
-        fragmentMainNow.setOnClickListener(this);
-        fragmentMainVideo.setOnClickListener(this);
         mainSearch.setOnClickListener(this);
         mainSetting.setOnClickListener(this);
         NavigationView view=findViewById(R.id.navigation_view);
@@ -82,22 +82,45 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
         });
         findViewById(R.id.main_setting).setOnClickListener(this);
 
+        List<TextView> textViews=new ArrayList<>();
+        textViews.add((TextView) findViewById(R.id.fragment_main_my));
+        textViews.add((TextView) findViewById(R.id.fragment_main_new_discovery));
+        textViews.add((TextView) findViewById(R.id.fragment_main_now));
+        textViews.add((TextView) findViewById(R.id.fragment_main_video));
+        link=new LinksTextViewAndViewPager(this,textViews,viewPager);
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                link.select(position);
+                if(position==1){
+                    ((MainNewDiscoveryFragment)fragments.get(1)).setF(true);
+                }else{
+                    ((MainNewDiscoveryFragment)fragments.get(1)).setF(false);
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
     }
 
     @Override
     public void onClick(View view) {
         Intent intent;
         switch (view.getId()){
-            case R.id.fragment_main_my:
-                break;
-            case R.id.fragment_main_search:
-                break;
-            case R.id.fragment_main_now:
-                break;
-            case R.id.fragment_main_video:
-                break;
             case R.id.main_setting:                     //点击左上角菜单时
                 dl.openDrawer(GravityCompat.START);
+                break;
+            case R.id.main_search:
+                intent=new Intent(this,SearchActivity.class);
+                startActivity(intent);
                 break;
             case R.id.to_user_info:                     //点击NavigationView的header部分时
                 intent=new Intent(this,UserInfoActivity.class);
@@ -123,21 +146,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
         @Override
         public int getCount() {
             return fragments.size();
-        }
-    }
-
-    private class MainOnPagerChangeListener implements ViewPager.OnPageChangeListener{
-
-        @Override
-        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-        }
-
-        @Override
-        public void onPageSelected(int position) {
-        }
-
-        @Override
-        public void onPageScrollStateChanged(int state) {
         }
     }
 }
