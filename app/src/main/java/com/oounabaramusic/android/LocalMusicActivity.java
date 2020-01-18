@@ -1,11 +1,19 @@
 package com.oounabaramusic.android;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
+import android.database.sqlite.SQLiteDatabase;
+import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.os.Environment;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -19,9 +27,25 @@ import android.widget.Toast;
 
 import com.oounabaramusic.android.adapter.LocalMusicAdapter;
 import com.oounabaramusic.android.bean.Music;
+import com.oounabaramusic.android.dao.LocalMusicDao;
+import com.oounabaramusic.android.dao.SqlCreateString;
+import com.oounabaramusic.android.util.DigestUtils;
+import com.oounabaramusic.android.util.LogUtil;
+import com.oounabaramusic.android.util.MyEnvironment;
 import com.oounabaramusic.android.util.StatusBarUtil;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileDescriptor;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class LocalMusicActivity extends BaseActivity implements View.OnClickListener{
@@ -42,6 +66,8 @@ public class LocalMusicActivity extends BaseActivity implements View.OnClickList
     private List<Music> musicList;//存歌曲列表的List
     private RelativeLayout musicPlayTool;//画面下方的播放器
 
+    private LocalMusicDao localMusicDao;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,6 +85,8 @@ public class LocalMusicActivity extends BaseActivity implements View.OnClickList
     }
 
     private void init() {
+        localMusicDao=new LocalMusicDao(this);
+
         View view=findViewById(R.id.outermost_layout);
         view.setPadding(
                 view.getPaddingLeft(),
@@ -130,15 +158,98 @@ public class LocalMusicActivity extends BaseActivity implements View.OnClickList
                 switchToolBar(TOOLBAR_MODE_EDIT);
                 break;
             case R.id.local_music_search_in_file://扫描所有文件夹中的歌曲
+                if(ContextCompat.checkSelfPermission(this,Manifest.permission.WRITE_EXTERNAL_STORAGE)!=PackageManager.PERMISSION_GRANTED){
+                    ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},0);
+                }else{
+                    searchFile(Environment.getExternalStorageDirectory());
+                }
                 break;
         }
         return true;
+    }
+
+    /**
+     * 扫描全部音乐文件
+     * 将所有的mp3结尾的且时长大于60s的文件的路径保存到local_music_tbl中
+     */
+    private void searchFile(File file) {
+        File[] files=file.listFiles();
+        for(File f:files){
+            if(f.isDirectory()){
+                searchFile(f);
+                continue;
+            }
+            String fileName=f.getName();
+            String[] s=fileName.split("\\.");
+
+            //判断拥有后缀的文件
+            if(s.length>=2&&checkFormat(s[s.length-1].trim())){
+
+                //判断时长
+                MediaPlayer mp=new MediaPlayer();
+                try {
+                    mp.setDataSource(f.getPath());
+                    mp.prepare();
+
+                    //大于60s
+                    if(mp.getDuration()>60000){
+                        insertTbl(f,mp.getDuration());
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    /**
+     *
+     * @param f
+     */
+    private void insertTbl(File f,int duration) {
+        Music item=new Music();
+        item.setDownloadStatus(3);
+        item.setDuration(duration);
+        item.setFilePath(f.getPath());
+        item.setFileSize(f.length());
+        item.setIsServer(2);//TODO    如果连网了直接查询是否是服务器的
+        item.setMd5(DigestUtils.md5HexOfFile(f));
+
+        String fileName=f.getName().split("\\.")[0];
+        String[] strings=fileName.split("-");
+        if(strings.length==2){
+            item.setSingerName(strings[0]);
+            item.setMusicName(strings[1]);
+        }
+        item.setSingerId(-1);
+        LogUtil.printLog(localMusicDao.insertLocalMusic(item)+"");
+    }
+
+    /**
+     * 后缀为mp3
+     * @param format
+     * @return
+     */
+    private boolean checkFormat(String format) {
+        return "mp3".equals(format);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode){
+            case 0:
+                if(grantResults.length>0&&grantResults[0]==PackageManager.PERMISSION_GRANTED){
+                    searchFile(Environment.getExternalStorageDirectory());
+                }
+                break;
+        }
     }
 
     @Override
     public void onClick(View v) {
         switch(v.getId()){
             case R.id.local_music_play_all://播放全部
+                localMusicDao.selectAllLocalMusic();
                 break;
             case R.id.local_music_multiple_choice://多选
                 switchToolBar(TOOLBAR_MODE_MULTIPLE_CHOICE);

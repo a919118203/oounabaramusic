@@ -159,13 +159,13 @@ public class LocalMusicAdapter extends RecyclerView.Adapter<LocalMusicAdapter.Lo
 
         RecyclerView playlist=view.findViewById(R.id.add_to_playlist_recycler_view);
         playlist.setLayoutManager(new LinearLayoutManager(activity));
-        playlist.setAdapter(new PlayListAdapter(activity));//TODO
+        playlist.setAdapter(new PlayListAdapter(activity));
         return view;
     }
 
     @Override
     public int getItemCount() {
-        return 1;
+        return 10;
     }
 
     class LocalMusicViewHolder extends RecyclerView.ViewHolder{

@@ -3,6 +3,8 @@ package com.oounabaramusic.android.fragment;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -12,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.oounabaramusic.android.DownloadManagementActivity;
 import com.oounabaramusic.android.LocalMusicActivity;
 import com.oounabaramusic.android.MyCollectionActivity;
@@ -22,6 +25,7 @@ import com.oounabaramusic.android.ResumePlayListActivity;
 import com.oounabaramusic.android.adapter.FavoritePlayListAdapter;
 import com.oounabaramusic.android.adapter.MyPlayListAdapter;
 import com.oounabaramusic.android.anim.OpenListAnimation;
+import com.oounabaramusic.android.widget.popupwindow.MyBottomSheetDialog;
 import com.oounabaramusic.android.widget.popupwindow.MyPopupWindow;
 
 import androidx.annotation.NonNull;
@@ -34,7 +38,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class MainMyFragment extends Fragment implements View.OnClickListener{
 
-    private MyPopupWindow pwMyPlaylistMenu;
+    private MyBottomSheetDialog dialogMyPlaylistMenu;
     private MyPopupWindow pwFavoritePlaylistMenu;
     private OpenListAnimation myPlaylistAnim,favoritePlaylistAnim;
     private MyPlayListAdapter myPlayListAdapter;
@@ -84,7 +88,9 @@ public class MainMyFragment extends Fragment implements View.OnClickListener{
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        pwMyPlaylistMenu=new MyPopupWindow(activity,createMyContentView());
+        dialogMyPlaylistMenu=new MyBottomSheetDialog(activity);
+        dialogMyPlaylistMenu.setContentView(createMyContentView());
+
         pwFavoritePlaylistMenu=new MyPopupWindow(activity,createFavoriteContentView());
     }
 
@@ -124,7 +130,7 @@ public class MainMyFragment extends Fragment implements View.OnClickListener{
             @Override
             public void onClick(View v) {
                 showDialog();
-                pwMyPlaylistMenu.dismiss();
+                dialogMyPlaylistMenu.dismiss();
             }
         });
 
@@ -134,7 +140,7 @@ public class MainMyFragment extends Fragment implements View.OnClickListener{
             public void onClick(View v) {
                 Intent intent=new Intent(activity, PlayListManagementActivity.class);
                 activity.startActivity(intent);
-                pwMyPlaylistMenu.dismiss();
+                dialogMyPlaylistMenu.dismiss();
             }
         });
 
@@ -144,7 +150,7 @@ public class MainMyFragment extends Fragment implements View.OnClickListener{
             public void onClick(View v) {
                 Intent intent=new Intent(activity, ResumePlayListActivity.class);
                 activity.startActivity(intent);
-                pwMyPlaylistMenu.dismiss();
+                dialogMyPlaylistMenu.dismiss();
             }
         });
 
@@ -156,7 +162,7 @@ public class MainMyFragment extends Fragment implements View.OnClickListener{
         Intent intent;
         switch (view.getId()){
             case R.id.my_playlist_menu:            //创建的歌单中的菜单按钮
-                pwMyPlaylistMenu.showPopupWindow();
+                dialogMyPlaylistMenu.show();
                 break;
             case R.id.favorite_playlist_menu:      //收藏的歌单中的菜单按钮
                 pwFavoritePlaylistMenu.showPopupWindow();

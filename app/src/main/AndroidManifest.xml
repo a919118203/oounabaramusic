@@ -3,6 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.oounabaramusic.android">
 
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -11,8 +13,12 @@
         android:supportsRtl="true"
         android:theme="@style/LightAppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".PlayListTagActivity"
-            android:label="歌单标签"/>
+        <activity android:name=".PhotoLoginActivity"
+            android:label="手机号登录"
+            android:windowSoftInputMode="adjustResize"/>
+        <activity
+            android:name=".PlayListTagActivity"
+            android:label="歌单标签" />
         <activity
             android:name=".PlayListSquareActivity"
             android:label="歌单广场" />

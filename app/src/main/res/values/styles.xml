@@ -3,13 +3,20 @@
     <!-- Base application theme. -->
     <style name="LightAppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="alertDialogTheme">@style/Theme.AppCompat.Light.Dialog.Alert.Self</item>
+        <item name="colorAccent">@color/colorPrimary</item>
     </style>
 
     <style name="Theme.AppCompat.Light.Dialog.Alert.Self" parent="@style/Theme.AppCompat.Light.Dialog.Alert">
         <item name="android:colorAccent">@color/blue</item>
     </style>
 
-    <style name="AppTheme" parent="Theme.AppCompat.NoActionBar"/>
+    <style name="EditPlayListInfoActivityTheme" parent="LightAppTheme">
+        <item name="android:statusBarColor">@color/colorPrimaryDark</item>
+    </style>
+
+    <style name="AppTheme" parent="Theme.AppCompat.NoActionBar">
+        <item name="colorAccent">@color/colorPrimary</item>
+    </style>
 
     <style name="MyCheckBox" parent="Widget.AppCompat.CompoundButton.CheckBox">
         <item name="android:colorControlActivated">@color/colorPrimary</item>
