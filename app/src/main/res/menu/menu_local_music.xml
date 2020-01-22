@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android"
+<menu xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item android:id="@+id/local_music_search_in_list"
         android:title="@string/search"
@@ -15,4 +16,10 @@
         android:id="@+id/local_music_menu_multiple_choice"
         android:title="@string/multiple_choice"
         app:showAsAction="always" />
+
+    <item
+        android:id="@+id/local_music_menu_multiple_choice_cancel"
+        android:title="取消全选"
+        app:showAsAction="always"
+        tools:ignore="HardcodedText" />
 </menu>

@@ -1,52 +1,44 @@
 package com.oounabaramusic.android;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.Manifest;
-import android.content.pm.PackageManager;
-import android.database.sqlite.SQLiteDatabase;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Message;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.Gravity;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
 import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.oounabaramusic.android.adapter.LocalMusicAdapter;
 import com.oounabaramusic.android.bean.Music;
 import com.oounabaramusic.android.dao.LocalMusicDao;
-import com.oounabaramusic.android.dao.SqlCreateString;
 import com.oounabaramusic.android.util.DigestUtils;
-import com.oounabaramusic.android.util.LogUtil;
-import com.oounabaramusic.android.util.MyEnvironment;
 import com.oounabaramusic.android.util.StatusBarUtil;
 
-import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FileDescriptor;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 public class LocalMusicActivity extends BaseActivity implements View.OnClickListener{
 
@@ -63,10 +55,9 @@ public class LocalMusicActivity extends BaseActivity implements View.OnClickList
     private LinearLayout delete;//底部菜单的“删除”
     private LinearLayout playAll;//ToolBar下方的播放全部
     private LinearLayout multipleChoice;//ToolBar下方的多选
-    private List<Music> musicList;//存歌曲列表的List
     private RelativeLayout musicPlayTool;//画面下方的播放器
 
-    private LocalMusicDao localMusicDao;
+    public LocalMusicDao localMusicDao;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,7 +86,7 @@ public class LocalMusicActivity extends BaseActivity implements View.OnClickList
                 view.getPaddingBottom());
 
         rv=findViewById(R.id.local_music_recycler_view);
-        adapter=new LocalMusicAdapter(this,createMusicList());
+        adapter=new LocalMusicAdapter(this,localMusicDao.selectAllLocalMusic());
         rv.setAdapter(adapter);
         LinearLayoutManager llm=new LinearLayoutManager(this);
         rv.setLayoutManager(llm);
@@ -114,11 +105,37 @@ public class LocalMusicActivity extends BaseActivity implements View.OnClickList
         nextPlay.setOnClickListener(this);
         addToPlaylist.setOnClickListener(this);
         delete.setOnClickListener(this);
+
+        //每当输入，都查询
+        edit.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if(s.length()==0){
+                    adapter.setMusicList(new ArrayList<Music>());
+                }else{
+                    adapter.setMusicList(localMusicDao.selectMusicByMusicName(s+""));
+                }
+                adapter.notifyDataSetChanged();
+            }
+        });
     }
 
-    private List<Music> createMusicList() {
-        musicList=new ArrayList<>();
-        return musicList;
+    /**
+     * 给adapter用来改变标题
+     * @param title
+     */
+    public void setTitle(String title){
+        Objects.requireNonNull(getSupportActionBar()).setTitle(title);
     }
 
     @Override
@@ -134,8 +151,17 @@ public class LocalMusicActivity extends BaseActivity implements View.OnClickList
                     }
                     break;
                 case R.id.local_music_menu_multiple_choice:
+                case R.id.local_music_menu_multiple_choice_cancel:
                     if(toolbarMode!=TOOLBAR_MODE_MULTIPLE_CHOICE){
                         item.setVisible(false);
+                    }else{
+                        if(adapter.checkAllSelect()){
+                            if(item.getItemId()==R.id.local_music_menu_multiple_choice)
+                                item.setVisible(false);
+                        }else{
+                            if(item.getItemId()==R.id.local_music_menu_multiple_choice_cancel)
+                                item.setVisible(false);
+                        }
                     }
                     break;
             }
@@ -158,14 +184,88 @@ public class LocalMusicActivity extends BaseActivity implements View.OnClickList
                 switchToolBar(TOOLBAR_MODE_EDIT);
                 break;
             case R.id.local_music_search_in_file://扫描所有文件夹中的歌曲
-                if(ContextCompat.checkSelfPermission(this,Manifest.permission.WRITE_EXTERNAL_STORAGE)!=PackageManager.PERMISSION_GRANTED){
-                    ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},0);
-                }else{
-                    searchFile(Environment.getExternalStorageDirectory());
-                }
+                startSearch();
+                break;
+            case R.id.local_music_menu_multiple_choice:
+                adapter.selectAll();
+                adapter.notifyDataSetChanged();
+                break;
+            case R.id.local_music_menu_multiple_choice_cancel:
+                adapter.selectAllCancel();
+                adapter.notifyDataSetChanged();
                 break;
         }
         return true;
+    }
+
+    //dialog的textView
+    private TextView dialogTV;
+    private Handler handler=new FileSearchHandler(this);
+    private List<String> filter=new ArrayList<>();
+
+    /**
+     * 开始扫描，显示dialog，开启线程
+     */
+    private void startSearch(){
+        checkTableData();
+
+        showSearchDialog();
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                searchFile(Environment.getExternalStorageDirectory());
+            }
+        }).start();
+    }
+
+    /**
+     * 检查表里存的数据的正确性，删除不正确的
+     */
+    private void checkTableData() {
+        List<Music> musics=localMusicDao.selectAllLocalMusic();
+
+        String filePath;
+        String md5;
+        for(Music m:musics){
+            filePath=m.getFilePath();
+            md5=m.getMd5();
+
+            File file=new File(filePath);
+            if(file.exists()){
+                if(file.length()==m.getFileSize()){
+                    if(md5.equals(DigestUtils.md5HexOfFile(file))){
+                        filter.add(md5);
+                    }else{
+                        localMusicDao.deleteMusicByMd5(md5);
+                    }
+                }else{
+                    localMusicDao.deleteMusicByMd5(md5);
+                }
+            }else{
+                localMusicDao.deleteMusicByMd5(md5);
+            }
+        }
+    }
+
+    /**
+     * 显示扫描文件的dialog
+     */
+    private AlertDialog dialog;
+
+    private void showSearchDialog() {
+        View view= LayoutInflater.from(this).inflate(R.layout.alertdialog_search_local_music, (ViewGroup) getWindow().getDecorView(),false);
+        dialogTV=view.findViewById(R.id.text_view);
+
+        dialog=new AlertDialog.Builder(this)
+                .setView(view)
+                .setCancelable(false)
+                .create();
+
+        Window window=Objects.requireNonNull(dialog.getWindow());
+        window.setBackgroundDrawable(getResources().getDrawable(R.drawable.layout_card_2));
+        dialog.show();
+
     }
 
     /**
@@ -173,6 +273,8 @@ public class LocalMusicActivity extends BaseActivity implements View.OnClickList
      * 将所有的mp3结尾的且时长大于60s的文件的路径保存到local_music_tbl中
      */
     private void searchFile(File file) {
+        handler.sendEmptyMessage(FileSearchHandler.START);
+
         File[] files=file.listFiles();
         for(File f:files){
             if(f.isDirectory()){
@@ -180,9 +282,13 @@ public class LocalMusicActivity extends BaseActivity implements View.OnClickList
                 continue;
             }
             String fileName=f.getName();
-            String[] s=fileName.split("\\.");
+            Message message=new Message();
+            message.obj=fileName;
+            message.what=FileSearchHandler.CHANGE_TEXT_VIEW;
+            handler.sendMessage(message);
 
             //判断拥有后缀的文件
+            String[] s=fileName.split("\\.");
             if(s.length>=2&&checkFormat(s[s.length-1].trim())){
 
                 //判断时长
@@ -200,33 +306,44 @@ public class LocalMusicActivity extends BaseActivity implements View.OnClickList
                 }
             }
         }
+
+        handler.sendEmptyMessage(FileSearchHandler.END);
     }
 
     /**
-     *
+     *  将扫描出来的file插入到表中
      * @param f
      */
     private void insertTbl(File f,int duration) {
         Music item=new Music();
+        item.setMd5(DigestUtils.md5HexOfFile(f));
+
+        if(localMusicDao.md5IsExists(item.getMd5())){
+            return;
+        }
+
         item.setDownloadStatus(3);
-        item.setDuration(duration);
+        item.setDuration(duration/1000);
         item.setFilePath(f.getPath());
         item.setFileSize(f.length());
         item.setIsServer(2);//TODO    如果连网了直接查询是否是服务器的
-        item.setMd5(DigestUtils.md5HexOfFile(f));
 
         String fileName=f.getName().split("\\.")[0];
         String[] strings=fileName.split("-");
         if(strings.length==2){
-            item.setSingerName(strings[0]);
-            item.setMusicName(strings[1]);
+            item.setSingerName(strings[0].trim());
+            item.setMusicName(strings[1].trim());
+        }else{
+            item.setMusicName(fileName);
+            item.setSingerName("未知");
         }
         item.setSingerId(-1);
-        LogUtil.printLog(localMusicDao.insertLocalMusic(item)+"");
+
+        localMusicDao.insertLocalMusic(item);
     }
 
     /**
-     * 后缀为mp3
+     * 检查后缀是否为mp3
      * @param format
      * @return
      */
@@ -234,14 +351,38 @@ public class LocalMusicActivity extends BaseActivity implements View.OnClickList
         return "mp3".equals(format);
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        switch (requestCode){
-            case 0:
-                if(grantResults.length>0&&grantResults[0]==PackageManager.PERMISSION_GRANTED){
-                    searchFile(Environment.getExternalStorageDirectory());
-                }
-                break;
+    /**
+     * 控制文件扫描的handler
+     */
+    static class FileSearchHandler extends Handler{
+        static final int START=0;
+        static final int END=1;
+        static final int CHANGE_TEXT_VIEW=2;
+        private int cnt=0;
+        private LocalMusicActivity activity;
+
+        FileSearchHandler(LocalMusicActivity activity){
+            this.activity=activity;
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what){
+                case START:
+                    cnt++;
+                    break;
+                case END:
+                    cnt--;
+                    if(cnt==0){
+                        activity.dialog.dismiss();
+                        activity.adapter.setMusicList(activity.localMusicDao.selectAllLocalMusic());
+                        activity.adapter.notifyDataSetChanged();
+                    }
+                    break;
+                case CHANGE_TEXT_VIEW:
+                    activity.dialogTV.setText((String)msg.obj);
+                    break;
+            }
         }
     }
 
@@ -249,7 +390,7 @@ public class LocalMusicActivity extends BaseActivity implements View.OnClickList
     public void onClick(View v) {
         switch(v.getId()){
             case R.id.local_music_play_all://播放全部
-                localMusicDao.selectAllLocalMusic();
+                localMusicDao.deleteAll();
                 break;
             case R.id.local_music_multiple_choice://多选
                 switchToolBar(TOOLBAR_MODE_MULTIPLE_CHOICE);
@@ -275,7 +416,7 @@ public class LocalMusicActivity extends BaseActivity implements View.OnClickList
                     toast.setGravity(Gravity.BOTTOM,0,200);
                     toast.show();
                 }
-                int b=1,c=2;
+                adapter.showDeleteDialog();
                 break;
         }
     }
@@ -286,6 +427,7 @@ public class LocalMusicActivity extends BaseActivity implements View.OnClickList
      */
 
     private void switchToolBar(int mode){
+        int afterMode=toolbarMode;
         toolbarMode=mode;
         invalidateOptionsMenu();
 
@@ -296,13 +438,21 @@ public class LocalMusicActivity extends BaseActivity implements View.OnClickList
                 edit.setVisibility(View.GONE);
                 bottomToolBar.setVisibility(View.GONE);
                 musicPlayTool.setVisibility(View.VISIBLE);
+                adapter.selectAllCancel(); //清空选中状态
                 actionBarTitle="本地音乐";
+
+                if(afterMode==TOOLBAR_MODE_EDIT){
+                    adapter.setMusicList(localMusicDao.selectAllLocalMusic());
+                    adapter.notifyDataSetChanged();
+                }
                 break;
             case TOOLBAR_MODE_EDIT:
                 playAll.setVisibility(View.GONE);
                 edit.setVisibility(View.VISIBLE);
                 bottomToolBar.setVisibility(View.GONE);
                 musicPlayTool.setVisibility(View.VISIBLE);
+                adapter.setMusicList(new ArrayList<Music>());
+                adapter.notifyDataSetChanged();
                 break;
             case TOOLBAR_MODE_MULTIPLE_CHOICE:
                 playAll.setVisibility(View.GONE);

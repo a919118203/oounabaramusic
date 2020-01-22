@@ -24,7 +24,7 @@ public class PlayButton extends View{
     private Path stop;
     private Path outSide;
     private RectF rectF;                 //定型进度条圆弧
-    private boolean state=false;         //true - > start  false - > stop
+    private boolean status =false;         //true - > start  false - > stop
     public PlayButton(Context context) {
         super(context);
         init(null);
@@ -98,7 +98,7 @@ public class PlayButton extends View{
         paint.setStyle(Paint.Style.FILL);
         paint.setColor(getContext().getResources().getColor(R.color.colorPrimaryDark));
         canvas.drawPath(outSide,paint);
-        if(state){
+        if(status){
             paint.setStyle(Paint.Style.STROKE);
             paint.setColor(getContext().getResources().getColor(R.color.negative));
             canvas.drawPath(outSide,paint);
@@ -122,12 +122,12 @@ public class PlayButton extends View{
 
                 @Override
                 public void onClick(View v) {
-                    if(state){
-                        state=false;
+                    if(status){
+                        status =false;
                         listener.onStop();
                         invalidate();
                     }else{
-                        state=true;
+                        status =true;
                         listener.onStart();
                         invalidate();
                     }
@@ -151,6 +151,11 @@ public class PlayButton extends View{
 
     public void setMaxProgress(float maxProgress) {
         this.maxProgress = maxProgress;
+    }
+
+    public void setStatus(boolean status) {
+        this.status = status;
+        invalidate();
     }
 
     public interface OnClickPlayButtonListener{

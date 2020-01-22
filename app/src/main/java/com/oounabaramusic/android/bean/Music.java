@@ -12,10 +12,10 @@ public class Music{
     private String filePath;     //文件路径
     private String coverPath;    //封面路径
     private int  duration;       //时长
-    private long  fileSize;       //文件大小
+    private long  fileSize;      //文件大小
     private String md5;          //判断是不是同一个文件
     private int downloadStatus;  //下载状态     0：已下载完成   1：还没下载  2：正在下载 3:不是下载文件
-    private int isServer;        //是否是服务器中的音乐   0：不是 1：是  2：待判定
+    private int isServer;        //音乐类型     0 本地音乐 1 服务器音乐 2:待判定
 
     public int getId() {
         return id;

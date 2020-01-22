@@ -28,7 +28,7 @@ import com.oounabaramusic.android.util.StatusBarUtil;
 
 import java.util.Arrays;
 
-public class MusicPlayActivity extends AppCompatActivity implements View.OnClickListener{
+public class MusicPlayActivity extends BaseActivity implements View.OnClickListener{
 
     private LyricsAdapter adapter;
     private RecyclerView rv;

@@ -13,8 +13,11 @@ import android.os.Message;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.oounabaramusic.android.okhttputil.HttpUtil;
 import com.oounabaramusic.android.util.StatusBarUtil;
 import com.oounabaramusic.android.util.StringUtil;
 
@@ -26,6 +29,8 @@ public class PhotoLoginActivity extends BaseActivity {
     private String strPhoto;
     private Handler afterHandler=new AfterHandler(this),
             beforeHandler=new BeforeHandler(this);
+
+    private TextView getVerificationCode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +51,7 @@ public class PhotoLoginActivity extends BaseActivity {
     private void init() {
         photo=findViewById(R.id.photo);
         verificationCode=findViewById(R.id.verification_code);
+        getVerificationCode=findViewById(R.id.get_verification_code);
 
         SMSSDK.registerEventHandler(new EventHandler(){
 
@@ -96,21 +102,53 @@ public class PhotoLoginActivity extends BaseActivity {
     }
 
     public void onGetVerificationCode(View view){
-        strPhoto=photo.getText().toString();
-        if(strPhoto.length()==0){
-            Toast.makeText(this, "还没写电话号码呢", Toast.LENGTH_SHORT).show();
-            return;
-        }
+        getVerificationCode.setEnabled(false);
+        getVerificationCode.setTextColor(getResources().getColor(R.color.negative));
+        new Thread(new Runnable() {
+            int timeSum=60;
+            @Override
+            public void run() {
+                while(timeSum!=0){
+                    try {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                getVerificationCode.setText("("+timeSum+"S)");
+                            }
+                        });
+                        timeSum--;
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        getVerificationCode.setEnabled(true);
+                        getVerificationCode.setTextColor(getResources().getColor(R.color.colorPrimary));
+                        getVerificationCode.setText("获取验证码");
+                    }
+                });
+            }
+        }).start();
 
-        if(!StringUtil.checkAllNumbers(strPhoto)){
-            Toast.makeText(this, "输入全数字", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        SMSSDK.getVerificationCode("86",strPhoto);
+
+//        strPhoto=photo.getText().toString();
+//        if(strPhoto.length()==0){
+//            Toast.makeText(this, "还没写电话号码呢", Toast.LENGTH_SHORT).show();
+//            return;
+//        }
+//
+//        if(!StringUtil.checkAllNumbers(strPhoto)){
+//            Toast.makeText(this, "输入全数字", Toast.LENGTH_SHORT).show();
+//            return;
+//        }
+//        SMSSDK.getVerificationCode("86",strPhoto);
     }
 
     public void login(){
-
+        HttpUtil.login(strPhoto,this);
     }
 
     static class AfterHandler extends Handler {
@@ -145,7 +183,7 @@ public class PhotoLoginActivity extends BaseActivity {
         }
 
         private void login(){
-
+            activity.login();
         }
     }
 

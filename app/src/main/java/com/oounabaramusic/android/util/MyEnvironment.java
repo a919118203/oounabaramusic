@@ -4,11 +4,12 @@ import android.os.Environment;
 
 public class MyEnvironment {
 
-    private static String basePath= Environment.getExternalStorageDirectory()+"/OounabaraMusic";
+    public static String fileBasePath = Environment.getExternalStorageDirectory()+"/OounabaraMusic/";
 
-    private static String baseServerPath="http://192.168.1.8:8080/OounabaraMusic/";
+    public static String cachePath = Environment.getExternalStorageDirectory()+"/OounabaraMusic/cache/";
 
-    public static String getBasePath(){
-        return basePath;
-    }
+    public static String serverBasePath ="http://192.168.1.5:8080/OounabaraMusic/";
+
+    public static String databaseName ="oounabaramusic.db";
+
 }

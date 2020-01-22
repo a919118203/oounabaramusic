@@ -1,7 +1,12 @@
 package com.oounabaramusic.android;
 
+import android.Manifest;
+import android.content.ComponentName;
 import android.content.Intent;
+import android.content.ServiceConnection;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -12,14 +17,18 @@ import com.oounabaramusic.android.fragment.MainMyFragment;
 import com.oounabaramusic.android.fragment.MainNewDiscoveryFragment;
 import com.oounabaramusic.android.fragment.MainNowFragment;
 import com.oounabaramusic.android.fragment.MainVideoFragment;
+import com.oounabaramusic.android.service.MusicPlayService;
 import com.oounabaramusic.android.util.LinksTextViewAndViewPager;
 import com.oounabaramusic.android.util.LogUtil;
+import com.oounabaramusic.android.util.MyEnvironment;
 import com.oounabaramusic.android.util.StatusBarUtil;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
@@ -45,6 +54,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
     }
 
     private void init() {
+
+        initDir();
         dl=findViewById(R.id.main_drawer_layout);
         mainSetting=findViewById(R.id.main_setting);
         mainSearch=findViewById(R.id.main_search);
@@ -109,6 +120,24 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
 
             }
         });
+    }
+
+    private void initDir() {
+        if(ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)!= PackageManager.PERMISSION_GRANTED){
+            ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},0);
+            return ;
+        }
+        File file=new File(MyEnvironment.cachePath);
+        file.mkdirs();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if(requestCode==0){
+            if(grantResults.length>0&&grantResults[0]==PackageManager.PERMISSION_GRANTED){
+                initDir();
+            }
+        }
     }
 
     @Override

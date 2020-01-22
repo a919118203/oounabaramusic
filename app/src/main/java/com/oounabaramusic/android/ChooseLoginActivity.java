@@ -28,7 +28,6 @@ public class ChooseLoginActivity extends BaseActivity implements View.OnClickLis
             case R.id.choose_login_phone:
                 intent = new Intent(this, PhotoLoginActivity.class);
                 startActivity(intent);
-                finish();
                 break;
             case R.id.choose_login_tourist:
                 intent = new Intent(this, MainActivity.class);

@@ -4,6 +4,7 @@
     package="com.oounabaramusic.android">
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.INTERNET"/>
 
     <application
         android:allowBackup="true"
@@ -104,6 +105,10 @@
         <activity
             android:name=".MainActivity"
             android:label="" />
+
+        <service android:name=".service.MusicPlayService"
+            android:enabled="true"
+            android:exported="false"/>
     </application>
 
 </manifest>

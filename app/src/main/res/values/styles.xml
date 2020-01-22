@@ -21,4 +21,9 @@
     <style name="MyCheckBox" parent="Widget.AppCompat.CompoundButton.CheckBox">
         <item name="android:colorControlActivated">@color/colorPrimary</item>
     </style>
+
+    <style name="MyAlertDialog" parent="@android:style/Theme.DeviceDefault.Dialog">
+        <!--该行代码就是设置AlertDialog的背景-->
+        <item name="android:background">@drawable/layout_card_2</item>
+    </style>
 </resources>

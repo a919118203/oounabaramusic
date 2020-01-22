@@ -6,7 +6,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.oounabaramusic.android.bean.Music;
-import com.oounabaramusic.android.util.LogUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,27 +32,71 @@ public class LocalMusicDao extends BaseDao {
     }
 
     public List<Music> selectAllLocalMusic(){
-        List<Music> music=new ArrayList<>();
+        List<Music> musics=new ArrayList<>();
+        Music item;
         Cursor cursor=db.rawQuery(SqlSelectString.SELECT_ALL_LOCAL_MUSIC,null);
         if(cursor.moveToFirst()){
             do{
-                LogUtil.printLog(
-                        cursor.getInt(cursor.getColumnIndex("id"))+
-                                cursor.getString(cursor.getColumnIndex("music_name"))+
-                                cursor.getString(cursor.getColumnIndex("singer_name"))+
-                                cursor.getInt(cursor.getColumnIndex("singer_id"))+
-                                cursor.getString(cursor.getColumnIndex("file_path"))+
-                                cursor.getString(cursor.getColumnIndex("cover_path"))+
-                                cursor.getInt(cursor.getColumnIndex("duration"))+
-                                cursor.getInt(cursor.getColumnIndex("file_size"))+
-                                cursor.getString(cursor.getColumnIndex("md5"))+
-                                cursor.getInt(cursor.getColumnIndex("download_status"))+
-                                cursor.getInt(cursor.getColumnIndex("is_server"))
-
-                );
+                item=new Music();
+                item.setMusicName(cursor.getString(cursor.getColumnIndex("music_name")));
+                item.setSingerName(cursor.getString(cursor.getColumnIndex("singer_name")));
+                item.setMd5(cursor.getString(cursor.getColumnIndex("md5")));
+                item.setFilePath(cursor.getString(cursor.getColumnIndex("file_path")));
+                item.setFileSize(cursor.getLong(cursor.getColumnIndex("file_size")));
+                item.setSingerName(cursor.getString(cursor.getColumnIndex("singer_name")));
+                item.setDuration(cursor.getInt(cursor.getColumnIndex("duration")));
+                musics.add(item);
             }while(cursor.moveToNext());
         }
         cursor.close();
-        return music;
+        return musics;
+    }
+
+    public void deleteAll(){
+        db.execSQL(SqlDeleteString.DELETE_ALL_LOCAL_MUSIC);
+    }
+
+    public boolean md5IsExists(String md5){
+        Cursor cursor=db.rawQuery(SqlSelectString.SELECT_MUSIC_BY_MD5,new String[]{md5});
+        boolean f=cursor.moveToFirst();
+        cursor.close();
+        return f;
+    }
+
+    public List<Music> selectMusicByMusicName(String musicName){
+        List<Music> musics=new ArrayList<>();
+        Music item;
+        Cursor cursor = db.rawQuery(SqlSelectString.SELECT_MUSIC_BY_MUSIC_NAME,new String[]{"%"+musicName+"%"});
+        if(cursor.moveToFirst()){
+            do{
+                item=new Music();
+                item.setMusicName(cursor.getString(cursor.getColumnIndex("music_name")));
+                item.setSingerName(cursor.getString(cursor.getColumnIndex("singer_name")));
+                item.setMd5(cursor.getString(cursor.getColumnIndex("md5")));
+                item.setFilePath(cursor.getString(cursor.getColumnIndex("file_path")));
+                item.setFileSize(cursor.getLong(cursor.getColumnIndex("file_size")));
+                item.setSingerName(cursor.getString(cursor.getColumnIndex("singer_name")));
+                item.setDuration(cursor.getInt(cursor.getColumnIndex("duration")));
+                musics.add(item);
+            }while(cursor.moveToNext());
+        }
+        cursor.close();
+
+        return musics;
+    }
+
+    /**
+     * 第一个   歌曲名
+     * 第二个   歌手名
+     * 第三个   路径
+     * 第四个   md5
+     * @param item
+     */
+    public void updateFileNameByMd5(String... item){
+        db.execSQL(SqlUpdateString.UPDATE_FILE_NAME_BY_MD5,item);
+    }
+
+    public void deleteMusicByMd5(String md5){
+        db.execSQL(SqlDeleteString.DELETE_MUSIC_BY_MD5,new String[]{md5});
     }
 }

@@ -3,9 +3,11 @@ package com.oounabaramusic.android;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -27,9 +29,19 @@ public class TitlePageActivity extends AppCompatActivity {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                Intent intent=new Intent(TitlePageActivity.this,ChooseLoginActivity.class);
+                Intent intent;
+
+                SharedPreferences sp= PreferenceManager.getDefaultSharedPreferences(TitlePageActivity.this);
+                boolean f=sp.getBoolean("login",false);
+                if(f){
+                    intent=new Intent(TitlePageActivity.this,MainActivity.class);
+                }else{
+                    intent=new Intent(TitlePageActivity.this,ChooseLoginActivity.class);
+                }
+
                 startActivity(intent);
                 TitlePageActivity.this.finish();
+
             }
         }).start();
     }

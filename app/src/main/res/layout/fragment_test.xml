@@ -4,29 +4,31 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-
-    <TextView
-        android:id="@+id/text"
-        android:text="这是一个字符串"
-        android:textSize="@dimen/font_medium_size"
-        android:textColor="@color/top_tool_bar_un_select"
+    <Button
+        android:id="@+id/start"
+        android:text="start"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:layout_marginTop="50dp"
-        tools:ignore="HardcodedText" />
+        android:textAllCaps="false"/>
 
     <Button
-        android:id="@+id/to_big"
-        android:text="变大"
+        android:id="@+id/stop"
+        android:text="stop"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:ignore="HardcodedText" />
+        android:textAllCaps="false"/>
 
     <Button
-        android:id="@+id/to_small"
-        android:text="变小"
+        android:id="@+id/bind"
+        android:text="bind"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:ignore="HardcodedText" />
+        android:textAllCaps="false"/>
+
+    <Button
+        android:id="@+id/unbind"
+        android:text="unbind"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAllCaps="false"/>
 </LinearLayout>

@@ -3,8 +3,6 @@ package com.oounabaramusic.android.fragment;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -14,7 +12,6 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.oounabaramusic.android.DownloadManagementActivity;
 import com.oounabaramusic.android.LocalMusicActivity;
 import com.oounabaramusic.android.MyCollectionActivity;
@@ -203,7 +200,7 @@ public class MainMyFragment extends Fragment implements View.OnClickListener{
 
     private void showDialog() {
 
-        View contentView=LayoutInflater.from(activity).inflate(R.layout.alterdialog_add_playlist, (ViewGroup) activity.getWindow().getDecorView(),false);
+        View contentView=LayoutInflater.from(activity).inflate(R.layout.alertdialog_add_playlist, (ViewGroup) activity.getWindow().getDecorView(),false);
         final EditText ct=contentView.findViewById(R.id.dialog_playlist_name);
         final TextView tv=contentView.findViewById(R.id.dialog_edit_count);
 
