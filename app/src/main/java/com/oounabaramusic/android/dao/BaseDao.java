@@ -12,7 +12,7 @@ public class BaseDao {
     protected SQLiteDatabase db;
 
     public BaseDao(Context context){
-        helper=new MySQLiteOpenHelper(context, MyEnvironment.databaseName,null,5);
+        helper=new MySQLiteOpenHelper(context, MyEnvironment.databaseName,null,8);
         db=helper.getWritableDatabase();
     }
 }

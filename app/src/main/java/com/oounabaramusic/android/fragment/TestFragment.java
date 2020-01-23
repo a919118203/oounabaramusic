@@ -1,45 +1,32 @@
 package com.oounabaramusic.android.fragment;
 
-import android.app.Activity;
-import android.content.ComponentName;
-import android.content.Context;
-import android.content.Intent;
-import android.content.ServiceConnection;
-import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.oounabaramusic.android.MyCollectionActivity;
 import com.oounabaramusic.android.R;
-import com.oounabaramusic.android.anim.TextSizeChangeAnimation;
-import com.oounabaramusic.android.okhttputil.HttpUtil;
-import com.oounabaramusic.android.service.MusicPlayService;
+import com.oounabaramusic.android.util.LogUtil;
 import com.oounabaramusic.android.util.MyEnvironment;
-import com.oounabaramusic.android.widget.MyImageView;
 
+
+import org.jetbrains.annotations.NotNull;
+
+import java.io.IOException;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 public class TestFragment extends BaseFragment implements View.OnClickListener{
 
     private MyCollectionActivity activity;
     private View rootView;
-    private ServiceConnection connection=new ServiceConnection() {
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {
-
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName name) {
-
-        }
-    };
 
     public TestFragment(MyCollectionActivity activity){
         this.activity=activity;
@@ -65,22 +52,34 @@ public class TestFragment extends BaseFragment implements View.OnClickListener{
     }
 
     public void onStartService(View v){
-        Intent intent=new Intent(activity, MusicPlayService.class);
-        activity.startService(intent);
+        OkHttpClient client=new OkHttpClient();
+
+        Request request=new Request.Builder()
+                .url(MyEnvironment.serverBasePath+"test")
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                LogUtil.printLog("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                LogUtil.printLog("????????????????????????????????????????????????");
+            }
+        });
     }
 
     public void onStopService(View v){
-        Intent intent=new Intent(activity, MusicPlayService.class);
-        activity.stopService(intent);
     }
 
     public void onBind(View v){
-        Intent intent=new Intent(activity,MusicPlayService.class);
-        activity.bindService(intent,connection, Context.BIND_AUTO_CREATE);
     }
 
     public void onUnBind(View v){
-        activity.unbindService(connection);
+
     }
 
     @Override

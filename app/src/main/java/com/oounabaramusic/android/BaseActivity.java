@@ -3,6 +3,8 @@ package com.oounabaramusic.android;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -11,18 +13,28 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.oounabaramusic.android.adapter.MusicPlayListAdapter;
+import com.oounabaramusic.android.bean.Music;
+import com.oounabaramusic.android.dao.LocalMusicDao;
 import com.oounabaramusic.android.service.MusicPlayService;
 import com.oounabaramusic.android.util.ActivityManager;
 import com.oounabaramusic.android.util.LogUtil;
+import com.oounabaramusic.android.util.MyEnvironment;
+import com.oounabaramusic.android.widget.customview.MyCircleImageView;
 import com.oounabaramusic.android.widget.customview.PlayButton;
 import com.oounabaramusic.android.widget.popupwindow.MyPopupWindow;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class BaseActivity extends AppCompatActivity {
     protected static final int CHOOSE_PHOTO=1;     //打开相册选择图片
@@ -32,11 +44,14 @@ public class BaseActivity extends AppCompatActivity {
     private ServiceConnection connection;
 
     private RelativeLayout musicPlayBar;
+    protected LocalMusicDao localMusicDao;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         LogUtil.printLog("onCreate: "+this.toString());
         super.onCreate(savedInstanceState);
         ActivityManager.addActivity(this);
+        localMusicDao=new LocalMusicDao(this);
     }
 
     private void init(){
@@ -52,7 +67,7 @@ public class BaseActivity extends AppCompatActivity {
 
     @Override
     protected void onStop() {
-        LogUtil.printLog("onStop: "+this.toString());
+        LogUtil.printLog("onStop: "+this.toString()+"musicPlayBar==null?:  "+String.valueOf(musicPlayBar==null));
         if(musicPlayBar!=null){
             unbindService(connection);
         }
@@ -72,6 +87,7 @@ public class BaseActivity extends AppCompatActivity {
                 public void onServiceConnected(ComponentName name, IBinder service) {
                     binder= (MusicPlayService.MusicPlayBinder) service;
                     binder.setHandler(handler);
+                    binder.setLocalMusicDao(localMusicDao);
                     initPlay();
                 }
 
@@ -93,22 +109,28 @@ public class BaseActivity extends AppCompatActivity {
             if(binder.getStatus()!=MusicPlayService.NOT_PREPARE){
                 musicPlayBar.setVisibility(View.VISIBLE);
                 playButton.setMaxProgress(binder.getCurrentMusicDuration());
+                playButton.setProgress(binder.getCurrentProgress());
+
+                initPlayBar();
             }
 
             playButton.addOnClickPlayButtonListener(new PlayButton.OnClickPlayButtonListener() {
                 @Override
                 public void onStart() {
-
+                    binder.startMusic();
                 }
 
                 @Override
                 public void onStop() {
-
+                    binder.pauseMusic();
                 }
             });
+
             findViewById(R.id.music_play_list).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    listAdapter.setCurrentPlay(binder.getCurrentMusicPosition());
+                    listAdapter.setDataList(localMusicDao.selectMusicByMd5(binder.getPlayList()));
                     musicPlayList.showPopupWindow();
                 }
             });
@@ -122,13 +144,45 @@ public class BaseActivity extends AppCompatActivity {
             });
         }
     }
+
+    private void initPlayBar(){
+        Music item=localMusicDao.selectMusicByMd5(binder.getCurrentMusic().getMd5());
+
+        TextView tv=musicPlayBar.findViewById(R.id.music_name);
+        tv.setText(item.getMusicName());
+
+        TextView tv2=musicPlayBar.findViewById(R.id.singer_name);
+        tv2.setText(item.getSingerName());
+
+        MyCircleImageView cv=musicPlayBar.findViewById(R.id.music_cover);
+
+        int isServer=item.getIsServer();
+        String coverPath=MyEnvironment.cachePath+item.getMd5();
+
+        if(isServer==1){
+            File file=new File(coverPath);
+            if(file.exists()){
+                LogUtil.printLog("加载图片：服务器音乐封面，本地有缓存");
+                Bitmap bitmap= BitmapFactory.decodeFile(MyEnvironment.cachePath+coverPath);
+                cv.setImageBitmap(bitmap);
+            }else{
+                LogUtil.printLog("加载图片：服务器音乐封面，本地缓存已被删除，请求服务器获取封面");
+                cv.setImageUrl(MyEnvironment.serverBasePath+"/music/loadMusicCover?musicMd5="+item.getMd5());
+            }
+        }else{
+            LogUtil.printLog("加载图片：本地音乐图片，无封面，设置为默认图片");
+            Bitmap bitmap=BitmapFactory.decodeResource(getResources(),R.mipmap.default_image);
+            cv.setImageBitmap(bitmap);
+        }
+    }
+
+    private MusicPlayListAdapter listAdapter;
     private View createContentView() {
         View view=LayoutInflater.from(this).inflate(R.layout.pw_play_list, (ViewGroup) getWindow().getDecorView(),false);
 
         RecyclerView recyclerView=view.findViewById(R.id.recycler_view);
-        recyclerView.setAdapter(new MusicPlayListAdapter(this));
+        recyclerView.setAdapter(listAdapter=new MusicPlayListAdapter(this));
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
 
         return view;
     }
@@ -156,6 +210,8 @@ public class BaseActivity extends AppCompatActivity {
                     activity.playButton.setMaxProgress(activity.binder.getCurrentMusicDuration());
                     activity.playButton.setStatus(true);
                     activity.musicPlayBar.setVisibility(View.VISIBLE);
+
+                    activity.initPlayBar();
                     break;
                 case MusicPlayService.EVENT_UPDATE_TIME:
                     activity.playButton.setProgress(msg.arg1);

@@ -13,7 +13,7 @@
         android:layout_gravity="start">
 
         <de.hdodenhof.circleimageview.CircleImageView
-            android:src="@mipmap/choose_login"
+            android:src="@mipmap/default_image"
             android:id="@+id/left_header"
             android:layout_width="40dp"
             android:layout_height="40dp"/>
@@ -48,7 +48,7 @@
             tools:ignore="HardcodedText" />
 
         <de.hdodenhof.circleimageview.CircleImageView
-            android:src="@mipmap/choose_login"
+            android:src="@mipmap/default_image"
             android:id="@+id/right_header"
             android:layout_width="40dp"
             android:layout_height="40dp"/>

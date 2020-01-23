@@ -28,7 +28,6 @@ public class ActivityManager {
         if(activity instanceof MainActivity){
             Intent intent=new Intent(activity, MusicPlayService.class);
             activity.stopService(intent);
-            Toast.makeText(activity,"所有退出",Toast.LENGTH_SHORT).show();
         }
     }
 }

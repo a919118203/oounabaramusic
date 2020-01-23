@@ -12,7 +12,7 @@
 
     <ImageView
         android:id="@+id/playlist_cover"
-        android:src="@mipmap/choose_login"
+        android:src="@mipmap/default_image"
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:scaleType="centerCrop"

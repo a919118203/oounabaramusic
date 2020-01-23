@@ -4,8 +4,10 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 
 import com.oounabaramusic.android.bean.Music;
+import com.oounabaramusic.android.util.LogUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +24,6 @@ public class LocalMusicDao extends BaseDao {
         cv.put("singer_name",item.getSingerName());
         cv.put("singer_id",item.getSingerId());
         cv.put("file_path",item.getFilePath());
-        cv.put("cover_path",item.getCoverPath());
         cv.put("duration",item.getDuration());
         cv.put("file_size",item.getFileSize());
         cv.put("md5",item.getMd5());
@@ -37,19 +38,27 @@ public class LocalMusicDao extends BaseDao {
         Cursor cursor=db.rawQuery(SqlSelectString.SELECT_ALL_LOCAL_MUSIC,null);
         if(cursor.moveToFirst()){
             do{
-                item=new Music();
-                item.setMusicName(cursor.getString(cursor.getColumnIndex("music_name")));
-                item.setSingerName(cursor.getString(cursor.getColumnIndex("singer_name")));
-                item.setMd5(cursor.getString(cursor.getColumnIndex("md5")));
-                item.setFilePath(cursor.getString(cursor.getColumnIndex("file_path")));
-                item.setFileSize(cursor.getLong(cursor.getColumnIndex("file_size")));
-                item.setSingerName(cursor.getString(cursor.getColumnIndex("singer_name")));
-                item.setDuration(cursor.getInt(cursor.getColumnIndex("duration")));
-                musics.add(item);
+                musics.add(parseCursorToMusic(cursor));
             }while(cursor.moveToNext());
         }
         cursor.close();
         return musics;
+    }
+
+    /**
+     *
+     * @return 返回所有需要判断是不是服务器音乐的音乐的md5值
+     */
+    public List<String> selectAllNeedCheck(){
+        Cursor cursor=db.rawQuery(SqlSelectString.SELECT_ALL_NEED_CHECK,null);
+        List<String> result=new ArrayList<>();
+        if(cursor.moveToFirst()){
+            do{
+                result.add(cursor.getString(0));
+            }while(cursor.moveToNext());
+        }
+        cursor.close();
+        return result;
     }
 
     public void deleteAll(){
@@ -69,20 +78,50 @@ public class LocalMusicDao extends BaseDao {
         Cursor cursor = db.rawQuery(SqlSelectString.SELECT_MUSIC_BY_MUSIC_NAME,new String[]{"%"+musicName+"%"});
         if(cursor.moveToFirst()){
             do{
-                item=new Music();
-                item.setMusicName(cursor.getString(cursor.getColumnIndex("music_name")));
-                item.setSingerName(cursor.getString(cursor.getColumnIndex("singer_name")));
-                item.setMd5(cursor.getString(cursor.getColumnIndex("md5")));
-                item.setFilePath(cursor.getString(cursor.getColumnIndex("file_path")));
-                item.setFileSize(cursor.getLong(cursor.getColumnIndex("file_size")));
-                item.setSingerName(cursor.getString(cursor.getColumnIndex("singer_name")));
-                item.setDuration(cursor.getInt(cursor.getColumnIndex("duration")));
-                musics.add(item);
+                musics.add(parseCursorToMusic(cursor));
             }while(cursor.moveToNext());
         }
         cursor.close();
 
         return musics;
+    }
+
+    public Music selectMusicByMd5(String md5){
+        Music result=null;
+        Cursor cursor = db.rawQuery(SqlSelectString.SELECT_MUSIC_BY_MD5,new String[]{md5});
+        if(cursor.moveToFirst()){
+            result=parseCursorToMusic(cursor);
+        }
+        cursor.close();
+        return result;
+    }
+
+    public List<Music> selectMusicByMd5(List<String> data){
+        List<Music> result=new ArrayList<>();
+        Music item;
+        for(String md5:data){
+            Cursor cursor = db.rawQuery(SqlSelectString.SELECT_MUSIC_BY_MD5,new String[]{md5});
+            if(cursor.moveToFirst()){
+                result.add(parseCursorToMusic(cursor));
+            }
+            cursor.close();
+        }
+        return result;
+    }
+
+    private Music parseCursorToMusic(Cursor cursor){
+        Music result=new Music();
+        result.setMusicName(cursor.getString(cursor.getColumnIndex("music_name")));
+        result.setSingerName(cursor.getString(cursor.getColumnIndex("singer_name")));
+        result.setSingerId(cursor.getInt(cursor.getColumnIndex("singer_id")));
+        result.setMd5(cursor.getString(cursor.getColumnIndex("md5")));
+        result.setFilePath(cursor.getString(cursor.getColumnIndex("file_path")));
+        result.setFileSize(cursor.getLong(cursor.getColumnIndex("file_size")));
+        result.setSingerName(cursor.getString(cursor.getColumnIndex("singer_name")));
+        result.setDuration(cursor.getInt(cursor.getColumnIndex("duration")));
+        result.setDownloadStatus(cursor.getInt(cursor.getColumnIndex("download_status")));
+        result.setIsServer(cursor.getInt(cursor.getColumnIndex("is_server")));
+        return result;
     }
 
     /**
@@ -98,5 +137,9 @@ public class LocalMusicDao extends BaseDao {
 
     public void deleteMusicByMd5(String md5){
         db.execSQL(SqlDeleteString.DELETE_MUSIC_BY_MD5,new String[]{md5});
+    }
+
+    public void updateIsServerByMd5(int result,String md5){
+        db.execSQL(SqlUpdateString.UPDATE_IS_SERVER_BY_MD5,new String[]{String.valueOf(result),md5});
     }
 }

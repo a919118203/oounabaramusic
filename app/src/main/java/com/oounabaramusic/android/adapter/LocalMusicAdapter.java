@@ -4,6 +4,8 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.os.Handler;
+import android.os.Message;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -44,12 +46,14 @@ public class LocalMusicAdapter extends RecyclerView.Adapter<LocalMusicAdapter.Lo
     private boolean[] selected;//多选模式时记录多选的情况
     private int toolBarMode;
     private LocalMusicActivity activity;
+    private Handler handler;
 
     private TextView musicMenuMusicName;
     private TextView musicInfoMusicName,musicInfoSingerName,musicInfoFileName,musicInfoPlayLength,musicInfoFileSize,musicInfoFilePath;
 
-    public LocalMusicAdapter(LocalMusicActivity activity,List<Music> data){
+    public LocalMusicAdapter(LocalMusicActivity activity,List<Music> data,Handler handler){
         this.activity=activity;
+        this.handler=handler;
         musicList=data;
         selected=new boolean[data.size()+10];
     }
@@ -205,7 +209,11 @@ public class LocalMusicAdapter extends RecyclerView.Adapter<LocalMusicAdapter.Lo
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         if(position.length>0){
-                            activity.localMusicDao.deleteMusicByMd5(musicList.get(position[0]).getMd5());
+                            Message msg=new Message();
+                            msg.what=LocalMusicActivity.MESSAGE_DELETE_MUSIC;
+                            msg.obj=musicList.get(position[0]).getMd5();
+                            handler.sendMessage(msg);
+
                             if(cb.isChecked()){
                                 File file=new File(musicList.get(position[0]).getFilePath());
                                 if(file.exists()){
@@ -221,7 +229,12 @@ public class LocalMusicAdapter extends RecyclerView.Adapter<LocalMusicAdapter.Lo
                             for(int i=0;i<musicList.size();i++){
                                 if(selected[i]){
                                     Music item=musicList.get(i);
-                                    activity.localMusicDao.deleteMusicByMd5(item.getMd5());
+
+                                    Message msg=new Message();
+                                    msg.what=LocalMusicActivity.MESSAGE_DELETE_MUSIC;
+                                    msg.obj=item.getMd5();
+                                    handler.sendMessage(msg);
+
                                     if(cb.isChecked()){
                                         File file=new File(item.getFilePath());
                                         if(file.exists()){
@@ -289,7 +302,7 @@ public class LocalMusicAdapter extends RecyclerView.Adapter<LocalMusicAdapter.Lo
                     if(toolBarMode==LocalMusicActivity.TOOLBAR_MODE_MULTIPLE_CHOICE){
                         checkBox.setChecked(!selected[getAdapterPosition()]);
                     }else{
-                        activity.getBinder().playMusic(musicList.get(getAdapterPosition()));
+                        activity.getBinder().playMusic(musicList.get(getAdapterPosition()).getMd5());
                     }
                 }
             });

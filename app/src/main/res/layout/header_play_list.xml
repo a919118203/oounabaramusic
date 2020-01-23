@@ -67,7 +67,7 @@
                 android:layout_marginTop="10dp">
 
                 <de.hdodenhof.circleimageview.CircleImageView
-                    android:src="@mipmap/choose_login"
+                    android:src="@mipmap/default_image"
                     android:id="@+id/user_header"
                     android:layout_width="30dp"
                     android:layout_height="30dp"/>

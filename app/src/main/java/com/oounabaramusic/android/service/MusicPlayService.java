@@ -9,6 +9,7 @@ import android.os.IBinder;
 import android.os.Message;
 
 import com.oounabaramusic.android.bean.Music;
+import com.oounabaramusic.android.dao.LocalMusicDao;
 import com.oounabaramusic.android.util.LogUtil;
 
 import java.io.File;
@@ -29,9 +30,13 @@ public class MusicPlayService extends Service {
     private int status=NOT_PREPARE;
     private MusicPlayBinder mBinder;
     private MediaPlayer mp;
-    private List<Music> playlist;
+    private List<String> playlist;    //播放列表 存放音乐的md5值
     private Handler handler=null;
-    private int currentPlay=-1;
+    private int currentPlay=-1;      //当前播放的位置
+    private int currentProgress=0;   //当前进度
+    private Music currentMusic;      //当前播放的音乐
+
+    private LocalMusicDao localMusicDao;
 
     @Override
     public void onCreate() {
@@ -62,10 +67,10 @@ public class MusicPlayService extends Service {
                     //需要维持的秒数
                     int length=mp.getDuration();
                     //这个线程所代表的音乐的md5
-                    String currentMusicMd5=playlist.get(currentPlay).getMd5();
+                    String currentMusicMd5=currentMusic.getMd5();
                     @Override
                     public void run() {
-                        for(int i=0;i<length;i++){
+                        for(int i=0;i<length;i+=400){
                             try {
                                 //一秒更新一次UI
                                 Thread.sleep(400);
@@ -76,13 +81,14 @@ public class MusicPlayService extends Service {
                                 }
 
                                 //如果线程保存的md5和现在播放的歌曲的md5不一致，说明切歌了，结束这个线程
-                                if(!currentMusicMd5.equals(playlist.get(currentPlay).getMd5()))
+                                if(!currentMusicMd5.equals(currentMusic.getMd5()))
                                     break;
 
                                 //设置UI
                                 Message message=new Message();
                                 message.what= EVENT_UPDATE_TIME;
-                                message.arg1=(i+1)*400;
+                                message.arg1=i;
+                                currentProgress=message.arg1;
                                 handler.sendMessage(message);
 
                             } catch (InterruptedException e) {
@@ -110,9 +116,9 @@ public class MusicPlayService extends Service {
     }
 
     public void playMusic(int position){
-        Music item=playlist.get(position);
-        if(item.getFilePath()!=null){
-            File file=new File(item.getFilePath());
+        currentMusic=localMusicDao.selectMusicByMd5(playlist.get(position));
+        if(currentMusic.getFilePath()!=null){
+            File file=new File(currentMusic.getFilePath());
             if(file.exists()){
                 try {
                     currentPlay=position;
@@ -126,7 +132,7 @@ public class MusicPlayService extends Service {
             }
         }
 
-        switch (item.getIsServer()){
+        switch (currentMusic.getIsServer()){
             case 0:
                 break;
             case 1:
@@ -145,45 +151,36 @@ public class MusicPlayService extends Service {
     @Override
     public void onDestroy() {
         LogUtil.printLog("onDestroy ");
+        mp.stop();
         super.onDestroy();
     }
 
     public class MusicPlayBinder extends Binder{
         public void startMusic(){
             if(mp!=null){
+                status=IS_START;
                 mp.start();
             }
         }
 
         public void pauseMusic(){
             if(mp!=null){
+                status=IS_PAUSE;
                 mp.pause();
             }
         }
 
-        public int getCurrentMusicDuration(){
-            return mp.getDuration();
-        }
-
-        public void addPlayList(Music item){
-            playlist.add(item);
-        }
-
-        public void playMusic(Music item){
-            playlist.add(item);
-            MusicPlayService.this.playMusic(playlist.size()-1);
-        }
-
-        public void setHandler(Handler handler){
-            MusicPlayService.this.handler=handler;
-        }
-
-        public int getCurrentMusicPosition(){
-            return currentPlay;
+        public void playMusic(String item){
+            if(playlist.contains(item)){
+                MusicPlayService.this.playMusic(playlist.indexOf(item));
+            }else{
+                playlist.add(item);
+                MusicPlayService.this.playMusic(playlist.size()-1);
+            }
         }
 
         //下一首播放
-        public void nextPlay(Music item){
+        public void nextPlay(String item){
             if(status==NOT_PREPARE){
                 playlist.add(item);
                 MusicPlayService.this.playMusic(0);
@@ -194,6 +191,34 @@ public class MusicPlayService extends Service {
 
         public int getStatus(){
             return status;
+        }
+
+        public int getCurrentProgress(){
+            return currentProgress;
+        }
+
+        public int getCurrentMusicPosition(){
+            return currentPlay;
+        }
+
+        public void setHandler(Handler handler){
+            MusicPlayService.this.handler=handler;
+        }
+
+        public void setLocalMusicDao(LocalMusicDao dao){
+            MusicPlayService.this.localMusicDao=dao;
+        }
+
+        public int getCurrentMusicDuration(){
+            return mp.getDuration();
+        }
+
+        public List<String> getPlayList(){
+            return playlist;
+        }
+
+        public Music getCurrentMusic(){
+            return currentMusic;
         }
     }
 }

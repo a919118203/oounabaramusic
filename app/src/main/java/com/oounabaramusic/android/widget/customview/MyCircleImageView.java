@@ -1,6 +1,5 @@
-package com.oounabaramusic.android.widget;
+package com.oounabaramusic.android.widget.customview;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -11,40 +10,37 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.oounabaramusic.android.util.LogUtil;
+import com.oounabaramusic.android.util.MyEnvironment;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import androidx.annotation.Nullable;
+import de.hdodenhof.circleimageview.CircleImageView;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-
-@SuppressLint("AppCompatCustomView")
-public class MyImageView extends ImageView {
-
-    public MyImageView(Context context) {
+public class MyCircleImageView extends CircleImageView {
+    public MyCircleImageView(Context context) {
         super(context);
     }
 
-    public MyImageView(Context context, @Nullable AttributeSet attrs) {
+    public MyCircleImageView(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public MyImageView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
+    public MyCircleImageView(Context context, AttributeSet attrs, int defStyle) {
+        super(context, attrs, defStyle);
     }
 
-    public MyImageView(Context context, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        super(context, attrs, defStyleAttr, defStyleRes);
-    }
-
-    private Handler handler=new ImageHandler(this);
+    private Handler handler=new MyImageView.ImageHandler(this);
 
     public void setImageUrl(String url){
         OkHttpClient client=new OkHttpClient();
@@ -66,7 +62,20 @@ public class MyImageView extends ImageView {
                     return;
                 }
                 InputStream is=response.body().byteStream();
-                Bitmap bitmap= BitmapFactory.decodeStream(is);
+
+                File file=new File(MyEnvironment.cachePath+response.header("fileName"));
+                file.createNewFile();
+
+                BufferedOutputStream bos=new BufferedOutputStream(new FileOutputStream(file));
+                byte[] buff=new byte[1024];
+                int len;
+                while((len=is.read(buff))!=-1){
+                    bos.write(buff,0,len);
+                }
+                bos.flush();
+                bos.close();
+
+                Bitmap bitmap= BitmapFactory.decodeFile(file.getPath());
 
                 Message message=new Message();
                 message.what=1;

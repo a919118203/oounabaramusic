@@ -41,7 +41,7 @@ public class DigestUtils {
         return sb.toString();
     }
 
-    public static MessageDigest getMd5() {
+    private static MessageDigest getMd5() {
         if(md5==null){
             try {
                 md5=MessageDigest.getInstance("MD5");

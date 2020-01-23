@@ -3,7 +3,6 @@ package com.oounabaramusic.android.adapter;
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,7 +10,6 @@ import android.widget.ImageView;
 
 import com.oounabaramusic.android.R;
 import com.oounabaramusic.android.util.DensityUtil;
-import com.oounabaramusic.android.util.LogUtil;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -20,7 +18,7 @@ public class MainNowSquareAdapter extends RecyclerView.Adapter<MainNowSquareAdap
 
     private Activity activity;
     private int width;//每个item的宽度
-    private int[] imageIds={R.mipmap.choose_login,R.mipmap.title_page};
+    private int[] imageIds={R.mipmap.default_image,R.mipmap.title_page};
 
     public MainNowSquareAdapter(Activity activity){
         this.activity=activity;

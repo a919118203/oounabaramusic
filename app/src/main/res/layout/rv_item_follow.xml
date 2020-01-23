@@ -7,7 +7,7 @@
     android:background="@drawable/view_ripple_rectangle">
 
     <de.hdodenhof.circleimageview.CircleImageView
-        android:src="@mipmap/choose_login"
+        android:src="@mipmap/default_image"
         android:id="@+id/user_header"
         android:layout_width="50dp"
         android:layout_height="50dp"

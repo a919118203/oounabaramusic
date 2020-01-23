@@ -1,6 +1,8 @@
 package com.oounabaramusic.android.bean;
 
 
+import com.oounabaramusic.android.util.LogUtil;
+
 import androidx.annotation.NonNull;
 
 public class Music{
@@ -10,7 +12,6 @@ public class Music{
     private String singerName;   //歌手名
     private int singerId;        //歌手id
     private String filePath;     //文件路径
-    private String coverPath;    //封面路径
     private int  duration;       //时长
     private long  fileSize;      //文件大小
     private String md5;          //判断是不是同一个文件
@@ -55,14 +56,6 @@ public class Music{
 
     public void setFilePath(String filePath) {
         this.filePath = filePath;
-    }
-
-    public String getCoverPath() {
-        return coverPath;
-    }
-
-    public void setCoverPath(String coverPath) {
-        this.coverPath = coverPath;
     }
 
     public int getDuration() {
@@ -110,7 +103,7 @@ public class Music{
     public String toString() {
         return "[id = "+id+",musicName = "+musicName+",singerName = "
                 +singerName+",singerId = "+singerId+",filePath = "
-                +filePath+",coverPath = "+coverPath+",duration = "
+                +filePath+",duration = "
                 +duration+",fileSize = "+fileSize+",md5 = "
                 +md5+",downloadStatus = "+downloadStatus+",isServer = "+isServer+"]";
     }

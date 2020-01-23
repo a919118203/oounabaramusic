@@ -3,9 +3,13 @@ package com.oounabaramusic.android.okhttputil;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Handler;
+import android.os.Message;
 import android.preference.PreferenceManager;
+import android.util.Pair;
 
 import com.google.gson.Gson;
+import com.oounabaramusic.android.LocalMusicActivity;
 import com.oounabaramusic.android.MainActivity;
 import com.oounabaramusic.android.bean.User;
 import com.oounabaramusic.android.util.LogUtil;
@@ -14,6 +18,11 @@ import com.oounabaramusic.android.util.MyEnvironment;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -60,61 +69,41 @@ public class HttpUtil {
         });
     }
 
+    public static void checkIsServer(final List<String> md5s, final Handler handler){
+        final Gson gson=new Gson();
 
-//    public static void loadImage(final Bitmap[] bitmaps, String[] imagePaths, final Handler handler){
-//        OkHttpClient client=new OkHttpClient();
-//
-//        final Gson gson=new Gson();
-//        RequestBody body=new FormBody.Builder()
-//                .add("json",gson.toJson(imagePaths))
-//                .build();
-//
-//        Request request=new Request.Builder()
-//                .url(MyEnvironment.serverBasePath+"load/header")
-//                .post(body)
-//                .build();
-//
-//        client.newCall(request).enqueue(new Callback() {
-//            @Override
-//            public void onFailure(@NotNull Call call, @NotNull IOException e) {
-//
-//            }
-//
-//            @Override
-//            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-//
-//                String json=response.headers().get("json");
-//                LogUtil.printLog(json);
-//                Map<String,List<String>> data= gson.fromJson(json,new TypeToken<Map<String,List<String>>>(){}.getType());
-//
-//                if(data==null)
-//                    return;
-//
-//                List<String> fileLength=data.get("fileLength");
-//
-//                InputStream is=Objects.requireNonNull(response.body()).byteStream();
-//                FileOutputStream fos=null;
-//                BufferedOutputStream bos=null;
-//                for(int i=0;i<fileLength.size();i++){
-//
-//                    File file=new File(MyEnvironment.cachePath+new Date()+".jpg");
-//                    file.createNewFile();
-//                    fos=new FileOutputStream(file);
-//                    bos=new BufferedOutputStream(fos);
-//                    int len=Integer.valueOf(fileLength.get(i));
-//                    while((is.read())!=-1){
-//                        bos.write(buff,0,read);
-//                        readSum+=read;
-//                        read=(len-readSum)>1?1:len-readSum;
-//                        if(read==0)
-//                            break;
-//                    }
-//                    bos.flush();
-//                    bos.close();
-//                    bitmaps[i]= BitmapFactory.decodeFile(MyEnvironment.cachePath+file.getName());
-//                    handler.sendEmptyMessage(200);
-//                }
-//            }
-//        });
-//    }
+        OkHttpClient client=new OkHttpClient();
+
+        RequestBody body=new FormBody.Builder()
+                .add("json",gson.toJson(md5s))
+                .build();
+
+        Request request=new Request.Builder()
+                .url(MyEnvironment.serverBasePath+"music/isServer")
+                .post(body)
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                //无论成没成功
+                handler.sendEmptyMessage(LocalMusicActivity.MESSAGE_CHECK_IS_SERVER_END);
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                String[] jsonData=gson.fromJson(response.body().string(),String[].class);
+                Map<String,Integer> result=new HashMap<>();
+                for(int i=0;i<jsonData.length;i++){
+                    result.put(md5s.get(i),Integer.valueOf(jsonData[i]));
+                }
+
+                //无论成没成功
+                Message message=new Message();
+                message.what=LocalMusicActivity.MESSAGE_CHECK_IS_SERVER_END;
+                message.obj=result;
+                handler.sendMessage(message);
+            }
+        });
+    }
 }

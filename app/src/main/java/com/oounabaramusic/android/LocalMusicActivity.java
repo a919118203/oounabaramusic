@@ -13,6 +13,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Pair;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -31,13 +32,17 @@ import android.widget.Toast;
 import com.oounabaramusic.android.adapter.LocalMusicAdapter;
 import com.oounabaramusic.android.bean.Music;
 import com.oounabaramusic.android.dao.LocalMusicDao;
+import com.oounabaramusic.android.okhttputil.HttpUtil;
 import com.oounabaramusic.android.util.DigestUtils;
+import com.oounabaramusic.android.util.InternetUtil;
 import com.oounabaramusic.android.util.StatusBarUtil;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 public class LocalMusicActivity extends BaseActivity implements View.OnClickListener{
@@ -46,6 +51,14 @@ public class LocalMusicActivity extends BaseActivity implements View.OnClickList
     public final static int TOOLBAR_MODE_NORMAL=1;//普通模式
     public final static int TOOLBAR_MODE_MULTIPLE_CHOICE=2;//多选模式
     private int toolbarMode=TOOLBAR_MODE_NORMAL;//ToolBar现在的模式
+
+
+    public static final int MESSAGE_SEARCH_START =0;
+    public static final int MESSAGE_SEARCH_END =1;
+    public static final int MESSAGE_CHECK_IS_SERVER_END =3;
+    public static final int MESSAGE_CHANGE_TEXT_VIEW =2;
+    public static final int MESSAGE_DELETE_MUSIC=4;
+
     private RecyclerView rv;//显示歌曲列表
     private LocalMusicAdapter adapter;//歌曲列表的适配器
     private EditText edit;//用于搜索歌曲列表的输入框
@@ -56,8 +69,6 @@ public class LocalMusicActivity extends BaseActivity implements View.OnClickList
     private LinearLayout playAll;//ToolBar下方的播放全部
     private LinearLayout multipleChoice;//ToolBar下方的多选
     private RelativeLayout musicPlayTool;//画面下方的播放器
-
-    public LocalMusicDao localMusicDao;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,7 +87,6 @@ public class LocalMusicActivity extends BaseActivity implements View.OnClickList
     }
 
     private void init() {
-        localMusicDao=new LocalMusicDao(this);
 
         View view=findViewById(R.id.outermost_layout);
         view.setPadding(
@@ -86,7 +96,7 @@ public class LocalMusicActivity extends BaseActivity implements View.OnClickList
                 view.getPaddingBottom());
 
         rv=findViewById(R.id.local_music_recycler_view);
-        adapter=new LocalMusicAdapter(this,localMusicDao.selectAllLocalMusic());
+        adapter=new LocalMusicAdapter(this,localMusicDao.selectAllLocalMusic(),handler);
         rv.setAdapter(adapter);
         LinearLayoutManager llm=new LinearLayoutManager(this);
         rv.setLayoutManager(llm);
@@ -200,13 +210,15 @@ public class LocalMusicActivity extends BaseActivity implements View.OnClickList
 
     //dialog的textView
     private TextView dialogTV;
-    private Handler handler=new FileSearchHandler(this);
-    private List<String> filter=new ArrayList<>();
+    private Handler handler=new LocalMusicHandler(this);
+    private List<String> filter;//过滤这些项目，无需再插入在表中
 
     /**
      * 开始扫描，显示dialog，开启线程
      */
     private void startSearch(){
+        filter=new ArrayList<>();
+
         checkTableData();
 
         showSearchDialog();
@@ -273,7 +285,7 @@ public class LocalMusicActivity extends BaseActivity implements View.OnClickList
      * 将所有的mp3结尾的且时长大于60s的文件的路径保存到local_music_tbl中
      */
     private void searchFile(File file) {
-        handler.sendEmptyMessage(FileSearchHandler.START);
+        handler.sendEmptyMessage(MESSAGE_SEARCH_START);
 
         File[] files=file.listFiles();
         for(File f:files){
@@ -284,7 +296,7 @@ public class LocalMusicActivity extends BaseActivity implements View.OnClickList
             String fileName=f.getName();
             Message message=new Message();
             message.obj=fileName;
-            message.what=FileSearchHandler.CHANGE_TEXT_VIEW;
+            message.what= MESSAGE_CHANGE_TEXT_VIEW;
             handler.sendMessage(message);
 
             //判断拥有后缀的文件
@@ -307,7 +319,7 @@ public class LocalMusicActivity extends BaseActivity implements View.OnClickList
             }
         }
 
-        handler.sendEmptyMessage(FileSearchHandler.END);
+        handler.sendEmptyMessage(MESSAGE_SEARCH_END);
     }
 
     /**
@@ -326,7 +338,7 @@ public class LocalMusicActivity extends BaseActivity implements View.OnClickList
         item.setDuration(duration/1000);
         item.setFilePath(f.getPath());
         item.setFileSize(f.length());
-        item.setIsServer(2);//TODO    如果连网了直接查询是否是服务器的
+        item.setIsServer(2);
 
         String fileName=f.getName().split("\\.")[0];
         String[] strings=fileName.split("-");
@@ -352,35 +364,54 @@ public class LocalMusicActivity extends BaseActivity implements View.OnClickList
     }
 
     /**
-     * 控制文件扫描的handler
+     * 本地音乐的handler
      */
-    static class FileSearchHandler extends Handler{
-        static final int START=0;
-        static final int END=1;
-        static final int CHANGE_TEXT_VIEW=2;
+    static class LocalMusicHandler extends Handler{
         private int cnt=0;
         private LocalMusicActivity activity;
 
-        FileSearchHandler(LocalMusicActivity activity){
+        LocalMusicHandler(LocalMusicActivity activity){
             this.activity=activity;
         }
 
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what){
-                case START:
+                case MESSAGE_SEARCH_START:
                     cnt++;
                     break;
-                case END:
+
+                case MESSAGE_SEARCH_END:
                     cnt--;
                     if(cnt==0){
-                        activity.dialog.dismiss();
-                        activity.adapter.setMusicList(activity.localMusicDao.selectAllLocalMusic());
-                        activity.adapter.notifyDataSetChanged();
+                        if(InternetUtil.checkNet(activity)){
+                            HttpUtil.checkIsServer(activity.localMusicDao.selectAllNeedCheck(),this);
+                        }else{
+                            activity.dialog.dismiss();
+                            activity.adapter.setMusicList(activity.localMusicDao.selectAllLocalMusic());
+                            activity.adapter.notifyDataSetChanged();
+                        }
                     }
                     break;
-                case CHANGE_TEXT_VIEW:
+
+                case MESSAGE_CHECK_IS_SERVER_END:
+                    if(msg.obj!=null){
+                        Map<String,Integer> result= (HashMap<String,Integer>) msg.obj;
+                        for(Map.Entry<String,Integer> entry: result.entrySet()){
+                            activity.localMusicDao.updateIsServerByMd5(entry.getValue(),entry.getKey());
+                        }
+                    }
+                    activity.dialog.dismiss();
+                    activity.adapter.setMusicList(activity.localMusicDao.selectAllLocalMusic());
+                    activity.adapter.notifyDataSetChanged();
+                    break;
+
+                case MESSAGE_CHANGE_TEXT_VIEW:
                     activity.dialogTV.setText((String)msg.obj);
+                    break;
+
+                case MESSAGE_DELETE_MUSIC:
+                    activity.localMusicDao.deleteMusicByMd5((String) msg.obj);
                     break;
             }
         }
@@ -415,8 +446,9 @@ public class LocalMusicActivity extends BaseActivity implements View.OnClickList
                     Toast toast=Toast.makeText(this, "请选择歌曲", Toast.LENGTH_SHORT);
                     toast.setGravity(Gravity.BOTTOM,0,200);
                     toast.show();
+                }else{
+                    adapter.showDeleteDialog();
                 }
-                adapter.showDeleteDialog();
                 break;
         }
     }
