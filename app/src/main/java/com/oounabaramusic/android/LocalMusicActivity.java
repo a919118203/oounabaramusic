@@ -5,6 +5,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.media.MediaPlayer;
 import android.os.Bundle;
@@ -29,12 +30,16 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.oounabaramusic.android.adapter.LocalMusicAdapter;
 import com.oounabaramusic.android.bean.Music;
 import com.oounabaramusic.android.dao.LocalMusicDao;
 import com.oounabaramusic.android.okhttputil.HttpUtil;
+import com.oounabaramusic.android.service.MusicPlayService;
 import com.oounabaramusic.android.util.DigestUtils;
 import com.oounabaramusic.android.util.InternetUtil;
+import com.oounabaramusic.android.util.LogUtil;
 import com.oounabaramusic.android.util.StatusBarUtil;
 
 import java.io.File;
@@ -52,12 +57,13 @@ public class LocalMusicActivity extends BaseActivity implements View.OnClickList
     public final static int TOOLBAR_MODE_MULTIPLE_CHOICE=2;//多选模式
     private int toolbarMode=TOOLBAR_MODE_NORMAL;//ToolBar现在的模式
 
-
     public static final int MESSAGE_SEARCH_START =0;
     public static final int MESSAGE_SEARCH_END =1;
     public static final int MESSAGE_CHECK_IS_SERVER_END =3;
     public static final int MESSAGE_CHANGE_TEXT_VIEW =2;
     public static final int MESSAGE_DELETE_MUSIC=4;
+    public static final int MESSAGE_DELETE_MUSIC_END=5;
+    public static final int MESSAGE_NO_NET=6;
 
     private RecyclerView rv;//显示歌曲列表
     private LocalMusicAdapter adapter;//歌曲列表的适配器
@@ -68,13 +74,13 @@ public class LocalMusicActivity extends BaseActivity implements View.OnClickList
     private LinearLayout delete;//底部菜单的“删除”
     private LinearLayout playAll;//ToolBar下方的播放全部
     private LinearLayout multipleChoice;//ToolBar下方的多选
-    private RelativeLayout musicPlayTool;//画面下方的播放器
+    private SwipeRefreshLayout srl;//刷新布局
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_local_music);
-        StatusBarUtil.setTranslucentStatusAndDarkContent(this);
+        StatusBarUtil.setWhiteStyleStatusBar(this);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
 
         Toolbar toolBar=findViewById(R.id.local_music_toolbar);
@@ -83,17 +89,37 @@ public class LocalMusicActivity extends BaseActivity implements View.OnClickList
         if(actionBar!=null){
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
-        init();
+    }
+
+    boolean f=false;
+    @Override
+    protected void onBindOk() {
+        if(!f){
+            f=true;
+            init();
+        }
+    }
+
+    //刷新下方播放器的时候，也一起刷新本地音乐列表，为了显示现在播放的是哪首
+    @Override
+    public void refreshPlayBar() {
+        super.refreshPlayBar();
+        if(adapter!=null){
+            adapter.setMusicList(localMusicDao.selectAllLocalMusic());
+            adapter.notifyDataSetChanged();
+        }
+    }
+
+    @Override
+    protected void musicIsToStart() {
+        if(toolbarMode!=TOOLBAR_MODE_MULTIPLE_CHOICE){
+            adapter.notifyDataSetChanged();
+        }else{
+            musicPlayBar.setVisibility(View.GONE);
+        }
     }
 
     private void init() {
-
-        View view=findViewById(R.id.outermost_layout);
-        view.setPadding(
-                view.getPaddingLeft(),
-                view.getPaddingTop()+StatusBarUtil.getStatusBarHeight(this),
-                view.getPaddingRight(),
-                view.getPaddingBottom());
 
         rv=findViewById(R.id.local_music_recycler_view);
         adapter=new LocalMusicAdapter(this,localMusicDao.selectAllLocalMusic(),handler);
@@ -108,13 +134,29 @@ public class LocalMusicActivity extends BaseActivity implements View.OnClickList
         nextPlay=findViewById(R.id.bottom_tool_next_play);
         addToPlaylist=findViewById(R.id.bottom_tool_add_to_playlist);
         delete=findViewById(R.id.bottom_tool_delete);
-        musicPlayTool=findViewById(R.id.tool_current_play_layout);
 
         playAll.setOnClickListener(this);
         multipleChoice.setOnClickListener(this);
         nextPlay.setOnClickListener(this);
         addToPlaylist.setOnClickListener(this);
         delete.setOnClickListener(this);
+
+        //下拉刷新
+        srl=findViewById(R.id.swipe_refresh);
+        srl.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+
+                //判断数据库中需要判断的音乐
+                List<String> list=localMusicDao.selectAllNeedCheck();
+                if(!(list==null||list.size()==0)){
+                    HttpUtil.checkIsServer(LocalMusicActivity.this,list,handler);
+                }else{
+                    srl.setRefreshing(false);
+                }
+            }
+        });
+
 
         //每当输入，都查询
         edit.addTextChangedListener(new TextWatcher() {
@@ -349,7 +391,7 @@ public class LocalMusicActivity extends BaseActivity implements View.OnClickList
             item.setMusicName(fileName);
             item.setSingerName("未知");
         }
-        item.setSingerId(-1);
+        item.setSingerId("");
 
         localMusicDao.insertLocalMusic(item);
     }
@@ -384,23 +426,64 @@ public class LocalMusicActivity extends BaseActivity implements View.OnClickList
                 case MESSAGE_SEARCH_END:
                     cnt--;
                     if(cnt==0){
-                        if(InternetUtil.checkNet(activity)){
-                            HttpUtil.checkIsServer(activity.localMusicDao.selectAllNeedCheck(),this);
+                        List<String> list=activity.localMusicDao.selectAllNeedCheck();
+                        if(list==null||list.size()==0){
+                            sendEmptyMessage(MESSAGE_CHECK_IS_SERVER_END);
                         }else{
-                            activity.dialog.dismiss();
-                            activity.adapter.setMusicList(activity.localMusicDao.selectAllLocalMusic());
-                            activity.adapter.notifyDataSetChanged();
+                            HttpUtil.checkIsServer(activity,list,this);
                         }
                     }
                     break;
 
                 case MESSAGE_CHECK_IS_SERVER_END:
                     if(msg.obj!=null){
-                        Map<String,Integer> result= (HashMap<String,Integer>) msg.obj;
-                        for(Map.Entry<String,Integer> entry: result.entrySet()){
-                            activity.localMusicDao.updateIsServerByMd5(entry.getValue(),entry.getKey());
+                        String json= (String) msg.obj;
+                        Gson gson=new Gson();
+                        List<Map<String,String>> data=gson.fromJson(json,new TypeToken<List<Map<String,String>>>(){}.getType());
+                        for(Map<String,String> map:data){
+                            String isServer=map.get("isServer");
+                            if(isServer.equals("0")){
+                                activity.localMusicDao.updateIsServerByMd5(isServer,map.get("md5"));
+                            }else if(isServer.equals("1")){
+
+                                Map<String,String> jsonData=
+                                        gson.fromJson(map.get("musicDataJson"),new TypeToken<Map<String,String>>(){}.getType());
+
+                                List<Map<String,String>> singers=
+                                        gson.fromJson(jsonData.get("singers"),new TypeToken<List<Map<String,String>>>(){}.getType());
+
+                                StringBuilder singerName=new StringBuilder();
+                                StringBuilder singerId=new StringBuilder();
+
+                                for(int i=0;i<singers.size();i++){
+                                    if(i>0){
+                                        singerName.append("/");
+                                        singerId.append("/");
+                                    }
+                                    singerName.append(singers.get(i).get("singerName"));
+                                    singerId.append(singers.get(i).get("id"));
+                                }
+
+                                activity.localMusicDao.updateIsServerByMd5(
+                                        isServer,
+                                        jsonData.get("musicName"),
+                                        singerName.toString(),
+                                        singerId.toString(),
+                                        jsonData.get("md5"));
+                            }
                         }
                     }
+                    if(activity.dialog!=null&&activity.dialog.isShowing()){
+                        activity.dialog.dismiss();
+                    }
+                    activity.refreshPlayBar();
+                    if(activity.srl!=null&&activity.srl.isRefreshing()){
+                        activity.srl.setRefreshing(false);
+                    }
+                    break;
+
+                case MESSAGE_NO_NET:
+                    Toast.makeText(activity, "请检查网络连接", Toast.LENGTH_SHORT).show();
                     activity.dialog.dismiss();
                     activity.adapter.setMusicList(activity.localMusicDao.selectAllLocalMusic());
                     activity.adapter.notifyDataSetChanged();
@@ -412,6 +495,11 @@ public class LocalMusicActivity extends BaseActivity implements View.OnClickList
 
                 case MESSAGE_DELETE_MUSIC:
                     activity.localMusicDao.deleteMusicByMd5((String) msg.obj);
+                    activity.getBinder().deleteMusic((String) msg.obj);
+                    break;
+
+                case MESSAGE_DELETE_MUSIC_END:    //删完音乐就切回普通模式
+                    activity.switchToolBar(LocalMusicActivity.TOOLBAR_MODE_NORMAL);
                     break;
             }
         }
@@ -421,7 +509,14 @@ public class LocalMusicActivity extends BaseActivity implements View.OnClickList
     public void onClick(View v) {
         switch(v.getId()){
             case R.id.local_music_play_all://播放全部
-                localMusicDao.deleteAll();
+                List<Music> list=adapter.getMusicList();
+                for(int i=0;i<list.size();i++){
+                    if(i==0){
+                        getBinder().playMusic(list.get(i).getMd5());
+                    }else{
+                        getBinder().nextPlay(list.get(i).getMd5());
+                    }
+                }
                 break;
             case R.id.local_music_multiple_choice://多选
                 switchToolBar(TOOLBAR_MODE_MULTIPLE_CHOICE);
@@ -431,6 +526,12 @@ public class LocalMusicActivity extends BaseActivity implements View.OnClickList
                     Toast toast=Toast.makeText(this, "请选择歌曲", Toast.LENGTH_SHORT);
                     toast.setGravity(Gravity.BOTTOM,0,200);
                     toast.show();
+                }else{
+                    List<String> list1=adapter.getSelected();
+                    for(String md5:list1){
+                        getBinder().nextPlay(md5);
+                    }
+                    switchToolBar(TOOLBAR_MODE_NORMAL);
                 }
                 break;
             case R.id.bottom_tool_add_to_playlist:
@@ -469,7 +570,6 @@ public class LocalMusicActivity extends BaseActivity implements View.OnClickList
                 playAll.setVisibility(View.VISIBLE);
                 edit.setVisibility(View.GONE);
                 bottomToolBar.setVisibility(View.GONE);
-                musicPlayTool.setVisibility(View.VISIBLE);
                 adapter.selectAllCancel(); //清空选中状态
                 actionBarTitle="本地音乐";
 
@@ -477,20 +577,31 @@ public class LocalMusicActivity extends BaseActivity implements View.OnClickList
                     adapter.setMusicList(localMusicDao.selectAllLocalMusic());
                     adapter.notifyDataSetChanged();
                 }
+
+                if(getBinder().getStatus()== MusicPlayService.NOT_PREPARE){
+                    musicPlayBar.setVisibility(View.GONE);
+                }else{
+                    musicPlayBar.setVisibility(View.VISIBLE);
+                }
                 break;
             case TOOLBAR_MODE_EDIT:
                 playAll.setVisibility(View.GONE);
                 edit.setVisibility(View.VISIBLE);
                 bottomToolBar.setVisibility(View.GONE);
-                musicPlayTool.setVisibility(View.VISIBLE);
                 adapter.setMusicList(new ArrayList<Music>());
                 adapter.notifyDataSetChanged();
+
+                if(getBinder().getStatus()== MusicPlayService.NOT_PREPARE){
+                    musicPlayBar.setVisibility(View.GONE);
+                }else{
+                    musicPlayBar.setVisibility(View.VISIBLE);
+                }
                 break;
             case TOOLBAR_MODE_MULTIPLE_CHOICE:
                 playAll.setVisibility(View.GONE);
                 edit.setVisibility(View.GONE);
                 bottomToolBar.setVisibility(View.VISIBLE);
-                musicPlayTool.setVisibility(View.GONE);
+                musicPlayBar.setVisibility(View.GONE);
                 actionBarTitle="已选择0项";
                 break;
         }
@@ -504,6 +615,9 @@ public class LocalMusicActivity extends BaseActivity implements View.OnClickList
         adapter.notifyDataSetChanged();
     }
 
+    public LocalMusicDao getLocalMusicDao(){
+        return localMusicDao;
+    }
 
     /**
      * 如果为普通模式就直接退出，

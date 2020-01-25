@@ -1,23 +1,35 @@
 package com.oounabaramusic.android.okhttputil;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Handler;
 import android.os.Message;
 import android.preference.PreferenceManager;
 import android.util.Pair;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.oounabaramusic.android.LocalMusicActivity;
 import com.oounabaramusic.android.MainActivity;
+import com.oounabaramusic.android.R;
 import com.oounabaramusic.android.bean.User;
+import com.oounabaramusic.android.util.DigestUtils;
+import com.oounabaramusic.android.util.InternetUtil;
 import com.oounabaramusic.android.util.LogUtil;
 import com.oounabaramusic.android.util.MyEnvironment;
+import com.oounabaramusic.android.widget.customview.MyCircleImageView;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -69,7 +81,12 @@ public class HttpUtil {
         });
     }
 
-    public static void checkIsServer(final List<String> md5s, final Handler handler){
+    public static void checkIsServer(Context context,final List<String> md5s, final Handler handler){
+        //如果没网，就加载默认图片
+        if(!InternetUtil.checkNet(context)){
+            handler.sendEmptyMessage(LocalMusicActivity.MESSAGE_NO_NET);
+        }
+
         final Gson gson=new Gson();
 
         OkHttpClient client=new OkHttpClient();
@@ -92,16 +109,71 @@ public class HttpUtil {
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                String[] jsonData=gson.fromJson(response.body().string(),String[].class);
-                Map<String,Integer> result=new HashMap<>();
-                for(int i=0;i<jsonData.length;i++){
-                    result.put(md5s.get(i),Integer.valueOf(jsonData[i]));
-                }
 
                 //无论成没成功
                 Message message=new Message();
                 message.what=LocalMusicActivity.MESSAGE_CHECK_IS_SERVER_END;
-                message.obj=result;
+                message.obj=response.body().string();
+                handler.sendMessage(message);
+            }
+        });
+    }
+
+    public static void loadImage(Context context, String url, final Handler handler){
+        String a=url.substring(url.lastIndexOf("?"));
+        String[] b=a.split("=");
+        String filePath= MyEnvironment.cachePath+DigestUtils.md5HexOfString(b[0])+b[1];
+        final File file=new File(filePath);
+        if(file.exists()){
+            LogUtil.printLog("加载图片：本地有缓存");
+            Bitmap bitmap= BitmapFactory.decodeFile(file.getPath());
+            Message message=new Message();
+            message.what=MyCircleImageView.LOAD_SUCCESS;
+            message.obj=bitmap;
+            handler.sendMessage(message);
+            return;
+        }
+
+        LogUtil.printLog("加载图片：服务器音乐封面，本地缓存已被删除，请求服务器获取封面");
+        LogUtil.printLog("Url: "+url);
+        //如果没网，就加载默认图片
+        if(!InternetUtil.checkNet(context)){
+            handler.sendEmptyMessage(MyCircleImageView.NO_NET);
+        }
+
+        OkHttpClient client=new OkHttpClient();
+
+        Request request=new Request.Builder()
+                .url(url)
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                e.printStackTrace();
+                handler.sendEmptyMessage(MyCircleImageView.LOAD_FAILURE);
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                InputStream is=response.body().byteStream();
+
+                file.createNewFile();
+                BufferedOutputStream bos=new BufferedOutputStream(new FileOutputStream(file));
+                byte[] buff=new byte[1024];
+                int len;
+                while((len=is.read(buff))!=-1){
+                    bos.write(buff,0,len);
+                }
+                bos.flush();
+                bos.close();
+
+                Bitmap bitmap= BitmapFactory.decodeFile(file.getPath());
+
+                Message message=new Message();
+                message.what=MyCircleImageView.LOAD_SUCCESS;
+                message.obj=bitmap;
+
                 handler.sendMessage(message);
             }
         });

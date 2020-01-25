@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="20dp"
+    android:paddingStart="20dp"
+    android:paddingEnd="20dp">
+
+    <TextView
+        android:text="歌曲："
+        android:textSize="@dimen/font_medium_size"
+        android:textColor="@color/positive"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:ignore="HardcodedText" />
+
+    <EditText
+        android:id="@+id/music_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="输入歌曲名"
+        tools:ignore="HardcodedText"
+        android:inputType="text"/>
+
+    <TextView
+        android:text="歌手："
+        android:textSize="@dimen/font_medium_size"
+        android:textColor="@color/positive"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        tools:ignore="HardcodedText" />
+
+    <EditText
+        android:id="@+id/music_singer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="输入歌手名"
+        tools:ignore="HardcodedText"
+        android:inputType="text" />
+</LinearLayout>

@@ -10,7 +10,7 @@ public class Music{
     private int id;
     private String musicName;    //音乐名
     private String singerName;   //歌手名
-    private int singerId;        //歌手id
+    private String singerId;      //歌手id
     private String filePath;     //文件路径
     private int  duration;       //时长
     private long  fileSize;      //文件大小
@@ -42,11 +42,11 @@ public class Music{
         this.singerName = singerName;
     }
 
-    public int getSingerId() {
+    public String getSingerId() {
         return singerId;
     }
 
-    public void setSingerId(int singerId) {
+    public void setSingerId(String singerId) {
         this.singerId = singerId;
     }
 

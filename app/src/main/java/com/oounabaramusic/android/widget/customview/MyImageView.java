@@ -10,6 +10,8 @@ import android.util.AttributeSet;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.oounabaramusic.android.R;
+import com.oounabaramusic.android.okhttputil.HttpUtil;
 import com.oounabaramusic.android.util.LogUtil;
 
 import org.jetbrains.annotations.NotNull;
@@ -47,34 +49,7 @@ public class MyImageView extends ImageView {
     private Handler handler=new ImageHandler(this);
 
     public void setImageUrl(String url){
-        OkHttpClient client=new OkHttpClient();
-
-        Request request=new Request.Builder()
-                .url(url)
-                .build();
-
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                LogUtil.printLog("未知错误");
-            }
-
-            @Override
-            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                if(response.body()==null){
-                    handler.sendEmptyMessage(-1);
-                    return;
-                }
-                InputStream is=response.body().byteStream();
-                Bitmap bitmap= BitmapFactory.decodeStream(is);
-
-                Message message=new Message();
-                message.what=1;
-                message.obj=bitmap;
-
-                handler.sendMessage(message);
-            }
-        });
+        HttpUtil.loadImage(getContext(),url,new ImageHandler(this));
     }
 
     static class ImageHandler extends Handler{
@@ -88,12 +63,19 @@ public class MyImageView extends ImageView {
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what){
-                case -1:
-                    Toast.makeText(iv.getContext(), "发生错误，稍后重试", Toast.LENGTH_SHORT).show();
-                    break;
-                case 1:
-                    Bitmap bitmap= (Bitmap) msg.obj;
+                case MyCircleImageView.NO_NET:
+                    Toast.makeText(iv.getContext(), "请检查网络连接", Toast.LENGTH_SHORT).show();
+                    Bitmap bitmap=BitmapFactory.decodeResource(iv.getResources(), R.mipmap.default_image);
                     iv.setImageBitmap(bitmap);
+                    break;
+                case MyCircleImageView.LOAD_SUCCESS:
+                    Bitmap bitmap2= (Bitmap) msg.obj;
+                    iv.setImageBitmap(bitmap2);
+                    break;
+                case MyCircleImageView.LOAD_FAILURE:
+                    Toast.makeText(iv.getContext(), "图片加载失败", Toast.LENGTH_SHORT).show();
+                    Bitmap bitmap3=BitmapFactory.decodeResource(iv.getResources(),R.mipmap.default_image);
+                    iv.setImageBitmap(bitmap3);
                     break;
             }
         }

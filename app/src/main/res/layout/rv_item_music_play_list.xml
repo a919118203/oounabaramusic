@@ -8,8 +8,7 @@
     android:layout_marginStart="10dp"
     android:layout_marginEnd="10dp"
     android:paddingTop="10dp"
-    android:paddingBottom="10dp"
-    android:background="@drawable/toolbar_ripple_oval">
+    android:paddingBottom="10dp">
 
     <ImageView
         android:visibility="invisible"
@@ -60,6 +59,7 @@
     </LinearLayout>
 
     <ImageView
+        android:id="@+id/delete"
         android:src="@mipmap/delete_music"
         android:layout_width="20dp"
         android:layout_height="20dp"

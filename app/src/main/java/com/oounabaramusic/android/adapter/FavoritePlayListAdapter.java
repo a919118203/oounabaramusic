@@ -11,7 +11,7 @@ import android.widget.TextView;
 
 import com.oounabaramusic.android.PlayListActivity;
 import com.oounabaramusic.android.R;
-import com.oounabaramusic.android.widget.popupwindow.MyPopupWindow;
+import com.oounabaramusic.android.widget.popupwindow.MyBottomSheetDialog;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -20,8 +20,43 @@ public class FavoritePlayListAdapter extends RecyclerView.Adapter<FavoritePlayLi
 
     private Activity activity;
 
+    //弹窗
+    private MyBottomSheetDialog spw;
+
+    //弹窗内容
+    TextView popWindowTitle;
+
     public FavoritePlayListAdapter(Activity activity){
         this.activity=activity;
+        spw=new MyBottomSheetDialog(activity);
+        spw.setContentView(createContentView());
+    }
+
+    private View createContentView() {
+        View view=LayoutInflater.from(activity).inflate(R.layout.pw_favorite_playlist_item_menu, (ViewGroup) activity.getWindow().getDecorView(),false);
+
+        //下载
+        view.findViewById(R.id.item_menu_download).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showDialog();
+            }
+        });
+
+        //删除
+        view.findViewById(R.id.item_menu_delete_playlist).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+        popWindowTitle=view.findViewById(R.id.menu_title);
+        return view;
+    }
+
+    private void showDialog(){
+        new AlertDialog.Builder(activity).show();
     }
 
     @NonNull
@@ -45,13 +80,9 @@ public class FavoritePlayListAdapter extends RecyclerView.Adapter<FavoritePlayLi
         ImageView playListCover;
         TextView playListName;
         TextView playListCnt;
-        TextView popWindowTitle;
         ImageView playListItemMenu;
-        MyPopupWindow spw;
         ViewHolder(@NonNull View itemView) {
             super(itemView);
-
-            spw=new MyPopupWindow(activity,createContentView());
 
             playListCover=itemView.findViewById(R.id.playlist_cover);
             playListName=itemView.findViewById(R.id.playlist_name);
@@ -60,7 +91,7 @@ public class FavoritePlayListAdapter extends RecyclerView.Adapter<FavoritePlayLi
             playListItemMenu.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    spw.showPopupWindow();
+                    spw.show();
                 }
             });
 
@@ -71,33 +102,6 @@ public class FavoritePlayListAdapter extends RecyclerView.Adapter<FavoritePlayLi
                     activity.startActivity(intent);
                 }
             });
-        }
-
-        private View createContentView() {
-            View view=LayoutInflater.from(activity).inflate(R.layout.pw_favorite_playlist_item_menu, (ViewGroup) activity.getWindow().getDecorView(),false);
-
-            //下载
-            view.findViewById(R.id.item_menu_download).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    showDialog();
-                }
-            });
-
-            //删除
-            view.findViewById(R.id.item_menu_delete_playlist).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-
-                }
-            });
-
-            popWindowTitle=view.findViewById(R.id.menu_title);
-            return view;
-        }
-
-        private void showDialog(){
-            new AlertDialog.Builder(activity).show();
         }
     }
 }

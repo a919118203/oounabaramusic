@@ -12,4 +12,7 @@ public class SqlSelectString {
 
     public static final String SELECT_MUSIC_BY_MUSIC_NAME=
             String.format("select * from %s where music_name like ?",SqlTableString.LOCAL_MUSIC_TBL);
+
+    public static final String SELECT_IS_SERVER=
+            String.format("select is_server from %s where md5 = ?",SqlTableString.LOCAL_MUSIC_TBL);
 }

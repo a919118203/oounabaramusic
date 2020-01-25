@@ -1,17 +1,15 @@
 package com.oounabaramusic.android.adapter;
 
-import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Handler;
 import android.os.Message;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -19,10 +17,13 @@ import android.widget.Toast;
 import com.oounabaramusic.android.LocalMusicActivity;
 import com.oounabaramusic.android.R;
 import com.oounabaramusic.android.bean.Music;
+import com.oounabaramusic.android.service.MusicPlayService;
 import com.oounabaramusic.android.util.DensityUtil;
 import com.oounabaramusic.android.util.FormatUtil;
 import com.oounabaramusic.android.util.LogUtil;
-import com.oounabaramusic.android.widget.popupwindow.MyPopupWindow;
+import com.oounabaramusic.android.util.MyEnvironment;
+import com.oounabaramusic.android.widget.customview.MyImageView;
+import com.oounabaramusic.android.widget.popupwindow.MyBottomSheetDialog;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -38,24 +39,79 @@ import androidx.recyclerview.widget.RecyclerView;
  */
 public class LocalMusicAdapter extends RecyclerView.Adapter<LocalMusicAdapter.LocalMusicViewHolder>{
 
-    private MyPopupWindow spwMusicMenu;
-    private int popupPosition;
-    private MyPopupWindow spwMusicInfo;
-    private MyPopupWindow spwAddToPlaylist;
+    private MyBottomSheetDialog spwMusicMenu;
+    private MyBottomSheetDialog spwMusicMenuIsServer;
+    private MyBottomSheetDialog spwMusicInfo;
+    private MyBottomSheetDialog spwAddToPlaylist;
+    private AlertDialog spwChangeInfo;
     private List<Music> musicList;
     private boolean[] selected;//多选模式时记录多选的情况
     private int toolBarMode;
     private LocalMusicActivity activity;
     private Handler handler;
 
+    //本地歌曲菜单弹窗
     private TextView musicMenuMusicName;
-    private TextView musicInfoMusicName,musicInfoSingerName,musicInfoFileName,musicInfoPlayLength,musicInfoFileSize,musicInfoFilePath;
 
-    public LocalMusicAdapter(LocalMusicActivity activity,List<Music> data,Handler handler){
+    //歌曲信息弹窗
+    private TextView musicInfoMusicName,musicInfoSingerName,musicInfoFileName,musicInfoPlayLength,musicInfoFileSize,musicInfoFilePath;
+    private TextView change;
+
+    //服务器音乐菜单弹窗
+    private MyImageView serverMusicCover;
+    private TextView serverMusicName,serverMusicSinger,serverMusicSinger2;
+
+    //修改音乐信息
+    private EditText musicName;
+    private EditText musicSinger;
+
+    //弹窗的下标
+    private int popupPosition;
+
+    public LocalMusicAdapter(final LocalMusicActivity activity, List<Music> data, Handler handler){
         this.activity=activity;
         this.handler=handler;
         musicList=data;
         selected=new boolean[data.size()+10];
+
+        //初始化各种弹窗
+        spwMusicMenu =new MyBottomSheetDialog(activity);
+        spwMusicMenu.setContentView(createContentViewMenu());
+        spwMusicInfo =new MyBottomSheetDialog(activity);
+        spwMusicInfo.setContentView(createContentViewInfo());
+        spwAddToPlaylist =new MyBottomSheetDialog(activity);
+        spwAddToPlaylist.setContentView(createContentViewAddToPlaylist());
+        spwMusicMenuIsServer=new MyBottomSheetDialog(activity);
+        spwMusicMenuIsServer.setContentView(createContentViewIsServer());
+
+        spwChangeInfo=new AlertDialog.Builder(activity)
+                .setView(createContentViewChange())
+                .setPositiveButton("修改", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Music item=musicList.get(popupPosition);
+
+                        //更新进数据库
+                        activity.getLocalMusicDao().updateMusicNameByMd5(
+                                musicName.getText().toString(),
+                                musicSinger.getText().toString(),
+                                item.getMd5());
+
+                        //更新适配器的数据
+                        item.setMusicName(musicName.getText().toString());
+                        item.setSingerName(musicSinger.getText().toString());
+
+                        //刷新所有控件
+                        activity.refreshPlayBar();
+
+                        //更新音乐信息弹窗的信息
+                        musicInfoMusicName.setText(musicName.getText());
+                        musicInfoSingerName.setText(musicSinger.getText());
+                    }
+                })
+                .setNegativeButton("取消",null)
+                .create();
+        spwChangeInfo.getWindow().setBackgroundDrawable(activity.getResources().getDrawable(R.drawable.layout_card_2));
     }
 
     @NonNull
@@ -67,26 +123,27 @@ public class LocalMusicAdapter extends RecyclerView.Adapter<LocalMusicAdapter.Lo
     }
 
     @Override
-    public void onViewAttachedToWindow(@NonNull LocalMusicViewHolder holder) {
-        spwMusicMenu =new MyPopupWindow(activity,
-                createContextViewMenu());
-        spwMusicInfo =new MyPopupWindow(activity,
-                createContextViewInfo());
-        spwAddToPlaylist =new MyPopupWindow(activity,
-                createContentViewAddToPlaylist(),
-                Gravity.CENTER);
-    }
-
-    @Override
     public void onBindViewHolder(@NonNull LocalMusicViewHolder holder, int position) {
         Music item=musicList.get(position);
 
         if(toolBarMode==LocalMusicActivity.TOOLBAR_MODE_MULTIPLE_CHOICE){
             holder.checkBox.setVisibility(View.VISIBLE);
             holder.menu.setVisibility(View.GONE);
+            holder.isPlaying.setVisibility(View.GONE);
         }else{
             holder.checkBox.setVisibility(View.GONE);
             holder.menu.setVisibility(View.VISIBLE);
+
+            if(activity.getBinder().getStatus()== MusicPlayService.IS_START||
+                    activity.getBinder().getStatus()== MusicPlayService.IS_PAUSE){
+                if(musicList.get(position).getMd5().equals(activity.getBinder().getCurrentMusic().getMd5())){
+                    holder.isPlaying.setVisibility(View.VISIBLE);
+                }else{
+                    holder.isPlaying.setVisibility(View.GONE);
+                }
+            }else{
+                holder.isPlaying.setVisibility(View.GONE);
+            }
         }
 
         holder.musicName.setText(item.getMusicName());
@@ -94,42 +151,141 @@ public class LocalMusicAdapter extends RecyclerView.Adapter<LocalMusicAdapter.Lo
         holder.checkBox.setChecked(selected[position]);
     }
 
-    /**
-     * 创建点击某一项菜单后弹出的popWindow所需要的contentView
-     * @return         spw的contentView
-     */
-    private View createContextViewInfo() {
-        View view=LayoutInflater.from(activity).inflate(R.layout.pw_music_info, (ViewGroup) activity.getWindow().getDecorView(),false);
+    private View createContentViewChange(){
+        View view=LayoutInflater.from(activity).inflate(R.layout.pw_change_music_info,
+                (ViewGroup) activity.getWindow().getDecorView(),false);
 
-        //歌曲信息的“修改”被点击时
-        view.findViewById(R.id.change_music_info).setOnClickListener(new View.OnClickListener() {
+        musicName=view.findViewById(R.id.music_name);
+        musicSinger=view.findViewById(R.id.music_singer);
+        return view;
+    }
+
+    /**
+     * 点击某一项菜单后，如果这项是服务器音乐就弹这个view
+     * @return
+     */
+    private View createContentViewIsServer(){
+        View view=LayoutInflater
+                .from(activity)
+                .inflate(R.layout.pw_local_music_item_menu_is_server,
+                        (ViewGroup) activity.getWindow().getDecorView(),false);
+
+        serverMusicCover=view.findViewById(R.id.music_cover);
+        serverMusicName=view.findViewById(R.id.music_name);
+        serverMusicSinger=view.findViewById(R.id.music_singer_in_title);
+        serverMusicSinger2=view.findViewById(R.id.music_singer);
+
+        //点击下一首播放
+        view.findViewById(R.id.music_next_play).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                activity.getBinder().nextPlay(musicList.get(popupPosition).getMd5());
+                spwMusicMenuIsServer.dismiss();
+            }
+        });
+
+        //点击收藏到歌单
+        view.findViewById(R.id.music_add_to_playlist).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
             }
         });
 
+        //点击评论
+        view.findViewById(R.id.music_comment).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+        //点击歌手
+        view.findViewById(R.id.music_search_singer).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+        //点击查看歌曲信息
+        view.findViewById(R.id.music_info).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setMusicInfoToDialog();
+                spwMusicInfo.show();
+                spwMusicMenuIsServer.dismiss();
+            }
+        });
+
+        //点击删除
+        view.findViewById(R.id.music_delete).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showDeleteDialog(popupPosition);
+                spwMusicMenuIsServer.dismiss();
+            }
+        });
+        return view;
+    }
+
+
+    /**
+     * 创建点击某一项菜单后再继续点击“查看歌曲信息”时弹出的popWindow所需要的contentView
+     * @return         spw的contentView
+     */
+    private View createContentViewInfo() {
+        View view=LayoutInflater.from(activity).inflate(R.layout.pw_music_info, (ViewGroup) activity.getWindow().getDecorView(),false);
+
+        //歌曲信息的“修改”被点击时
+        view.findViewById(R.id.change_music_info).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                musicName.setText(musicInfoMusicName.getText());
+                musicSinger.setText(musicInfoSingerName.getText());
+                spwChangeInfo.show();
+            }
+        });
+
+        change=view.findViewById(R.id.change_music_info);
         musicInfoMusicName=view.findViewById(R.id.music_info_music_name);
         musicInfoSingerName=view.findViewById(R.id.music_info_singer_name);
         musicInfoFileName=view.findViewById(R.id.music_info_file_name);
         musicInfoPlayLength=view.findViewById(R.id.music_info_file_play_length);
         musicInfoFileSize=view.findViewById(R.id.music_info_file_size);
         musicInfoFilePath=view.findViewById(R.id.music_info_file_path);
+
+        //有可能位置不够，长按显示全部内容
+        View.OnLongClickListener listener=new View.OnLongClickListener(){
+            @Override
+            public boolean onLongClick(View v) {
+                TextView tv= (TextView) v;
+                Toast.makeText(activity, tv.getText().toString(), Toast.LENGTH_LONG).show();
+                return true;
+            }
+        };
+        musicInfoMusicName.setOnLongClickListener(listener);
+        musicInfoSingerName.setOnLongClickListener(listener);
+        musicInfoFilePath.setOnLongClickListener(listener);
+        musicInfoFileName.setOnLongClickListener(listener);
+        musicInfoFileSize.setOnLongClickListener(listener);
+        musicInfoPlayLength.setOnLongClickListener(listener);
         return view;
     }
 
     /**
-     * 创建点击某一项菜单后再继续点击“查看歌曲信息”时弹出的popWindow所需要的contentView
+     * 创建点击某一项菜单后弹出的popWindow所需要的contentView
      * @return         spw的contentView
      */
-    private View createContextViewMenu() {
+    private View createContentViewMenu() {
         View view=LayoutInflater.from(activity).inflate(R.layout.pw_local_music_item_menu, (ViewGroup) activity.getWindow().getDecorView(),false);
 
         //菜单中下一首播放被点击时
         view.findViewById(R.id.item_menu_next_play).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                activity.getBinder().nextPlay(musicList.get(popupPosition).getMd5());
+                spwMusicMenu.dismiss();
             }
         });
 
@@ -138,7 +294,7 @@ public class LocalMusicAdapter extends RecyclerView.Adapter<LocalMusicAdapter.Lo
             @Override
             public void onClick(View v) {
                 spwMusicMenu.dismiss();
-                spwAddToPlaylist.showPopupWindow();
+                spwAddToPlaylist.show();
             }
         });
 
@@ -146,41 +302,9 @@ public class LocalMusicAdapter extends RecyclerView.Adapter<LocalMusicAdapter.Lo
         view.findViewById(R.id.item_menu_music_info).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Music item=musicList.get(popupPosition);
-
-                musicInfoMusicName.setText(item.getMusicName());
-                musicInfoSingerName.setText(item.getSingerName());
-
-                LogUtil.printLog(item.getFilePath());
-                int index=item.getFilePath().lastIndexOf("/");
-                musicInfoFilePath.setText(item.getFilePath().substring(0,index));
-
-                musicInfoFileName.setText(item.getFilePath().substring(index+1));
-
-                long fileSize=item.getFileSize();
-                double format=(double)fileSize/(double)1024/(double)1024;
-                musicInfoFileSize.setText(String.format("%.2f",format)+"M");
-
-                int duration=item.getDuration();
-                musicInfoPlayLength.setText(FormatUtil.secondToString(duration));
+                setMusicInfoToDialog();
                 spwMusicMenu.dismiss();
-                spwMusicInfo.showPopupWindow();
-
-                //有可能位置不够，长按显示全部内容
-                View.OnLongClickListener listener=new View.OnLongClickListener(){
-                    @Override
-                    public boolean onLongClick(View v) {
-                        TextView tv= (TextView) v;
-                        Toast.makeText(activity, tv.getText().toString(), Toast.LENGTH_LONG).show();
-                        return true;
-                    }
-                };
-                musicInfoMusicName.setOnLongClickListener(listener);
-                musicInfoSingerName.setOnLongClickListener(listener);
-                musicInfoFilePath.setOnLongClickListener(listener);
-                musicInfoFileName.setOnLongClickListener(listener);
-                musicInfoFileSize.setOnLongClickListener(listener);
-                musicInfoPlayLength.setOnLongClickListener(listener);
+                spwMusicInfo.show();
             }
         });
 
@@ -197,6 +321,35 @@ public class LocalMusicAdapter extends RecyclerView.Adapter<LocalMusicAdapter.Lo
         return view;
     }
 
+    private void setMusicInfoToDialog(){
+        Music item=musicList.get(popupPosition);
+
+        musicInfoMusicName.setText(item.getMusicName());
+        musicInfoSingerName.setText(item.getSingerName());
+
+        int index=item.getFilePath().lastIndexOf("/");
+        musicInfoFilePath.setText(item.getFilePath().substring(0,index));
+
+        musicInfoFileName.setText(item.getFilePath().substring(index+1));
+
+        long fileSize=item.getFileSize();
+        double format=(double)fileSize/(double)1024/(double)1024;
+        musicInfoFileSize.setText(String.format("%.2f",format)+"M");
+
+        int duration=item.getDuration();
+        musicInfoPlayLength.setText(FormatUtil.secondToString(duration));
+
+        if(musicList.get(popupPosition).getIsServer()==1){
+            change.setVisibility(View.GONE);
+        }else{
+            change.setVisibility(View.VISIBLE);
+        }
+    }
+
+    /**
+     * 显示删除音乐dialog
+     * @param position 如果长度为0 就说明是多选模式  不然就是普通模式一个一个地删
+     */
     public void showDeleteDialog(final int... position) {
         View view=LayoutInflater.from(activity).inflate(R.layout.alertdialog_delete_local_music, (ViewGroup) activity.getWindow().getDecorView(),false);
         final CheckBox cb=view.findViewById(R.id.checkbox);
@@ -222,7 +375,7 @@ public class LocalMusicAdapter extends RecyclerView.Adapter<LocalMusicAdapter.Lo
                                     Toast.makeText(activity, "文件不存在，所以仅删除本地音乐列表中的这首歌", Toast.LENGTH_SHORT).show();
                                 }
                             }
-                            musicList.remove(position);
+                            musicList.remove(position[0]);
                             notifyDataSetChanged();
                         }else{
                             List<Music> newData=new ArrayList<>();
@@ -248,8 +401,7 @@ public class LocalMusicAdapter extends RecyclerView.Adapter<LocalMusicAdapter.Lo
                                 }
                             }
                             setMusicList(newData);
-                            notifyDataSetChanged();
-                            activity.setTitle("已选择"+selectedCount()+"项");
+                            handler.sendEmptyMessage(LocalMusicActivity.MESSAGE_DELETE_MUSIC_END);
                         }
                     }
                 })
@@ -265,8 +417,6 @@ public class LocalMusicAdapter extends RecyclerView.Adapter<LocalMusicAdapter.Lo
      */
     private View createContentViewAddToPlaylist(){
         View view=LayoutInflater.from(activity).inflate(R.layout.pw_add_to_playlist, (ViewGroup) activity.getWindow().getDecorView(),false);
-        view.getLayoutParams().height= (int) (DensityUtil.getDisplayHeight(activity)*0.6);
-        view.getLayoutParams().width=(int) (DensityUtil.getDisplayWidth(activity)*0.9);
 
         RecyclerView playlist=view.findViewById(R.id.add_to_playlist_recycler_view);
         playlist.setLayoutManager(new LinearLayoutManager(activity));
@@ -282,7 +432,7 @@ public class LocalMusicAdapter extends RecyclerView.Adapter<LocalMusicAdapter.Lo
     class LocalMusicViewHolder extends RecyclerView.ViewHolder{
 
         View itemView;
-        ImageView menu;
+        ImageView menu,isPlaying;
         TextView musicName;
         TextView musicSinger;
         CheckBox checkBox;         //多选时的多选框
@@ -294,6 +444,7 @@ public class LocalMusicAdapter extends RecyclerView.Adapter<LocalMusicAdapter.Lo
             musicName=itemView.findViewById(R.id.recycler_view_item_music_name);
             musicSinger=itemView.findViewById(R.id.music_singer);
             checkBox=itemView.findViewById(R.id.local_music_choose);
+            isPlaying=itemView.findViewById(R.id.is_playing);
 
             //点击整个itemView时
             itemView.setOnClickListener(new View.OnClickListener() {
@@ -309,22 +460,33 @@ public class LocalMusicAdapter extends RecyclerView.Adapter<LocalMusicAdapter.Lo
 
             //每一项中的菜单被点击时
             menu.setOnClickListener(new View.OnClickListener() {
-                @SuppressLint("SetTextI18n")
                 @Override
                 public void onClick(View v) {
-                    //给所有的popWindow的textView赋值
-                    musicMenuMusicName.setText("歌曲："+musicList.get(getAdapterPosition()).getMusicName());
-                    spwMusicMenu.showPopupWindow();
                     popupPosition=getAdapterPosition();
+                    Music item=musicList.get(popupPosition);
+
+                    if(activity.getLocalMusicDao().isServer(item.getMd5())){
+                        serverMusicCover.setImageUrl(
+                                MyEnvironment.serverBasePath+"music/loadMusicCover?singerId="+item.getSingerId().split("/")[0]);
+                        serverMusicName.setText(item.getMusicName());
+                        serverMusicSinger.setText(item.getSingerName());
+                        serverMusicSinger2.setText(item.getSingerName());
+                        spwMusicMenuIsServer.show();
+                    }else {
+                        musicMenuMusicName.setText(item.getMusicName());
+                        spwMusicMenu.show();
+                    }
                 }
             });
 
             checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    selected[getAdapterPosition()]=isChecked;
-                    activity.invalidateOptionsMenu();
-                    activity.setTitle("已选择"+selectedCount()+"项");
+                    if(checkBox.getVisibility()==View.VISIBLE){
+                        selected[getAdapterPosition()]=isChecked;
+                        activity.invalidateOptionsMenu();
+                        activity.setTitle("已选择"+selectedCount()+"项");
+                    }
                 }
             });
         }
@@ -394,11 +556,33 @@ public class LocalMusicAdapter extends RecyclerView.Adapter<LocalMusicAdapter.Lo
     }
 
     /**
+     * 获取处于选中状态的项
+     * @return
+     */
+    public List<String> getSelected(){
+        List<String> result=new ArrayList<>();
+        for(int i=0;i<musicList.size();i++){
+            if(selected[i]){
+                result.add(musicList.get(i).getMd5());
+            }
+        }
+        return result;
+    }
+
+    /**
      * 重新设置recyclerView的data列表
      * @param musicList
      */
     public void setMusicList(List<Music> musicList) {
         this.musicList = musicList;
         selected=new boolean[musicList.size()+10];
+    }
+
+    /**
+     * 返回data列表
+     * @return
+     */
+    public List<Music> getMusicList(){
+        return musicList;
     }
 }

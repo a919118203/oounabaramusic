@@ -23,7 +23,6 @@ import com.oounabaramusic.android.adapter.FavoritePlayListAdapter;
 import com.oounabaramusic.android.adapter.MyPlayListAdapter;
 import com.oounabaramusic.android.anim.OpenListAnimation;
 import com.oounabaramusic.android.widget.popupwindow.MyBottomSheetDialog;
-import com.oounabaramusic.android.widget.popupwindow.MyPopupWindow;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -36,7 +35,7 @@ import androidx.recyclerview.widget.RecyclerView;
 public class MainMyFragment extends Fragment implements View.OnClickListener{
 
     private MyBottomSheetDialog dialogMyPlaylistMenu;
-    private MyPopupWindow pwFavoritePlaylistMenu;
+    private MyBottomSheetDialog pwFavoritePlaylistMenu;
     private OpenListAnimation myPlaylistAnim,favoritePlaylistAnim;
     private MyPlayListAdapter myPlayListAdapter;
     private RecyclerView myPlayListRv;
@@ -88,7 +87,8 @@ public class MainMyFragment extends Fragment implements View.OnClickListener{
         dialogMyPlaylistMenu=new MyBottomSheetDialog(activity);
         dialogMyPlaylistMenu.setContentView(createMyContentView());
 
-        pwFavoritePlaylistMenu=new MyPopupWindow(activity,createFavoriteContentView());
+        pwFavoritePlaylistMenu=new MyBottomSheetDialog(activity);
+        pwFavoritePlaylistMenu.setContentView(createFavoriteContentView());
     }
 
 
@@ -162,7 +162,7 @@ public class MainMyFragment extends Fragment implements View.OnClickListener{
                 dialogMyPlaylistMenu.show();
                 break;
             case R.id.favorite_playlist_menu:      //收藏的歌单中的菜单按钮
-                pwFavoritePlaylistMenu.showPopupWindow();
+                pwFavoritePlaylistMenu.show();
                 break;
             case R.id.add_playlist:           //创建的歌单中的添加按钮（＋）
                 showDialog();

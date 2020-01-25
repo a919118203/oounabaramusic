@@ -18,5 +18,7 @@ public class MyBottomSheetDialog extends BottomSheetDialog {
     public void setContentView(View view) {
         super.setContentView(view);
         getWindow().findViewById(R.id.design_bottom_sheet).setBackgroundColor(Color.TRANSPARENT);
+
+
     }
 }

@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.oounabaramusic.android.R;
-import com.oounabaramusic.android.widget.popupwindow.MyPopupWindow;
+import com.oounabaramusic.android.widget.popupwindow.MyBottomSheetDialog;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -15,11 +15,12 @@ import androidx.recyclerview.widget.RecyclerView;
 public class DMMusicNormalAdapter extends RecyclerView.Adapter<DMMusicNormalAdapter.ViewHolder> {
 
     private Activity activity;
-    private MyPopupWindow spw;
+    private MyBottomSheetDialog spw;
 
     public DMMusicNormalAdapter(Activity activity){
         this.activity=activity;
-        spw=new MyPopupWindow(activity,createContentView());
+        spw=new MyBottomSheetDialog(activity);
+        spw.setContentView(createContentView());
     }
 
     private View createContentView() {
@@ -53,7 +54,7 @@ public class DMMusicNormalAdapter extends RecyclerView.Adapter<DMMusicNormalAdap
             itemView.findViewById(R.id.menu).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    spw.showPopupWindow();
+                    spw.show();
                 }
             });
         }

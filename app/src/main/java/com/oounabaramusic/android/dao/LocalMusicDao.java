@@ -10,6 +10,7 @@ import com.oounabaramusic.android.bean.Music;
 import com.oounabaramusic.android.util.LogUtil;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class LocalMusicDao extends BaseDao {
@@ -72,6 +73,18 @@ public class LocalMusicDao extends BaseDao {
         return f;
     }
 
+    public boolean isServer(String md5){
+        Cursor cursor=db.rawQuery(SqlSelectString.SELECT_IS_SERVER,new String[]{md5});
+        if(cursor.moveToFirst()){
+            if(cursor.getInt(0)==1){
+                cursor.close();
+                return true;
+            }
+        }
+        cursor.close();
+        return false;
+    }
+
     public List<Music> selectMusicByMusicName(String musicName){
         List<Music> musics=new ArrayList<>();
         Music item;
@@ -113,7 +126,7 @@ public class LocalMusicDao extends BaseDao {
         Music result=new Music();
         result.setMusicName(cursor.getString(cursor.getColumnIndex("music_name")));
         result.setSingerName(cursor.getString(cursor.getColumnIndex("singer_name")));
-        result.setSingerId(cursor.getInt(cursor.getColumnIndex("singer_id")));
+        result.setSingerId(cursor.getString(cursor.getColumnIndex("singer_id")));
         result.setMd5(cursor.getString(cursor.getColumnIndex("md5")));
         result.setFilePath(cursor.getString(cursor.getColumnIndex("file_path")));
         result.setFileSize(cursor.getLong(cursor.getColumnIndex("file_size")));
@@ -135,11 +148,26 @@ public class LocalMusicDao extends BaseDao {
         db.execSQL(SqlUpdateString.UPDATE_FILE_NAME_BY_MD5,item);
     }
 
+    /**
+     * 第一个     音乐名
+     * 第二个     歌手名
+     * 第三个     md5
+     * @param item
+     */
+    public void updateMusicNameByMd5(String... item){
+        db.execSQL(SqlUpdateString.UPDATE_MUSIC_NAME_BY_MD5,item);
+    }
+
     public void deleteMusicByMd5(String md5){
         db.execSQL(SqlDeleteString.DELETE_MUSIC_BY_MD5,new String[]{md5});
     }
 
-    public void updateIsServerByMd5(int result,String md5){
-        db.execSQL(SqlUpdateString.UPDATE_IS_SERVER_BY_MD5,new String[]{String.valueOf(result),md5});
+    public void updateIsServerByMd5(String... update){
+
+        if(update.length==2){
+            db.execSQL(SqlUpdateString.UPDATE_IS_SERVER_BY_MD5,update);
+        }else if(update.length==5){
+            db.execSQL(SqlUpdateString.UPDATE_MUSIC_BY_MD5,update);
+        }
     }
 }

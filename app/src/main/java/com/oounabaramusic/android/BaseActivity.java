@@ -12,6 +12,8 @@ import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -24,26 +26,21 @@ import com.oounabaramusic.android.util.LogUtil;
 import com.oounabaramusic.android.util.MyEnvironment;
 import com.oounabaramusic.android.widget.customview.MyCircleImageView;
 import com.oounabaramusic.android.widget.customview.PlayButton;
-import com.oounabaramusic.android.widget.popupwindow.MyPopupWindow;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
+import com.oounabaramusic.android.widget.popupwindow.MyBottomSheetDialog;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import de.hdodenhof.circleimageview.CircleImageView;
 
 public class BaseActivity extends AppCompatActivity {
     protected static final int CHOOSE_PHOTO=1;     //打开相册选择图片
-    private MyPopupWindow musicPlayList;
+    private MyBottomSheetDialog musicPlayList;
     private Handler handler=new MusicPlayHandler(this);
     private MusicPlayService.MusicPlayBinder binder;
     private ServiceConnection connection;
 
-    private RelativeLayout musicPlayBar;
+    protected RelativeLayout musicPlayBar;
     protected LocalMusicDao localMusicDao;
 
     @Override
@@ -89,6 +86,7 @@ public class BaseActivity extends AppCompatActivity {
                     binder.setHandler(handler);
                     binder.setLocalMusicDao(localMusicDao);
                     initPlay();
+                    onBindOk();
                 }
 
                 @Override
@@ -99,20 +97,26 @@ public class BaseActivity extends AppCompatActivity {
         }
     }
 
+
     private PlayButton playButton;
+    private TextView musicName;
+    private TextView singerName;
+    private MyCircleImageView cover;
+    private boolean one=false;       //只进行一次初始化
     private void initPlay() {
-        musicPlayList=new MyPopupWindow(this,createContentView());
+        if(one){
+            //退回上一个活动时，刷新
+            refreshPlayBar();
+            return;
+        }
+        one=true;
+        musicPlayList=new MyBottomSheetDialog(this);
+        musicPlayList.setContentView(createContentView());
         if(musicPlayBar!=null){
-
-            playButton=findViewById(R.id.music_play_button);
-            playButton.setStatus(binder.getStatus()==MusicPlayService.IS_START);
-            if(binder.getStatus()!=MusicPlayService.NOT_PREPARE){
-                musicPlayBar.setVisibility(View.VISIBLE);
-                playButton.setMaxProgress(binder.getCurrentMusicDuration());
-                playButton.setProgress(binder.getCurrentProgress());
-
-                initPlayBar();
-            }
+            playButton=musicPlayBar.findViewById(R.id.music_play_button);
+            musicName=musicPlayBar.findViewById(R.id.music_name);
+            singerName=musicPlayBar.findViewById(R.id.singer_name);
+            cover=musicPlayBar.findViewById(R.id.music_cover);
 
             playButton.addOnClickPlayButtonListener(new PlayButton.OnClickPlayButtonListener() {
                 @Override
@@ -129,9 +133,8 @@ public class BaseActivity extends AppCompatActivity {
             findViewById(R.id.music_play_list).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    listAdapter.setCurrentPlay(binder.getCurrentMusicPosition());
                     listAdapter.setDataList(localMusicDao.selectMusicByMd5(binder.getPlayList()));
-                    musicPlayList.showPopupWindow();
+                    musicPlayList.show();
                 }
             });
 
@@ -142,37 +145,41 @@ public class BaseActivity extends AppCompatActivity {
                     BaseActivity.this.startActivity(intent);
                 }
             });
+
+            refreshPlayBar();
         }
     }
 
-    private void initPlayBar(){
+    //刷新所有控件
+    public void refreshPlayBar(){
+        //重新获取播放列表
+        listAdapter.setDataList(localMusicDao.selectMusicByMd5(binder.getPlayList()));
+
+        if(binder.getStatus()!=MusicPlayService.NOT_PREPARE){
+            musicPlayBar.setVisibility(View.VISIBLE);
+            playButton.setMaxProgress(binder.getCurrentMusicDuration());
+            playButton.setProgress(binder.getCurrentProgress());
+        }else{
+            musicPlayBar.setVisibility(View.GONE);
+            if(musicPlayList.isShowing())
+                musicPlayList.dismiss();
+            return ;
+        }
+
+        playButton.setStatus(binder.getStatus()==MusicPlayService.IS_START);
+
         Music item=localMusicDao.selectMusicByMd5(binder.getCurrentMusic().getMd5());
 
-        TextView tv=musicPlayBar.findViewById(R.id.music_name);
-        tv.setText(item.getMusicName());
-
-        TextView tv2=musicPlayBar.findViewById(R.id.singer_name);
-        tv2.setText(item.getSingerName());
-
-        MyCircleImageView cv=musicPlayBar.findViewById(R.id.music_cover);
-
+        musicName.setText(item.getMusicName());
+        singerName.setText(item.getSingerName());
         int isServer=item.getIsServer();
-        String coverPath=MyEnvironment.cachePath+item.getMd5();
 
         if(isServer==1){
-            File file=new File(coverPath);
-            if(file.exists()){
-                LogUtil.printLog("加载图片：服务器音乐封面，本地有缓存");
-                Bitmap bitmap= BitmapFactory.decodeFile(MyEnvironment.cachePath+coverPath);
-                cv.setImageBitmap(bitmap);
-            }else{
-                LogUtil.printLog("加载图片：服务器音乐封面，本地缓存已被删除，请求服务器获取封面");
-                cv.setImageUrl(MyEnvironment.serverBasePath+"/music/loadMusicCover?musicMd5="+item.getMd5());
-            }
+            cover.setImageUrl(MyEnvironment.serverBasePath+"music/loadMusicCover?singerId="+item.getSingerId().split("/")[0]);
         }else{
             LogUtil.printLog("加载图片：本地音乐图片，无封面，设置为默认图片");
             Bitmap bitmap=BitmapFactory.decodeResource(getResources(),R.mipmap.default_image);
-            cv.setImageBitmap(bitmap);
+            cover.setImageBitmap(bitmap);
         }
     }
 
@@ -180,10 +187,69 @@ public class BaseActivity extends AppCompatActivity {
     private View createContentView() {
         View view=LayoutInflater.from(this).inflate(R.layout.pw_play_list, (ViewGroup) getWindow().getDecorView(),false);
 
+        final LinearLayout random=view.findViewById(R.id.random_play);
+        final LinearLayout single=view.findViewById(R.id.single_play);
+        final LinearLayout list=view.findViewById(R.id.list_loop);
+
+        switch (binder.getCurrentLoopType()){
+            case MusicPlayService.LOOP_TYPE_RANDOM:
+                random.setVisibility(View.VISIBLE);
+                single.setVisibility(View.GONE);
+                list.setVisibility(View.GONE);
+                break;
+            case MusicPlayService.LOOP_TYPE_LIST:
+                random.setVisibility(View.GONE);
+                single.setVisibility(View.GONE);
+                list.setVisibility(View.VISIBLE);
+                break;
+            case MusicPlayService.LOOP_TYPE_SINGLE:
+                random.setVisibility(View.GONE);
+                single.setVisibility(View.VISIBLE);
+                list.setVisibility(View.GONE);
+                break;
+        }
+
+        View.OnClickListener listener=new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                switch (binder.getCurrentLoopType()){
+                    case MusicPlayService.LOOP_TYPE_RANDOM:
+                        random.setVisibility(View.GONE);
+                        single.setVisibility(View.GONE);
+                        list.setVisibility(View.VISIBLE);
+                        binder.setCurrentLoopType(MusicPlayService.LOOP_TYPE_LIST);
+                        break;
+                    case MusicPlayService.LOOP_TYPE_LIST:
+                        random.setVisibility(View.GONE);
+                        single.setVisibility(View.VISIBLE);
+                        list.setVisibility(View.GONE);
+                        binder.setCurrentLoopType(MusicPlayService.LOOP_TYPE_SINGLE);
+                        break;
+                    case MusicPlayService.LOOP_TYPE_SINGLE:
+                        random.setVisibility(View.VISIBLE);
+                        single.setVisibility(View.GONE);
+                        list.setVisibility(View.GONE);
+                        binder.setCurrentLoopType(MusicPlayService.LOOP_TYPE_RANDOM);
+                        break;
+                }
+            }
+        };
+
+        random.setOnClickListener(listener);
+        single.setOnClickListener(listener);
+        list.setOnClickListener(listener);
+
         RecyclerView recyclerView=view.findViewById(R.id.recycler_view);
         recyclerView.setAdapter(listAdapter=new MusicPlayListAdapter(this));
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
+        ImageView deleteAll=view.findViewById(R.id.delete_play_list);
+        deleteAll.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                binder.deleteAllMusic();
+            }
+        });
         return view;
     }
 
@@ -206,15 +272,19 @@ public class BaseActivity extends AppCompatActivity {
                 return;
 
             switch (msg.what){
-                case MusicPlayService.IS_PREPARE:
-                    activity.playButton.setMaxProgress(activity.binder.getCurrentMusicDuration());
-                    activity.playButton.setStatus(true);
-                    activity.musicPlayBar.setVisibility(View.VISIBLE);
+                case MusicPlayService.IS_PREPARE:   //其实音乐已经要开始了
+                    //播放Bar设置相应的信息
+                    activity.refreshPlayBar();
 
-                    activity.initPlayBar();
+                    //回调函数，有的地方需要准备完成后还要做一点事
+                    activity.musicIsToStart();
                     break;
-                case MusicPlayService.EVENT_UPDATE_TIME:
+
+                case MusicPlayService.EVENT_UPDATE_TIME:  //设置进度
                     activity.playButton.setProgress(msg.arg1);
+                    break;
+                case MusicPlayService.EVENT_DELETE_MUSIC:
+                    activity.refreshPlayBar();
                     break;
             }
         }
@@ -222,5 +292,19 @@ public class BaseActivity extends AppCompatActivity {
 
     public MusicPlayService.MusicPlayBinder getBinder() {
         return binder;
+    }
+
+    /**
+     * 已经和service完成绑定时调用
+     */
+    protected void onBindOk(){
+
+    }
+
+    /**
+     * 音乐将要开始时调用
+     */
+    protected void musicIsToStart(){
+
     }
 }

@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import com.oounabaramusic.android.MusicPlayActivity;
 import com.oounabaramusic.android.R;
-import com.oounabaramusic.android.widget.popupwindow.MyPopupWindow;
+import com.oounabaramusic.android.widget.popupwindow.MyBottomSheetDialog;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -18,11 +18,12 @@ import androidx.recyclerview.widget.RecyclerView;
 public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.ViewHolder> {
 
     private Activity activity;
-    private MyPopupWindow spw;
+    private MyBottomSheetDialog spw;
 
     public MusicAdapter(Activity activity){
         this.activity=activity;
-        spw=new MyPopupWindow(activity,createContentView());
+        spw=new MyBottomSheetDialog(activity);
+        spw.setContentView(createContentView());
     }
 
     private View createContentView() {
@@ -51,7 +52,7 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.ViewHolder> 
 
         TextView musicName,musicSinger,index;
         ImageView musicMenu,musicCover;
-        TextView titleMusicSinger,MusicSinger,titleMusicName;
+        TextView MusicSinger,titleMusicName;
 
         ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -67,12 +68,11 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.ViewHolder> 
             musicSinger=itemView.findViewById(R.id.music_singer);
             index=itemView.findViewById(R.id.index);
             musicMenu=itemView.findViewById(R.id.music_menu);
-            titleMusicSinger=spw.getContentView().findViewById(R.id.music_singer);
 
             musicMenu.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    spw.showPopupWindow();
+                    spw.show();
                 }
             });
         }

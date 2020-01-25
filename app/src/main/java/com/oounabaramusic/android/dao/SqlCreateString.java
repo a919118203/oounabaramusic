@@ -6,7 +6,7 @@ public class SqlCreateString {
             "id integer primary key autoincrement," +
             "music_name text,"                      + //音乐名
             "singer_name text,"                      + //歌手名
-            "singer_id integer,"                     + //歌手id
+            "singer_id text,"                        + //歌手id
             "file_path text,"                        + //文件路径
             "duration integer,"                      + //时长
             "file_size integer,"                     + //文件大小

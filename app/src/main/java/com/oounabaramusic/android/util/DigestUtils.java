@@ -41,6 +41,23 @@ public class DigestUtils {
         return sb.toString();
     }
 
+    public static String md5HexOfString(String input){
+        MessageDigest md5=getMd5();
+        StringBuilder sb=new StringBuilder();
+        byte[] out=md5.digest(input.getBytes());
+        for(byte b:out){
+            int a=b & 0xff;
+            String str=Integer.toHexString(a);
+            if(str.length()==1){
+                sb.append("0");
+                sb.append(str);
+            }else{
+                sb.append(str);
+            }
+        }
+        return sb.toString();
+    }
+
     private static MessageDigest getMd5() {
         if(md5==null){
             try {

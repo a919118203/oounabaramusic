@@ -9,7 +9,6 @@ import androidx.viewpager.widget.ViewPager;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -25,7 +24,7 @@ import com.oounabaramusic.android.fragment.UserInfoPostFragment;
 import com.oounabaramusic.android.util.DensityUtil;
 import com.oounabaramusic.android.util.StatusBarUtil;
 import com.oounabaramusic.android.util.UserInfoActivityManager;
-import com.oounabaramusic.android.widget.popupwindow.MyPopupWindow;
+import com.oounabaramusic.android.widget.popupwindow.MyBottomSheetDialog;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -190,9 +189,8 @@ public class UserInfoActivity extends BaseActivity implements View.OnClickListen
         iv.getLayoutParams().height=DensityUtil.getDisplayWidth(this);
         iv.setImageDrawable(userHeader.getDrawable());//TODO 以后得改
 
-        final MyPopupWindow pw=new MyPopupWindow(this,
-                contentView,
-                Gravity.TOP);
+        final MyBottomSheetDialog pw=new MyBottomSheetDialog(this);
+        pw.setContentView(contentView);
 
         View.OnClickListener listener=new View.OnClickListener() {
             @Override
@@ -209,7 +207,7 @@ public class UserInfoActivity extends BaseActivity implements View.OnClickListen
         contentView.findViewById(R.id.user_header).setOnClickListener(listener);
         contentView.findViewById(R.id.rootLayout).setOnClickListener(listener);
 
-        pw.showAtLocation(getWindow().getDecorView(), Gravity.CENTER,0,0);
+        pw.show();
     }
 
     class UserFragmentPagerAdapter extends FragmentPagerAdapter{

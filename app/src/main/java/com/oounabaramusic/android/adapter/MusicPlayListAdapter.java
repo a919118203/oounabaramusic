@@ -7,8 +7,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.oounabaramusic.android.BaseActivity;
 import com.oounabaramusic.android.R;
 import com.oounabaramusic.android.bean.Music;
+import com.oounabaramusic.android.util.LogUtil;
 
 import java.util.List;
 
@@ -17,11 +19,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class MusicPlayListAdapter extends RecyclerView.Adapter<MusicPlayListAdapter.ViewHolder> {
 
-    private Activity activity;
+    private BaseActivity activity;
     private List<Music> dataList;
-    private int currentPlay;
 
-    public MusicPlayListAdapter(Activity activity){
+    public MusicPlayListAdapter(BaseActivity activity){
         this.activity=activity;
     }
 
@@ -36,7 +37,7 @@ public class MusicPlayListAdapter extends RecyclerView.Adapter<MusicPlayListAdap
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         holder.singerName.setText(dataList.get(position).getSingerName());
         holder.musicName.setText(dataList.get(position).getMusicName());
-        if(position==currentPlay){
+        if(position==activity.getBinder().getCurrentMusicPosition()){
             holder.isPlaying.setVisibility(View.VISIBLE);
         }else{
             holder.isPlaying.setVisibility(View.INVISIBLE);
@@ -53,20 +54,32 @@ public class MusicPlayListAdapter extends RecyclerView.Adapter<MusicPlayListAdap
         notifyDataSetChanged();
     }
 
-    public void setCurrentPlay(int currentPlay) {
-        this.currentPlay = currentPlay;
-    }
-
     class ViewHolder extends RecyclerView.ViewHolder{
         TextView musicName;
         TextView singerName;
         ImageView isPlaying;
+        ImageView delete;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
 
             musicName=itemView.findViewById(R.id.music_name);
             singerName=itemView.findViewById(R.id.singer_name);
             isPlaying=itemView.findViewById(R.id.is_playing);
+            delete=itemView.findViewById(R.id.delete);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    activity.getBinder().playMusic(dataList.get(getAdapterPosition()).getMd5());
+                }
+            });
+
+            delete.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    activity.getBinder().deleteMusic(dataList.get(getAdapterPosition()).getMd5());
+                }
+            });
         }
     }
 }

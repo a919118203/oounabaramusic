@@ -9,6 +9,9 @@ import android.util.AttributeSet;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.oounabaramusic.android.R;
+import com.oounabaramusic.android.okhttputil.HttpUtil;
+import com.oounabaramusic.android.util.InternetUtil;
 import com.oounabaramusic.android.util.LogUtil;
 import com.oounabaramusic.android.util.MyEnvironment;
 
@@ -28,6 +31,10 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 public class MyCircleImageView extends CircleImageView {
+    public static final int NO_NET=0;
+    public static final int LOAD_SUCCESS=1;
+    public static final int LOAD_FAILURE=2;
+
     public MyCircleImageView(Context context) {
         super(context);
     }
@@ -43,47 +50,7 @@ public class MyCircleImageView extends CircleImageView {
     private Handler handler=new MyImageView.ImageHandler(this);
 
     public void setImageUrl(String url){
-        OkHttpClient client=new OkHttpClient();
-
-        Request request=new Request.Builder()
-                .url(url)
-                .build();
-
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                LogUtil.printLog("未知错误");
-            }
-
-            @Override
-            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                if(response.body()==null){
-                    handler.sendEmptyMessage(-1);
-                    return;
-                }
-                InputStream is=response.body().byteStream();
-
-                File file=new File(MyEnvironment.cachePath+response.header("fileName"));
-                file.createNewFile();
-
-                BufferedOutputStream bos=new BufferedOutputStream(new FileOutputStream(file));
-                byte[] buff=new byte[1024];
-                int len;
-                while((len=is.read(buff))!=-1){
-                    bos.write(buff,0,len);
-                }
-                bos.flush();
-                bos.close();
-
-                Bitmap bitmap= BitmapFactory.decodeFile(file.getPath());
-
-                Message message=new Message();
-                message.what=1;
-                message.obj=bitmap;
-
-                handler.sendMessage(message);
-            }
-        });
+        HttpUtil.loadImage(getContext(),url,new ImageHandler(this));
     }
 
     static class ImageHandler extends Handler{
@@ -97,12 +64,19 @@ public class MyCircleImageView extends CircleImageView {
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what){
-                case -1:
-                    Toast.makeText(iv.getContext(), "发生错误，稍后重试", Toast.LENGTH_SHORT).show();
-                    break;
-                case 1:
-                    Bitmap bitmap= (Bitmap) msg.obj;
+                case NO_NET:
+                    Toast.makeText(iv.getContext(), "请检查网络连接", Toast.LENGTH_SHORT).show();
+                    Bitmap bitmap=BitmapFactory.decodeResource(iv.getResources(),R.mipmap.default_image);
                     iv.setImageBitmap(bitmap);
+                    break;
+                case LOAD_SUCCESS:
+                    Bitmap bitmap2= (Bitmap) msg.obj;
+                    iv.setImageBitmap(bitmap2);
+                    break;
+                case LOAD_FAILURE:
+                    Toast.makeText(iv.getContext(), "图片加载失败", Toast.LENGTH_SHORT).show();
+                    Bitmap bitmap3=BitmapFactory.decodeResource(iv.getResources(),R.mipmap.default_image);
+                    iv.setImageBitmap(bitmap3);
                     break;
             }
         }

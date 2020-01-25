@@ -4,7 +4,6 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.widget.Toolbar;
 
 import android.os.Bundle;
-import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -17,7 +16,7 @@ import android.widget.LinearLayout;
 
 import com.oounabaramusic.android.util.DensityUtil;
 import com.oounabaramusic.android.util.StatusBarUtil;
-import com.oounabaramusic.android.widget.popupwindow.MyPopupWindow;
+import com.oounabaramusic.android.widget.popupwindow.MyBottomSheetDialog;
 
 public class UserInfoEditActivity extends BaseActivity implements View.OnClickListener{
 
@@ -28,7 +27,7 @@ public class UserInfoEditActivity extends BaseActivity implements View.OnClickLi
     private EditText editUserName;
     private LinearLayout layoutContent;
     private FrameLayout editIntroduction;
-    private MyPopupWindow pw;
+    private MyBottomSheetDialog pw;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,10 +55,8 @@ public class UserInfoEditActivity extends BaseActivity implements View.OnClickLi
         layoutContent=findViewById(R.id.layout_content);
         editIntroduction=findViewById(R.id.edit_introduction);
 
-        pw=new MyPopupWindow(
-                this,
-                createContentView(),
-                Gravity.CENTER);
+        pw=new MyBottomSheetDialog(this);
+        pw.setContentView(createContentView());
     }
 
     private View createContentView() {
@@ -141,7 +138,7 @@ public class UserInfoEditActivity extends BaseActivity implements View.OnClickLi
                 switchMode(MODE_EDIT_NAME);
                 break;
             case R.id.user_sex:
-                pw.showAtLocation(getWindow().getDecorView(),Gravity.CENTER,0,0);
+                pw.show();
                 break;
             case R.id.user_birthday:
                 break;
