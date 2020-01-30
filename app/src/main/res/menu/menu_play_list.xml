@@ -3,24 +3,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <item
-        android:id="@+id/play_list_search"
-        android:title="从歌单中检索"
-        android:icon="@mipmap/search_light"
-        app:showAsAction="ifRoom"
-        tools:ignore="HardcodedText" />
-
-    <item
-        android:id="@+id/play_list_add_music"
-        android:title="添加歌曲"
-        android:icon="@mipmap/add"
-        app:showAsAction="never"
-        tools:ignore="HardcodedText" />
 
     <item
         android:id="@+id/edit_playlist_info"
         android:title="编辑歌单信息"
-        android:icon="@mipmap/edit"
-        app:showAsAction="never"
+        app:showAsAction="always"
         tools:ignore="HardcodedText" />
 </menu>

@@ -8,4 +8,12 @@
         android:icon="@mipmap/singer"
         app:showAsAction="always"
         tools:ignore="HardcodedText" />
+
+    <item
+        android:visible="false"
+        android:id="@+id/delete_text"
+        android:title="删除文本"
+        android:icon="@mipmap/delete_music"
+        app:showAsAction="ifRoom"
+        tools:ignore="HardcodedText" />
 </menu>

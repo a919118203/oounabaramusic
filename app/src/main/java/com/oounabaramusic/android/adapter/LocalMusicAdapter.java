@@ -179,7 +179,7 @@ public class LocalMusicAdapter extends RecyclerView.Adapter<LocalMusicAdapter.Lo
         view.findViewById(R.id.music_next_play).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                activity.getBinder().nextPlay(musicList.get(popupPosition).getMd5());
+                activity.getBinder().nextPlay(musicList.get(popupPosition));
                 spwMusicMenuIsServer.dismiss();
             }
         });
@@ -284,7 +284,7 @@ public class LocalMusicAdapter extends RecyclerView.Adapter<LocalMusicAdapter.Lo
         view.findViewById(R.id.item_menu_next_play).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                activity.getBinder().nextPlay(musicList.get(popupPosition).getMd5());
+                activity.getBinder().nextPlay(musicList.get(popupPosition));
                 spwMusicMenu.dismiss();
             }
         });
@@ -453,7 +453,7 @@ public class LocalMusicAdapter extends RecyclerView.Adapter<LocalMusicAdapter.Lo
                     if(toolBarMode==LocalMusicActivity.TOOLBAR_MODE_MULTIPLE_CHOICE){
                         checkBox.setChecked(!selected[getAdapterPosition()]);
                     }else{
-                        activity.getBinder().playMusic(musicList.get(getAdapterPosition()).getMd5());
+                        activity.getBinder().playMusic(musicList.get(getAdapterPosition()));
                     }
                 }
             });
@@ -559,11 +559,11 @@ public class LocalMusicAdapter extends RecyclerView.Adapter<LocalMusicAdapter.Lo
      * 获取处于选中状态的项
      * @return
      */
-    public List<String> getSelected(){
-        List<String> result=new ArrayList<>();
+    public List<Music> getSelected(){
+        List<Music> result=new ArrayList<>();
         for(int i=0;i<musicList.size();i++){
             if(selected[i]){
-                result.add(musicList.get(i).getMd5());
+                result.add(musicList.get(i));
             }
         }
         return result;

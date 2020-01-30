@@ -109,6 +109,11 @@ public class TextViewCell extends TextView {
     @Override
     public void setSelected(boolean selected) {
         this.selected = selected;
+        if(selected){
+            setBackground(activity.getDrawable(R.drawable.gridlayout_cell_selected));
+        }else{
+            setBackground(notSelect);
+        }
     }
 
     @Override

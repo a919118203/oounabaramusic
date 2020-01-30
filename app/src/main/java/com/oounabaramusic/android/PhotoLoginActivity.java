@@ -134,17 +134,17 @@ public class PhotoLoginActivity extends BaseActivity {
         }).start();
 
 
-//        strPhoto=photo.getText().toString();
-//        if(strPhoto.length()==0){
-//            Toast.makeText(this, "还没写电话号码呢", Toast.LENGTH_SHORT).show();
-//            return;
-//        }
-//
-//        if(!StringUtil.checkAllNumbers(strPhoto)){
-//            Toast.makeText(this, "输入全数字", Toast.LENGTH_SHORT).show();
-//            return;
-//        }
-//        SMSSDK.getVerificationCode("86",strPhoto);
+        strPhoto=photo.getText().toString();
+        if(strPhoto.length()==0){
+            Toast.makeText(this, "还没写电话号码呢", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if(!StringUtil.checkAllNumbers(strPhoto)){
+            Toast.makeText(this, "输入全数字", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        SMSSDK.getVerificationCode("86",strPhoto);
     }
 
     public void login(){

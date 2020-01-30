@@ -18,7 +18,7 @@ import java.util.List;
 public class GridLayoutTagGrid extends GridLayout {
 
     private Activity activity;
-    public static final int COL_COUNT=5;          //列数
+    public static final int COL_COUNT=4;          //列数
     public static final int ROW_HEIGHT=45;        //每行的高度（DP）
 
     public GridLayoutTagGrid(Activity activity) {

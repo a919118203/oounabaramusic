@@ -1,6 +1,10 @@
 package com.oounabaramusic.android.dao;
 
 public class SqlInsertString {
-    public static final String insert_local_music_tbl=
-            "insert into local_music_tbl (music_name)";
+
+    //本地音乐
+    public static final String INSERT_HISTORICAL_QUERY_TBL=
+            String.format("insert into %s (search_text) values (?)",SqlTableString.HISTORICAL_QUERY_TBL);
+
+
 }

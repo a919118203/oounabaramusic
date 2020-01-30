@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout
-    android:id="@+id/outermost_layout"
+<LinearLayout
+    android:orientation="vertical"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -10,7 +10,8 @@
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="0dp"
+        android:layout_weight="1">
 
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/appbar"
@@ -18,7 +19,25 @@
             android:layout_height="wrap_content"
             app:elevation="0dp">
 
-            <include layout="@layout/header_play_list"/>
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="150dp"
+                app:layout_scrollFlags="scroll|exitUntilCollapsed">
+
+                <com.oounabaramusic.android.widget.customview.MyImageView
+                    android:id="@+id/background"
+                    android:layout_width="match_parent"
+                    android:layout_height="370dp"
+                    android:scaleType="centerCrop"/>
+
+                <View
+                    android:background="@color/alpha_black_background"
+                    android:layout_width="match_parent"
+                    android:layout_height="370dp"/>
+
+                <include layout="@layout/header_play_list"/>
+            </FrameLayout>
         </com.google.android.material.appbar.AppBarLayout>
 
         <androidx.recyclerview.widget.RecyclerView
@@ -26,14 +45,9 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"/>
-    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/appbar_toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/alpha_background"
-        app:elevation="0dp">
+        <include layout="@layout/special_current_play_layout"/>
+
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
@@ -49,7 +63,7 @@
                 android:gravity="center_vertical"
                 tools:ignore="HardcodedText" />
         </androidx.appcompat.widget.Toolbar>
-    </com.google.android.material.appbar.AppBarLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
     <include layout="@layout/special_current_play_layout"/>
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+</LinearLayout>

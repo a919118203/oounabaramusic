@@ -38,6 +38,7 @@ import com.oounabaramusic.android.dao.LocalMusicDao;
 import com.oounabaramusic.android.okhttputil.HttpUtil;
 import com.oounabaramusic.android.service.MusicPlayService;
 import com.oounabaramusic.android.util.DigestUtils;
+import com.oounabaramusic.android.util.InputMethodUtil;
 import com.oounabaramusic.android.util.InternetUtil;
 import com.oounabaramusic.android.util.LogUtil;
 import com.oounabaramusic.android.util.StatusBarUtil;
@@ -63,7 +64,6 @@ public class LocalMusicActivity extends BaseActivity implements View.OnClickList
     public static final int MESSAGE_CHANGE_TEXT_VIEW =2;
     public static final int MESSAGE_DELETE_MUSIC=4;
     public static final int MESSAGE_DELETE_MUSIC_END=5;
-    public static final int MESSAGE_NO_NET=6;
 
     private RecyclerView rv;//显示歌曲列表
     private LocalMusicAdapter adapter;//歌曲列表的适配器
@@ -104,9 +104,17 @@ public class LocalMusicActivity extends BaseActivity implements View.OnClickList
     @Override
     public void refreshPlayBar() {
         super.refreshPlayBar();
-        if(adapter!=null){
-            adapter.setMusicList(localMusicDao.selectAllLocalMusic());
-            adapter.notifyDataSetChanged();
+        switch (toolbarMode){
+            case TOOLBAR_MODE_NORMAL:
+            case TOOLBAR_MODE_EDIT:
+                if(adapter!=null){
+                    adapter.setMusicList(localMusicDao.selectAllLocalMusic());
+                    adapter.notifyDataSetChanged();
+                }
+                break;
+            case TOOLBAR_MODE_MULTIPLE_CHOICE:
+                musicPlayBar.setVisibility(View.GONE);
+                break;
         }
     }
 
@@ -227,7 +235,7 @@ public class LocalMusicActivity extends BaseActivity implements View.OnClickList
             case android.R.id.home://退出或退出edit模式
                 if(toolbarMode!=TOOLBAR_MODE_NORMAL){
                     switchToolBar(TOOLBAR_MODE_NORMAL);
-                    StatusBarUtil.hideSoftKeyboard(this);
+                    InputMethodUtil.hideSoftKeyboard(this);
                 }else{
                     finish();
                 }
@@ -440,49 +448,35 @@ public class LocalMusicActivity extends BaseActivity implements View.OnClickList
                         String json= (String) msg.obj;
                         Gson gson=new Gson();
                         List<Map<String,String>> data=gson.fromJson(json,new TypeToken<List<Map<String,String>>>(){}.getType());
+
+                        Music item;
                         for(Map<String,String> map:data){
                             String isServer=map.get("isServer");
                             if(isServer.equals("0")){
                                 activity.localMusicDao.updateIsServerByMd5(isServer,map.get("md5"));
                             }else if(isServer.equals("1")){
 
-                                Map<String,String> jsonData=
-                                        gson.fromJson(map.get("musicDataJson"),new TypeToken<Map<String,String>>(){}.getType());
-
-                                List<Map<String,String>> singers=
-                                        gson.fromJson(jsonData.get("singers"),new TypeToken<List<Map<String,String>>>(){}.getType());
-
-                                StringBuilder singerName=new StringBuilder();
-                                StringBuilder singerId=new StringBuilder();
-
-                                for(int i=0;i<singers.size();i++){
-                                    if(i>0){
-                                        singerName.append("/");
-                                        singerId.append("/");
-                                    }
-                                    singerName.append(singers.get(i).get("singerName"));
-                                    singerId.append(singers.get(i).get("id"));
-                                }
+                                item=new Music(map.get("musicDataJson"));
 
                                 activity.localMusicDao.updateIsServerByMd5(
                                         isServer,
-                                        jsonData.get("musicName"),
-                                        singerName.toString(),
-                                        singerId.toString(),
-                                        jsonData.get("md5"));
+                                        item.getMusicName(),
+                                        item.getSingerName(),
+                                        item.getSingerId(),
+                                        item.getMd5());
                             }
                         }
                     }
                     if(activity.dialog!=null&&activity.dialog.isShowing()){
                         activity.dialog.dismiss();
                     }
-                    activity.refreshPlayBar();
                     if(activity.srl!=null&&activity.srl.isRefreshing()){
                         activity.srl.setRefreshing(false);
                     }
+                    activity.refreshPlayBar();
                     break;
 
-                case MESSAGE_NO_NET:
+                case HttpUtil.NO_NET:
                     Toast.makeText(activity, "请检查网络连接", Toast.LENGTH_SHORT).show();
                     activity.dialog.dismiss();
                     activity.adapter.setMusicList(activity.localMusicDao.selectAllLocalMusic());
@@ -512,9 +506,9 @@ public class LocalMusicActivity extends BaseActivity implements View.OnClickList
                 List<Music> list=adapter.getMusicList();
                 for(int i=0;i<list.size();i++){
                     if(i==0){
-                        getBinder().playMusic(list.get(i).getMd5());
+                        getBinder().playMusic(list.get(i));
                     }else{
-                        getBinder().nextPlay(list.get(i).getMd5());
+                        getBinder().nextPlay(list.get(i));
                     }
                 }
                 break;
@@ -527,9 +521,9 @@ public class LocalMusicActivity extends BaseActivity implements View.OnClickList
                     toast.setGravity(Gravity.BOTTOM,0,200);
                     toast.show();
                 }else{
-                    List<String> list1=adapter.getSelected();
-                    for(String md5:list1){
-                        getBinder().nextPlay(md5);
+                    List<Music> list1=adapter.getSelected();
+                    for(Music item:list1){
+                        getBinder().nextPlay(item);
                     }
                     switchToolBar(TOOLBAR_MODE_NORMAL);
                 }
@@ -574,6 +568,7 @@ public class LocalMusicActivity extends BaseActivity implements View.OnClickList
                 actionBarTitle="本地音乐";
 
                 if(afterMode==TOOLBAR_MODE_EDIT){
+                    edit.setText("");
                     adapter.setMusicList(localMusicDao.selectAllLocalMusic());
                     adapter.notifyDataSetChanged();
                 }

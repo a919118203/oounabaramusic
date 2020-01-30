@@ -126,7 +126,7 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/musi_comment"
+        android:id="@+id/music_comment"
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:background="@drawable/view_ripple_rectangle"

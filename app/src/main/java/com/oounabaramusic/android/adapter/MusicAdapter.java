@@ -10,7 +10,11 @@ import android.widget.TextView;
 
 import com.oounabaramusic.android.MusicPlayActivity;
 import com.oounabaramusic.android.R;
+import com.oounabaramusic.android.bean.Music;
 import com.oounabaramusic.android.widget.popupwindow.MyBottomSheetDialog;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -19,15 +23,23 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.ViewHolder> 
 
     private Activity activity;
     private MyBottomSheetDialog spw;
+    private List<Music> dataList;
 
     public MusicAdapter(Activity activity){
         this.activity=activity;
         spw=new MyBottomSheetDialog(activity);
         spw.setContentView(createContentView());
+        dataList=new ArrayList<>();
+    }
+
+    public void setDataList(List<Music> dataList) {
+        this.dataList = dataList;
+        notifyDataSetChanged();
     }
 
     private View createContentView() {
-        return LayoutInflater.from(activity).inflate(R.layout.pw_music_menu, (ViewGroup) activity.getWindow().getDecorView(),false);
+        return LayoutInflater.from(activity).inflate(R.layout.pw_music_menu,
+                (ViewGroup) activity.getWindow().getDecorView(),false);
     }
 
 
@@ -41,11 +53,13 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.ViewHolder> 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         holder.index.setText(String.valueOf(position+1));
+        holder.musicName.setText(dataList.get(position).getMusicName());
+        holder.musicSinger.setText(dataList.get(position).getSingerName());
     }
 
     @Override
     public int getItemCount() {
-        return 30;
+        return dataList.size();
     }
 
     class ViewHolder extends RecyclerView.ViewHolder{

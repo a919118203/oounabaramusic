@@ -19,12 +19,13 @@
 
             <EditText
                 android:id="@+id/search_content"
-                android:maxLines="1"
+                android:hint="津軽海峡・冬景色"
                 android:imeOptions="actionSearch"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:backgroundTint="@color/positive"
-                android:inputType="text" />
+                android:inputType="text"
+                tools:ignore="HardcodedText" />
         </androidx.appcompat.widget.Toolbar>
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -35,7 +36,7 @@
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <LinearLayout
-            android:visibility="gone"
+            android:id="@+id/search"
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -59,6 +60,7 @@
                     tools:ignore="HardcodedText" />
 
                 <ImageView
+                    android:id="@+id/delete"
                     android:src="@mipmap/delete"
                     android:layout_width="60dp"
                     android:layout_height="60dp"
@@ -85,7 +87,8 @@
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1">
+            android:layout_weight="1"
+            android:visibility="gone">
 
             <com.google.android.material.tabs.TabLayout
                 android:id="@+id/tab_layout"

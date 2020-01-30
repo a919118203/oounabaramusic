@@ -13,4 +13,6 @@ public class BaseFragment extends Fragment {
     public void setTitle(String title) {
         this.title = title;
     }
+
+    public void notifyFragment(){}
 }

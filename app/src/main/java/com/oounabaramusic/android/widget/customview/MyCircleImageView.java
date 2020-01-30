@@ -34,6 +34,8 @@ public class MyCircleImageView extends CircleImageView {
     public static final int NO_NET=0;
     public static final int LOAD_SUCCESS=1;
     public static final int LOAD_FAILURE=2;
+    public static final int NO_COVER=3;
+    public static final int LOAD_END=4;
 
     public MyCircleImageView(Context context) {
         super(context);
@@ -47,37 +49,73 @@ public class MyCircleImageView extends CircleImageView {
         super(context, attrs, defStyle);
     }
 
-    private Handler handler=new MyImageView.ImageHandler(this);
-
+    private Handler handler=new ImageHandler(this);
+    private Bitmap defaultImage;
+    private Handler eventHandler;
+    private String url;
     public void setImageUrl(String url){
+        this.url=url;
         HttpUtil.loadImage(getContext(),url,new ImageHandler(this));
+    }
+
+    public void refresh(){
+        HttpUtil.loadImage(getContext(),url,new ImageHandler(this));
+    }
+
+    public void setDefaultImage(Bitmap defaultImage) {
+        this.defaultImage = defaultImage;
+    }
+
+    public void setEventHandler(Handler eventHandler) {
+        this.eventHandler = eventHandler;
     }
 
     static class ImageHandler extends Handler{
 
-        private ImageView iv;
+        private MyCircleImageView iv;
 
-        ImageHandler(ImageView iv){
+        ImageHandler(MyCircleImageView iv){
             this.iv=iv;
         }
 
         @Override
         public void handleMessage(Message msg) {
+            Bitmap bitmap;
             switch (msg.what){
-                case NO_NET:
+                case HttpUtil.NO_NET:
                     Toast.makeText(iv.getContext(), "请检查网络连接", Toast.LENGTH_SHORT).show();
-                    Bitmap bitmap=BitmapFactory.decodeResource(iv.getResources(),R.mipmap.default_image);
+                    if(iv.defaultImage==null){
+                        bitmap=BitmapFactory.decodeResource(iv.getResources(), R.mipmap.default_image);
+                    }else{
+                        bitmap=iv.defaultImage;
+                    }
                     iv.setImageBitmap(bitmap);
                     break;
                 case LOAD_SUCCESS:
-                    Bitmap bitmap2= (Bitmap) msg.obj;
-                    iv.setImageBitmap(bitmap2);
+                    bitmap= (Bitmap) msg.obj;
+                    iv.setImageBitmap(bitmap);
+                    break;
+                case NO_COVER:
+                    if(iv.defaultImage==null){
+                        bitmap=BitmapFactory.decodeResource(iv.getResources(), R.mipmap.default_image);
+                    }else{
+                        bitmap=iv.defaultImage;
+                    }
+                    iv.setImageBitmap(bitmap);
                     break;
                 case LOAD_FAILURE:
                     Toast.makeText(iv.getContext(), "图片加载失败", Toast.LENGTH_SHORT).show();
-                    Bitmap bitmap3=BitmapFactory.decodeResource(iv.getResources(),R.mipmap.default_image);
-                    iv.setImageBitmap(bitmap3);
+                    if(iv.defaultImage==null){
+                        bitmap=BitmapFactory.decodeResource(iv.getResources(), R.mipmap.default_image);
+                    }else{
+                        bitmap=iv.defaultImage;
+                    }
+                    iv.setImageBitmap(bitmap);
                     break;
+            }
+
+            if(iv.eventHandler!=null){
+                iv.eventHandler.sendEmptyMessage(LOAD_END);
             }
         }
     }

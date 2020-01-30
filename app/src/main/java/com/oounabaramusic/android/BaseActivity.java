@@ -3,6 +3,7 @@ package com.oounabaramusic.android;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -17,6 +18,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
 import com.oounabaramusic.android.adapter.MusicPlayListAdapter;
 import com.oounabaramusic.android.bean.Music;
 import com.oounabaramusic.android.dao.LocalMusicDao;
@@ -43,6 +45,8 @@ public class BaseActivity extends AppCompatActivity {
     protected RelativeLayout musicPlayBar;
     protected LocalMusicDao localMusicDao;
 
+    public Gson gson=new Gson();
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         LogUtil.printLog("onCreate: "+this.toString());
@@ -53,6 +57,7 @@ public class BaseActivity extends AppCompatActivity {
 
     private void init(){
         musicPlayBar=findViewById(R.id.tool_current_play_layout);
+
     }
 
     @Override
@@ -133,7 +138,7 @@ public class BaseActivity extends AppCompatActivity {
             findViewById(R.id.music_play_list).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    listAdapter.setDataList(localMusicDao.selectMusicByMd5(binder.getPlayList()));
+                    listAdapter.setDataList(binder.getPlayList());
                     musicPlayList.show();
                 }
             });
@@ -152,8 +157,11 @@ public class BaseActivity extends AppCompatActivity {
 
     //刷新所有控件
     public void refreshPlayBar(){
+        //刷新音乐service
+        binder.refresh();
+
         //重新获取播放列表
-        listAdapter.setDataList(localMusicDao.selectMusicByMd5(binder.getPlayList()));
+        listAdapter.setDataList(binder.getPlayList());
 
         if(binder.getStatus()!=MusicPlayService.NOT_PREPARE){
             musicPlayBar.setVisibility(View.VISIBLE);
@@ -168,7 +176,7 @@ public class BaseActivity extends AppCompatActivity {
 
         playButton.setStatus(binder.getStatus()==MusicPlayService.IS_START);
 
-        Music item=localMusicDao.selectMusicByMd5(binder.getCurrentMusic().getMd5());
+        Music item=binder.getCurrentMusic();
 
         musicName.setText(item.getMusicName());
         singerName.setText(item.getSingerName());

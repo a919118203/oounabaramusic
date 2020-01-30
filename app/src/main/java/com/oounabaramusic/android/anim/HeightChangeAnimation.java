@@ -5,6 +5,8 @@ import android.animation.ValueAnimator;
 import android.content.Context;
 import android.view.View;
 
+import com.oounabaramusic.android.util.LogUtil;
+
 public class HeightChangeAnimation {
     private View v1,v2;
     private ValueAnimator toV1,toV2;
@@ -38,6 +40,7 @@ public class HeightChangeAnimation {
     }
 
     private void setV2h(int v) {
+
         this.v2h = v;
         if(v1h!=0&&v2h!=0){
             initAnimation();
@@ -51,7 +54,7 @@ public class HeightChangeAnimation {
 
     private void initAnimation() {
         toV1= ValueAnimator.ofInt(v2h,v1h);
-        toV1.setDuration(250);
+        toV1.setDuration(100);
         toV1.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
@@ -81,7 +84,7 @@ public class HeightChangeAnimation {
         });
 
         toV2= ValueAnimator.ofInt(v1h,v2h);
-        toV2.setDuration(250);
+        toV2.setDuration(100);
         toV2.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {

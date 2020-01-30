@@ -10,10 +10,19 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.oounabaramusic.android.R;
+import com.oounabaramusic.android.bean.PlayListBigTag;
+import com.oounabaramusic.android.bean.PlayListSmallTag;
 import com.oounabaramusic.android.util.DensityUtil;
+import com.oounabaramusic.android.util.LogUtil;
+import com.oounabaramusic.android.util.MyEnvironment;
+import com.oounabaramusic.android.widget.customview.MyImageView;
 import com.oounabaramusic.android.widget.gridlayout.GridLayoutTagGrid;
 import com.oounabaramusic.android.widget.textview.TextViewCell;
 
+import org.w3c.dom.Text;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 import androidx.annotation.NonNull;
@@ -25,17 +34,79 @@ public class TagAdapter extends RecyclerView.Adapter<TagAdapter.ViewHolder> impl
     private static final int INVERT_SELECTION=2;     //反选
     private static final int SELECT_FAIL=3;          //选中失败
     private Activity activity;
-    private boolean[][][] selected=new boolean[100][100][GridLayoutTagGrid.COL_COUNT];
+    private boolean[][][] selected;
     private int selectedCnt=0;
-    private Random random=new Random(47);
     private TextView tagCnt;
+    private List<PlayListBigTag> dataList;
 
     public  TagAdapter(Activity activity,TextView tagCnt){
         this.activity=activity;
         this.tagCnt=tagCnt;
+        dataList=new ArrayList<>();
+        selected=new boolean[0][0][GridLayoutTagGrid.COL_COUNT];
     }
 
-    private int selectCell(int position,int i,int j){
+    /**
+     * setDataList和toSelect都得调用
+     * @param dataList
+     */
+    public void setDataList(List<PlayListBigTag> dataList) {
+        this.dataList = dataList;
+        selected=new boolean[dataList.size()][][];
+        for(int i=0;i<dataList.size();i++){
+            selected[i]=new boolean[(dataList.get(i).getTags().size()/4)+1][GridLayoutTagGrid.COL_COUNT];
+        }
+        selectedCnt=0;
+        tagCnt.setText("请选择合适的标签，最多选择3个，已选0个");
+    }
+
+    public void toSelect(List<Integer> smallTagId){
+        int iLen=dataList.size();
+        for(int i=0;i<iLen;i++){
+
+            List<PlayListSmallTag> item=dataList.get(i).getTags();
+            int jLen=item.size();
+            for(int j=0;j<jLen;j++){
+                if(smallTagId.contains(item.get(j).getId())){
+                    int index=j;
+                    if(j<=2){
+                        index+=1;
+                    }else{
+                        index+=2;
+                    }
+                    int col=index/GridLayoutTagGrid.COL_COUNT;
+                    int row=index%GridLayoutTagGrid.COL_COUNT;
+                    selected[i][col][row]=true;
+                    selectedCnt++;
+                    tagCnt.setText("请选择合适的标签，最多选择3个，已选"+selectedCnt+"个");
+                }
+            }
+        }
+        notifyDataSetChanged();
+    }
+
+    public List<Integer> getSelected() {
+        List<Integer> result=new ArrayList<>();
+
+        for(int i=0;i<selected.length;i++){
+            for(int j=0;j<selected[i].length;j++){
+                for(int k=0;k<selected[i][j].length;k++){
+                    if(selected[i][j][k]){
+                        int index=k+j*GridLayoutTagGrid.COL_COUNT;
+                        if(j==0){
+                            index-=1;
+                        }else
+                            index-=2;
+                        result.add(dataList.get(i).getTags().get(index).getId());
+                    }
+                }
+            }
+        }
+        return result;
+    }
+
+    private int selectCell(int position, int i, int j){
+        LogUtil.printLog(position+"   "+i+"   "+j);
         if(selected[position][i][j]){
             selected[position][i][j]=false;
             selectedCnt--;
@@ -75,7 +146,12 @@ public class TagAdapter extends RecyclerView.Adapter<TagAdapter.ViewHolder> impl
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         GridLayoutTagGrid grid=holder.grid;
 
-        int cnt=position+1;//selector_play_all,小标签的个数
+        holder.icon.setImageUrl(MyEnvironment.serverBasePath+
+                "playlisttagicon/"+dataList.get(position).getId()+".png");
+        holder.name.setText(dataList.get(position).getName());
+
+        List<PlayListSmallTag> smallTags=dataList.get(position).getTags();
+        int cnt=smallTags.size();//selector_play_all,小标签的个数
         reSetHeight(grid,cnt);
 
         GridLayout.Spec rowSpec,columnSpec;
@@ -85,10 +161,12 @@ public class TagAdapter extends RecyclerView.Adapter<TagAdapter.ViewHolder> impl
         //获取子View个数
         int childCount=grid.getChildCount();
 
+        int index=0;
+
         //够用
         if(childCount>cnt){
             int k=1;
-            for(int i=0;i<grid.getRowCount();i++){                   //i 行数       j 列数       k 子View下标
+            for(int i=0;i<grid.getRowCount();i++){                   //i 行数       j 列数       k 子View下标    index 数据List下标
                 for(int j=0;j<GridLayoutTagGrid.COL_COUNT;j++){
                     if(i==0&&j==0||i==1&&j==0)
                         continue; //跳过大标签
@@ -97,7 +175,7 @@ public class TagAdapter extends RecyclerView.Adapter<TagAdapter.ViewHolder> impl
                         tvc.setPosition(position);
                         tvc.setSelected(selected[position][i][j]);//用于判断单元格是否已选中
                         if(k<=cnt){
-                            tvc.setText("小");
+                            tvc.setText(smallTags.get(index++).getName());
                         }else{
                             tvc.setText("");
                         }
@@ -122,7 +200,7 @@ public class TagAdapter extends RecyclerView.Adapter<TagAdapter.ViewHolder> impl
                         TextViewCell tvc= (TextViewCell) grid.getChildAt(k);
                         tvc.setPosition(position);
                         tvc.setSelected(selected[position][i][j]);
-                        tvc.setText("小");
+                        tvc.setText(smallTags.get(index++).getName());
                         tvc.setVisibility(View.VISIBLE);
                     }else{
                         rowSpec = GridLayout.spec(i, 1.0f);
@@ -131,7 +209,9 @@ public class TagAdapter extends RecyclerView.Adapter<TagAdapter.ViewHolder> impl
                         params.height=0;
                         params.width=0;
                         if(k<=cnt){
-                            grid.addView(new TextViewCell(activity,"小",i,j,position,this),params);
+                            TextViewCell tvc=new TextViewCell(activity,smallTags.get(index++).getName(),i,j,position,this);
+                            tvc.setSelected(selected[position][i][j]);
+                            grid.addView(tvc,params);
                         }else{
                             grid.addView(new TextViewCell(activity,"",i,j,position,this),params);
                         }
@@ -140,10 +220,6 @@ public class TagAdapter extends RecyclerView.Adapter<TagAdapter.ViewHolder> impl
                 }
             }
         }
-
-        //设置大标签的图标和名字
-        holder.icon.setImageResource(R.mipmap.image);
-        holder.name.setText("名字");
     }
 
 
@@ -185,7 +261,7 @@ public class TagAdapter extends RecyclerView.Adapter<TagAdapter.ViewHolder> impl
 
     @Override
     public int getItemCount() {
-        return 20;
+        return dataList.size();
     }
 
     @Override
@@ -210,7 +286,7 @@ public class TagAdapter extends RecyclerView.Adapter<TagAdapter.ViewHolder> impl
 
     class ViewHolder extends  RecyclerView.ViewHolder{
         GridLayoutTagGrid grid;
-        ImageView icon;//大标签的图标
+        MyImageView icon;//大标签的图标
         TextView name;//大标签的名字
 
         ViewHolder(@NonNull View itemView) {
@@ -227,8 +303,8 @@ public class TagAdapter extends RecyclerView.Adapter<TagAdapter.ViewHolder> impl
             GridLayout.Spec rowSpec=GridLayout.spec(0,2,1f);
             GridLayout.Spec columnSpec=GridLayout.spec(0,1,1f);
             GridLayout.LayoutParams params=new GridLayout.LayoutParams(rowSpec,columnSpec);
-//            params.height=0;
-//            params.width=0;
+            params.height=0;
+            params.width=0;
             grid.addView(view,params);
         }
     }

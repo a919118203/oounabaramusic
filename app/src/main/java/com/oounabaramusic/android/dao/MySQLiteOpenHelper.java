@@ -16,11 +16,16 @@ public class MySQLiteOpenHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(SqlCreateString.CREATE_LOCAL_MUSIC_TBL);
+        db.execSQL(SqlCreateString.CREATE_HISTORICAL_QUERY_TBL);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL(SqlDropString.DROP_LOCAL_MUSIC_TBL);
         db.execSQL(SqlCreateString.CREATE_LOCAL_MUSIC_TBL);
+
+        db.execSQL(SqlDropString.DROP_HISTORICAL_QUERY_TBL);
+        db.execSQL(SqlCreateString.CREATE_HISTORICAL_QUERY_TBL);
+
     }
 }

@@ -16,4 +16,12 @@ public class FormatUtil {
         result.append(second);
         return result.toString();
     }
+
+    public static String numberToString(int num){
+        if(num>10000){
+            float f=(float) num/10000f;
+            return f+"万";
+        }
+        return String.valueOf(num);
+    }
 }

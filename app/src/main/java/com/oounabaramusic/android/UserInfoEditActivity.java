@@ -15,6 +15,7 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
 import com.oounabaramusic.android.util.DensityUtil;
+import com.oounabaramusic.android.util.InputMethodUtil;
 import com.oounabaramusic.android.util.StatusBarUtil;
 import com.oounabaramusic.android.widget.popupwindow.MyBottomSheetDialog;
 
@@ -86,7 +87,7 @@ public class UserInfoEditActivity extends BaseActivity implements View.OnClickLi
                 }else{
                     finish();
                 }
-                StatusBarUtil.hideSoftKeyboard(this);
+                InputMethodUtil.hideSoftKeyboard(this);
                 break;
             case R.id.save_name:
                 break;

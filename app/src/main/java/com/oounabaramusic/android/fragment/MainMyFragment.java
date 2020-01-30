@@ -3,15 +3,23 @@ package com.oounabaramusic.android.fragment;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.preference.PreferenceManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.oounabaramusic.android.DownloadManagementActivity;
 import com.oounabaramusic.android.LocalMusicActivity;
 import com.oounabaramusic.android.MyCollectionActivity;
@@ -22,7 +30,14 @@ import com.oounabaramusic.android.ResumePlayListActivity;
 import com.oounabaramusic.android.adapter.FavoritePlayListAdapter;
 import com.oounabaramusic.android.adapter.MyPlayListAdapter;
 import com.oounabaramusic.android.anim.OpenListAnimation;
+import com.oounabaramusic.android.bean.PlayList;
+import com.oounabaramusic.android.okhttputil.PlayListHttpUtil;
+import com.oounabaramusic.android.util.LogUtil;
 import com.oounabaramusic.android.widget.popupwindow.MyBottomSheetDialog;
+
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -37,15 +52,24 @@ public class MainMyFragment extends Fragment implements View.OnClickListener{
     private MyBottomSheetDialog dialogMyPlaylistMenu;
     private MyBottomSheetDialog pwFavoritePlaylistMenu;
     private OpenListAnimation myPlaylistAnim,favoritePlaylistAnim;
+    private Activity activity;
+    private View rootView;
+
+
     private MyPlayListAdapter myPlayListAdapter;
     private RecyclerView myPlayListRv;
     private FavoritePlayListAdapter favoritePlayListAdapter;
     private RecyclerView favoritePlayListRv;
-    private Activity activity;
-    private View rootView;
+    private ProgressBar pbMy;
+    private ProgressBar pbFa;
+
+    private SharedPreferences sp;
+    private Handler handler;
 
     public MainMyFragment(Activity activity){
         this.activity=activity;
+        sp= PreferenceManager.getDefaultSharedPreferences(activity);
+        handler=new MainMyHandler(this);
     }
 
     @Nullable
@@ -58,6 +82,15 @@ public class MainMyFragment extends Fragment implements View.OnClickListener{
         return rootView;
     }
 
+    /**
+     * 重新加载我的歌单
+     */
+    @Override
+    public void onStart() {
+        super.onStart();
+        loadMyPlayList(sp.getString("userId","-1"));
+    }
+
     private void init(View view) {
         view.findViewById(R.id.my_playlist_menu).setOnClickListener(this);
         view.findViewById(R.id.favorite_playlist_menu).setOnClickListener(this);
@@ -68,6 +101,8 @@ public class MainMyFragment extends Fragment implements View.OnClickListener{
         view.findViewById(R.id.add_playlist).setOnClickListener(this);
         view.findViewById(R.id.my_playlist).setOnClickListener(this);
         view.findViewById(R.id.favorite_playlist).setOnClickListener(this);
+        pbMy=view.findViewById(R.id.load_my);
+        pbFa=view.findViewById(R.id.load_favorite);
 
         myPlaylistAnim=new OpenListAnimation(view.findViewById(R.id.open_my_playlist),activity);
         favoritePlaylistAnim=new OpenListAnimation(view.findViewById(R.id.open_favorite_playlist),activity);
@@ -156,6 +191,7 @@ public class MainMyFragment extends Fragment implements View.OnClickListener{
 
     @Override
     public void onClick(View view) {
+        String userId=sp.getString("userId","-1");
         Intent intent;
         switch (view.getId()){
             case R.id.my_playlist_menu:            //创建的歌单中的菜单按钮
@@ -188,13 +224,41 @@ public class MainMyFragment extends Fragment implements View.OnClickListener{
                 activity.startActivity(intent);
                 break;
             case R.id.my_playlist:           //点击创建的歌单
+                if(!sp.getBoolean("login",false)){
+                    Toast.makeText(activity, "请先登录", Toast.LENGTH_SHORT).show();
+                    break;
+                }
+
                 myPlaylistAnim.changeStatus();
-                myPlayListRv.setVisibility(myPlaylistAnim.getStatus()==OpenListAnimation.STATUS_OPEN?View.VISIBLE:View.GONE);
+                loadMyPlayList(userId);
                 break;
             case R.id.favorite_playlist:     //点击收藏的歌单
+                if(!sp.getBoolean("login",false)){
+                    Toast.makeText(activity, "请先登录", Toast.LENGTH_SHORT).show();
+                    break;
+                }
+
                 favoritePlaylistAnim.changeStatus();
-                favoritePlayListRv.setVisibility(favoritePlaylistAnim.getStatus()==OpenListAnimation.STATUS_OPEN?View.VISIBLE:View.GONE);
+                //favoritePlayListRv.setVisibility(favoritePlaylistAnim.getStatus()==OpenListAnimation.STATUS_OPEN?View.VISIBLE:View.GONE);
+                if(favoritePlaylistAnim.getStatus()==OpenListAnimation.STATUS_OPEN){
+
+                }else{
+
+                }
                 break;
+        }
+    }
+
+    private void loadMyPlayList(String userId){
+        if(myPlaylistAnim.getStatus()==OpenListAnimation.STATUS_OPEN){
+            if(myPlayListAdapter.getItemCount()!=0){
+                myPlayListRv.setVisibility(View.VISIBLE);
+            }else{
+                pbMy.setVisibility(View.VISIBLE);
+            }
+            PlayListHttpUtil.findPlayListByUser(activity,userId,handler);
+        }else{
+            myPlayListRv.setVisibility(View.GONE);
         }
     }
 
@@ -210,7 +274,16 @@ public class MainMyFragment extends Fragment implements View.OnClickListener{
                 .setPositiveButton("提交", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        if(!sp.getBoolean("login",false)){
+                            Toast.makeText(activity, "请先登录", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
 
+                        PlayListHttpUtil.createPlayList(
+                                activity,
+                                sp.getString("userId","-1"),
+                                ct.getText().toString(),
+                                handler);
                     }
                 })
                 .setNegativeButton("取消",null)
@@ -242,5 +315,34 @@ public class MainMyFragment extends Fragment implements View.OnClickListener{
 
             }
         });
+    }
+
+    static class MainMyHandler extends Handler{
+        MainMyFragment fragment;
+        MainMyHandler(MainMyFragment fragment){
+            this.fragment=fragment;
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what){
+                case PlayListHttpUtil.MESSAGE_FIND_MY_PLAY_LIST_END:
+                    fragment.pbMy.setVisibility(View.GONE);
+                    fragment.myPlayListRv.setVisibility(View.VISIBLE);
+                    List<PlayList> dataList=new Gson().fromJson((
+                            String)msg.obj,
+                            new TypeToken<List<PlayList>>(){}.getType());
+                    fragment.myPlayListAdapter.setDataList(
+                            new LinkedList<PlayList>(dataList));
+                    break;
+                case PlayListHttpUtil.MESSAGE_CREATE_END:
+
+                    PlayList item=new Gson().fromJson(
+                            (String)msg.obj,
+                            new TypeToken<PlayList>(){}.getType());
+                    fragment.myPlayListAdapter.addData(item);
+                    break;
+            }
+        }
     }
 }

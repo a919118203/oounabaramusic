@@ -7,7 +7,8 @@
     android:layout_height="wrap_content"
     android:background="@drawable/view_ripple_rectangle">
 
-    <de.hdodenhof.circleimageview.CircleImageView
+    <com.oounabaramusic.android.widget.customview.MyCircleImageView
+        android:id="@+id/singer_cover"
         android:src="@mipmap/default_image"
         android:layout_width="60dp"
         android:layout_height="60dp"
@@ -15,6 +16,7 @@
         tools:ignore="ContentDescription" />
 
     <TextView
+        android:id="@+id/singer_name"
         android:text="歌手名"
         android:textSize="@dimen/font_medium_size"
         android:textColor="@color/positive"
@@ -27,6 +29,7 @@
         tools:ignore="HardcodedText" />
 
     <TextView
+        android:id="@+id/to_follow"
         android:visibility="gone"
         android:text="+ 关注"
         android:textSize="@dimen/font_small_size"
@@ -44,6 +47,8 @@
         tools:ignore="HardcodedText" />
 
     <TextView
+        android:id="@+id/followed"
+        android:visibility="gone"
         android:text="已关注"
         android:textSize="@dimen/font_small_size"
         android:textColor="@color/negative"

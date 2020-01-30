@@ -1,7 +1,14 @@
 package com.oounabaramusic.android.bean;
 
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.oounabaramusic.android.util.LogUtil;
+import com.oounabaramusic.android.util.MyEnvironment;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 import androidx.annotation.NonNull;
 
@@ -10,13 +17,47 @@ public class Music{
     private int id;
     private String musicName;    //音乐名
     private String singerName;   //歌手名
-    private String singerId;      //歌手id
+    private String singerId;     //歌手id
     private String filePath;     //文件路径
     private int  duration;       //时长
     private long  fileSize;      //文件大小
     private String md5;          //判断是不是同一个文件
     private int downloadStatus;  //下载状态     0：已下载完成   1：还没下载  2：正在下载 3:不是下载文件
     private int isServer;        //音乐类型     0 本地音乐 1 服务器音乐 2:待判定
+
+    public Music(){}
+
+    //服务器存的结构和手机的不一样，转换一下
+    public Music(String serverJson){
+        Gson gson=new Gson();
+
+        Map<String,String> jsonData=
+                gson.fromJson(serverJson,new TypeToken<Map<String,String>>(){}.getType());
+
+        List<Map<String,String>> singers=
+                gson.fromJson(jsonData.get("singers"),new TypeToken<List<Map<String,String>>>(){}.getType());
+
+        StringBuilder singerName=new StringBuilder();
+        StringBuilder singerId=new StringBuilder();
+
+        for(int i=0;i<singers.size();i++){
+            if(i>0){
+                singerName.append("/");
+                singerId.append("/");
+            }
+            singerName.append(singers.get(i).get("singerName"));
+            singerId.append(singers.get(i).get("id"));
+        }
+
+        setId(Integer.valueOf(Objects.requireNonNull(jsonData.get("id"))));
+        setMd5(jsonData.get("md5"));
+        setMusicName(jsonData.get("musicName"));
+        setSingerName(singerName.toString());
+        setSingerId(singerId.toString());
+        setDownloadStatus(1);
+        setIsServer(1);
+        setFilePath(MyEnvironment.serverBasePath+"music/"+jsonData.get("fileName"));
+    }
 
     public int getId() {
         return id;

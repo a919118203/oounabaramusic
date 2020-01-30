@@ -60,7 +60,7 @@ public class StatusBarUtil {
             Window window = activity.getWindow();
             window.getDecorView().setSystemUiVisibility(
                     View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR|//设为淡色主题好让透明色的状态栏中的内容显示出来
-                    View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);//让activity占据全屏且显示状态栏，为了显示popupWindow的时候添加的一个View遮住全屏
+                    View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);//让activity占据全屏且显示状态栏
             window.setStatusBarColor(Color.TRANSPARENT);//设置为透明色
         }
     }
@@ -154,18 +154,6 @@ public class StatusBarUtil {
     }
 
     /**
-     * 关闭输入法
-     * @param activity
-     */
-    public static void hideSoftKeyboard(Activity activity) {
-        View view = activity.getWindow().peekDecorView();
-        if(view!=null){
-            InputMethodManager inputMethodManager = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
-            inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
-        }
-    }
-
-    /**
      * 获取是否存在NavigationBar
      * @param context
      * @return
@@ -191,12 +179,13 @@ public class StatusBarUtil {
         }
         return hasNavigationBar;
     }
+
     /**
      * 获取虚拟功能键高度
      * @param context
      * @return
      */
-    public static int getVirtualBarHeigh(Context context) {
+    public static int getVirtualBarHeight(Context context) {
         int vh = 0;
         WindowManager windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         Display display = windowManager.getDefaultDisplay();

@@ -39,6 +39,7 @@ import java.util.Map;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.FormBody;
+import okhttp3.Headers;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
@@ -46,6 +47,14 @@ import okhttp3.Response;
 
 public class HttpUtil {
 
+    public static final int NO_NET=-200;
+    public static final int FAILURE=-300;
+
+    /**
+     * 登录
+     * @param photo
+     * @param activity
+     */
     public static void login(String photo, final Activity activity){
         OkHttpClient client=new OkHttpClient();
         RequestBody body= new FormBody.Builder()
@@ -81,10 +90,17 @@ public class HttpUtil {
         });
     }
 
+    /**
+     * 本地音乐关联服务器音乐
+     * @param context
+     * @param md5s
+     * @param handler
+     */
     public static void checkIsServer(Context context,final List<String> md5s, final Handler handler){
-        //如果没网，就加载默认图片
+        //如果没网就放弃
         if(!InternetUtil.checkNet(context)){
-            handler.sendEmptyMessage(LocalMusicActivity.MESSAGE_NO_NET);
+            handler.sendEmptyMessage(NO_NET);
+            return;
         }
 
         final Gson gson=new Gson();
@@ -119,26 +135,39 @@ public class HttpUtil {
         });
     }
 
+    /**
+     * 加载图片
+     * @param context
+     * @param url
+     * @param handler
+     */
     public static void loadImage(Context context, String url, final Handler handler){
-        String a=url.substring(url.lastIndexOf("?"));
-        String[] b=a.split("=");
-        String filePath= MyEnvironment.cachePath+DigestUtils.md5HexOfString(b[0])+b[1];
-        final File file=new File(filePath);
-        if(file.exists()){
-            LogUtil.printLog("加载图片：本地有缓存");
-            Bitmap bitmap= BitmapFactory.decodeFile(file.getPath());
-            Message message=new Message();
-            message.what=MyCircleImageView.LOAD_SUCCESS;
-            message.obj=bitmap;
-            handler.sendMessage(message);
-            return;
+        String filePath;
+
+        if(url.contains("?")){
+            String a=url.substring(url.lastIndexOf("?"));
+            String[] b=a.split("=");
+            filePath = MyEnvironment.cachePath+DigestUtils.md5HexOfString(b[0])+b[1];
+        }else{
+            String[] a=url.split("/");
+            String[] b=a[a.length-1].split("\\.");
+            filePath = MyEnvironment.cachePath+DigestUtils.md5HexOfString(a[a.length-2])+b[0];
         }
 
-        LogUtil.printLog("加载图片：服务器音乐封面，本地缓存已被删除，请求服务器获取封面");
-        LogUtil.printLog("Url: "+url);
-        //如果没网，就加载默认图片
+        final File file=new File(filePath);
+        if(file.exists()){
+            Message msg=new Message();
+            msg.what=MyCircleImageView.LOAD_SUCCESS;
+            msg.obj= BitmapFactory.decodeFile(file.getPath());
+            handler.sendMessage(msg);
+        }
+
+        //如果没网，就加载默认图片,或者缓存
         if(!InternetUtil.checkNet(context)){
-            handler.sendEmptyMessage(MyCircleImageView.NO_NET);
+            if(!file.exists()){
+                handler.sendEmptyMessage(NO_NET);
+            }
+            return;
         }
 
         OkHttpClient client=new OkHttpClient();
@@ -156,6 +185,14 @@ public class HttpUtil {
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                String fileExists=response.header("exists");
+
+                //没封面
+                if(fileExists!=null&&fileExists.equals("0")){
+                    handler.sendEmptyMessage(MyCircleImageView.NO_COVER);
+                    return;
+                }
+
                 InputStream is=response.body().byteStream();
 
                 file.createNewFile();
@@ -177,5 +214,67 @@ public class HttpUtil {
                 handler.sendMessage(message);
             }
         });
+    }
+
+    /**
+     * 播放音乐时，如果是服务器音乐就记录这次听歌
+     * @param context
+     * @param userId
+     * @param musicId
+     */
+    public static void listenMusic(Context context,String userId,int musicId){
+
+        if(!InternetUtil.checkNet(context)){
+            Toast.makeText(context, "请检查网络连接", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        OkHttpClient client=new OkHttpClient();
+
+        RequestBody body=new FormBody.Builder()
+                .add("userId",userId)
+                .add("musicId",musicId+"")
+                .build();
+
+        Request request=new Request.Builder()
+                .url(MyEnvironment.serverBasePath+"music/listenMusic")
+                .post(body)
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+
+            }
+        });
+    }
+
+    static class StringCallBack implements Callback{
+
+        Handler handler;
+        int msgId;
+
+        StringCallBack(Handler handler,int msgId){
+            this.handler=handler;
+            this.msgId=msgId;
+        }
+
+        @Override
+        public void onFailure(@NotNull Call call, @NotNull IOException e) {
+            handler.sendEmptyMessage(FAILURE);
+        }
+
+        @Override
+        public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+            Message msg=new Message();
+            msg.what=msgId;
+            msg.obj=response.body().string();
+            handler.sendMessage(msg);
+        }
     }
 }

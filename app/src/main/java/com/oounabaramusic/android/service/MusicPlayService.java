@@ -2,15 +2,21 @@ package com.oounabaramusic.android.service;
 
 import android.app.Service;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.media.MediaPlayer;
 import android.os.Binder;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
+import android.preference.PreferenceManager;
+import android.widget.Toast;
 
+import com.oounabaramusic.android.LocalMusicActivity;
 import com.oounabaramusic.android.bean.Music;
 import com.oounabaramusic.android.dao.LocalMusicDao;
+import com.oounabaramusic.android.okhttputil.HttpUtil;
 import com.oounabaramusic.android.util.LogUtil;
+import com.oounabaramusic.android.util.MyEnvironment;
 
 import java.io.File;
 import java.io.IOException;
@@ -30,18 +36,19 @@ public class MusicPlayService extends Service {
     public static final int IS_PAUSE=4;
     public static final int EVENT_UPDATE_TIME =10;
     public static final int EVENT_DELETE_MUSIC=9;
+    public static final int EVENT_FILE_NO_EXISTS=8;
     private int status=NOT_PREPARE;
     private MusicPlayBinder mBinder;
     private MediaPlayer mp;
-    private List<String> playlist;    //播放列表 存放音乐的md5值
+    private List<Music> playlist;    //播放列表 存放音乐的md5值
     private Handler handler=null;
     private int currentPlayPosition =-1;      //当前播放的位置
-    private int currentProgress=0;   //当前进度
     private Music currentMusic;      //当前播放的音乐
     private PlayRunnable currentRunnable;
 
     private LocalMusicDao localMusicDao;
     private Random random=new Random(new Date().getTime());
+    private SharedPreferences sp;
 
     public static final int LOOP_TYPE_RANDOM=11;
     public static final int LOOP_TYPE_SINGLE=12;
@@ -65,6 +72,15 @@ public class MusicPlayService extends Service {
     }
 
     private void prepared(){
+        if(currentMusic.getIsServer()==1){
+            boolean login = sp.getBoolean("login",false);
+            if(login){
+                String userId=sp.getString("userId","-1");
+                int musicId=currentMusic.getId();
+                HttpUtil.listenMusic(this,userId,musicId);
+            }
+        }
+
         //播放歌曲时，结束上一次还没走完的线程
         if(currentRunnable!=null){
             currentRunnable.stop();
@@ -91,6 +107,9 @@ public class MusicPlayService extends Service {
     @Override
     public IBinder onBind(Intent intent) {
         LogUtil.printLog("onBind ");
+        if(sp==null){
+            sp= PreferenceManager.getDefaultSharedPreferences(this);
+        }
         return mBinder;
     }
 
@@ -100,7 +119,7 @@ public class MusicPlayService extends Service {
         return super.onUnbind(intent);
     }
 
-    private void playMusic(int position){
+    private void playMusic(int position) {
         if(currentPlayPosition==position){
             mp.seekTo(0);
             mp.pause();
@@ -108,33 +127,34 @@ public class MusicPlayService extends Service {
             return;
         }
 
-        currentMusic=localMusicDao.selectMusicByMd5(playlist.get(position));
-        if(currentMusic.getFilePath()!=null){
-            File file=new File(currentMusic.getFilePath());
-            if(file.exists()){
-                try {
-                    currentPlayPosition =position;
-                    mp.reset();
-                    mp.setDataSource(file.getPath());
-                } catch (IOException e) {
-                    e.printStackTrace();
+        currentPlayPosition =position;
+        currentMusic=playlist.get(position);
+        try{
+            if(currentMusic.getFilePath()!=null){
+                mp.reset();
+                if(currentMusic.getIsServer()==1){
+                    mp.setDataSource(currentMusic.getFilePath());
+                    saveListenCnt();
+                }else{
+                    File file=new File(currentMusic.getFilePath());
+                    if(file.exists()){
+                        mp.setDataSource(file.getPath());
+                    }else{
+                        Toast.makeText(this, "文件不存在，请重新扫描文件", Toast.LENGTH_SHORT).show();
+                    }
                 }
                 mp.prepareAsync();
-                return;
             }
-        }
-
-        switch (currentMusic.getIsServer()){
-            case 0:
-                break;
-            case 1:
-                break;
-            case 2:
-                break;
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
-    private void playNextMusic(){
+    private void saveListenCnt(){
+
+    }
+
+    private void playNextMusic() {
         switch (currentLoopType){
             case LOOP_TYPE_LIST:
                 playMusic((currentPlayPosition+1)%playlist.size());
@@ -180,9 +200,19 @@ public class MusicPlayService extends Service {
         }
 
         //播放歌曲
-        public void playMusic(String item){
-            if(playlist.contains(item)){
-                MusicPlayService.this.playMusic(playlist.indexOf(item));
+        public void playMusic(Music item){
+
+            boolean f=false;
+            int index=0;
+            for(int i=0;i<playlist.size();i++){
+                if(playlist.get(i).getMd5().equals(item.getMd5())){
+                    f=true;
+                    index=i;
+                    break;
+                }
+            }
+            if(f){
+                MusicPlayService.this.playMusic(index);
             }else{
                 playlist.add(item);
                 MusicPlayService.this.playMusic(playlist.size()-1);
@@ -190,12 +220,20 @@ public class MusicPlayService extends Service {
         }
 
         //下一首播放
-        public void nextPlay(String item){
+        public void nextPlay(Music item){
             if(status==NOT_PREPARE){
                 playlist.add(item);
                 MusicPlayService.this.playMusic(0);
             }else{
-                if(!playlist.contains(item)){
+
+                boolean f=false;
+                for(int i=0;i<playlist.size();i++){
+                    if(playlist.get(i).getMd5().equals(item.getMd5())){
+                        f=true;
+                        break;
+                    }
+                }
+                if(!f){
                     playlist.add(currentPlayPosition +1,item);
                 }
             }
@@ -222,8 +260,14 @@ public class MusicPlayService extends Service {
                 }
                 MusicPlayService.this.playMusic(index);
             }
-            playlist.remove(md5);
-            currentPlayPosition=playlist.indexOf(currentMusic.getMd5());
+
+            for(Music item:playlist){
+                if(item.getMd5().equals(md5)){
+                    playlist.remove(item);
+                    break;
+                }
+            }
+            currentPlayPosition=playlist.indexOf(currentMusic);
             handler.sendEmptyMessage(EVENT_DELETE_MUSIC);
         }
 
@@ -243,12 +287,23 @@ public class MusicPlayService extends Service {
             handler.sendEmptyMessage(EVENT_DELETE_MUSIC);
         }
 
+        //刷新
+        public void refresh(){
+
+            //刷新isServer是待确定的项
+            for(Music music:playlist){
+                if(music.getIsServer()==2){
+                    music=MusicPlayService.this.localMusicDao.selectMusicByMd5(music.getMd5());
+                }
+            }
+        }
+
         public int getStatus(){
             return status;
         }
 
         public int getCurrentProgress(){
-            return currentProgress;
+            return mp.getCurrentPosition();
         }
 
         public int getCurrentMusicPosition(){
@@ -267,7 +322,7 @@ public class MusicPlayService extends Service {
             return mp.getDuration();
         }
 
-        public List<String> getPlayList(){
+        public List<Music> getPlayList(){
             return playlist;
         }
 
@@ -287,11 +342,9 @@ public class MusicPlayService extends Service {
     private class PlayRunnable implements Runnable{
 
         private boolean f=true;
-        //需要维持的秒数
-        int length=mp.getDuration();
         @Override
         public void run() {
-            for(int i=0;i<length;i+=400){
+            while(true){
                 try {
                     //400ms更新一次UI
                     Thread.sleep(400);
@@ -301,19 +354,20 @@ public class MusicPlayService extends Service {
                         Thread.sleep(200);
                     }
 
-                    //结束当前线程
-                    if(!f)
+                    if(status!=IS_START)
                         return;
 
-                    if(status!=IS_START)
+                    if(!f)
                         return;
 
                     //设置UI
                     Message message=new Message();
                     message.what= EVENT_UPDATE_TIME;
-                    message.arg1=i;
-                    currentProgress=message.arg1;
+                    message.arg1=mp.getCurrentPosition();
                     handler.sendMessage(message);
+
+                    if(mp.getCurrentPosition()==mp.getDuration())
+                        break;
 
                 } catch (InterruptedException e) {
                     e.printStackTrace();

@@ -70,7 +70,7 @@ public class MusicPlayListAdapter extends RecyclerView.Adapter<MusicPlayListAdap
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    activity.getBinder().playMusic(dataList.get(getAdapterPosition()).getMd5());
+                    activity.getBinder().playMusic(dataList.get(getAdapterPosition()));
                 }
             });
 

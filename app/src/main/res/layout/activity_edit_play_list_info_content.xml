@@ -32,12 +32,12 @@
             android:layout_marginStart="10dp"
             tools:ignore="HardcodedText" />
 
-        <ImageView
+        <com.oounabaramusic.android.widget.customview.MyImageView
             android:id="@+id/playlist_cover"
-            android:src="@mipmap/default_image"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:padding="10dp"/>
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:scaleType="centerCrop"
+            android:layout_margin="10dp"/>
     </LinearLayout>
 
     <View
@@ -65,12 +65,15 @@
             tools:ignore="HardcodedText" />
 
         <TextView
+            android:id="@+id/playlist_name"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:gravity="center_vertical"
             android:layout_marginEnd="10dp"
             android:text="大海原"
             android:textSize="@dimen/font_medium_size"
+            android:maxLines="1"
+            android:ellipsize="end"
             tools:ignore="HardcodedText" />
     </LinearLayout>
 
@@ -99,12 +102,15 @@
             tools:ignore="HardcodedText" />
 
         <TextView
+            android:id="@+id/playlist_tag"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:gravity="center_vertical"
             android:layout_marginEnd="10dp"
             android:text="大海原"
             android:textSize="@dimen/font_medium_size"
+            android:maxLines="1"
+            android:ellipsize="end"
             tools:ignore="HardcodedText" />
     </LinearLayout>
 
@@ -133,12 +139,15 @@
             tools:ignore="HardcodedText" />
 
         <TextView
+            android:id="@+id/playlist_introduction"
             android:layout_width="100dp"
             android:layout_height="match_parent"
             android:gravity="center_vertical|end"
             android:layout_marginEnd="10dp"
             android:text="大海原"
             android:textSize="@dimen/font_medium_size"
+            android:maxLines="1"
+            android:ellipsize="end"
             tools:ignore="HardcodedText" />
     </LinearLayout>
 </LinearLayout>

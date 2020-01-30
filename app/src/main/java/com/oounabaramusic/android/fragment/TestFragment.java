@@ -4,9 +4,11 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.oounabaramusic.android.MyCollectionActivity;
 import com.oounabaramusic.android.R;
+import com.oounabaramusic.android.util.DensityUtil;
 import com.oounabaramusic.android.util.LogUtil;
 import com.oounabaramusic.android.util.MyEnvironment;
 
@@ -17,6 +19,8 @@ import java.io.IOException;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.OkHttpClient;
@@ -43,60 +47,47 @@ public class TestFragment extends BaseFragment implements View.OnClickListener{
         return rootView;
     }
 
-    private void init(View view) {
-        view.findViewById(R.id.start).setOnClickListener(this);
-        view.findViewById(R.id.stop).setOnClickListener(this);
-        view.findViewById(R.id.bind).setOnClickListener(this);
-        view.findViewById(R.id.unbind).setOnClickListener(this);
-
-    }
-
-    public void onStartService(View v){
-        OkHttpClient client=new OkHttpClient();
-
-        Request request=new Request.Builder()
-                .url(MyEnvironment.serverBasePath+"test")
-                .build();
-
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                LogUtil.printLog("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-                e.printStackTrace();
-            }
-
-            @Override
-            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                LogUtil.printLog("????????????????????????????????????????????????");
-            }
-        });
-    }
-
-    public void onStopService(View v){
-    }
-
-    public void onBind(View v){
-    }
-
-    public void onUnBind(View v){
+    private void init(View rootView) {
+        RecyclerView rv=rootView.findViewById(R.id.recycler_view);
+        rv.setAdapter(new RVAdapter());
+        GridLayoutManager glm;
+        rv.setLayoutManager(glm=new GridLayoutManager(activity,4));
 
     }
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
-            case R.id.start:
-                onStartService(v);
-                break;
-            case R.id.stop:
-                onStopService(v);
-                break;
-            case R.id.bind:
-                onBind(v);
-                break;
-            case R.id.unbind:
-                onUnBind(v);
-                break;
+
+    }
+
+    class RVAdapter extends RecyclerView.Adapter<RVAdapter.ViewHolder>{
+
+
+        @NonNull
+        @Override
+        public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            View view=LayoutInflater.from(activity).inflate(
+                    R.layout.rv_item_tag_cell,
+                    (ViewGroup) activity.getWindow().getDecorView(),
+                    false);
+            return new ViewHolder(view);
+        }
+
+        @Override
+        public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+
+        }
+
+        @Override
+        public int getItemCount() {
+            return 20;
+        }
+
+        class ViewHolder extends RecyclerView.ViewHolder{
+
+            public ViewHolder(@NonNull View itemView) {
+                super(itemView);
+            }
         }
     }
 }

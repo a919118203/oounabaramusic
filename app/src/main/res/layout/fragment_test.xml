@@ -4,31 +4,8 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <Button
-        android:id="@+id/start"
-        android:text="start"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textAllCaps="false"/>
-
-    <Button
-        android:id="@+id/stop"
-        android:text="stop"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textAllCaps="false"/>
-
-    <Button
-        android:id="@+id/bind"
-        android:text="bind"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textAllCaps="false"/>
-
-    <Button
-        android:id="@+id/unbind"
-        android:text="unbind"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textAllCaps="false"/>
+        android:layout_height="match_parent"/>
 </LinearLayout>
