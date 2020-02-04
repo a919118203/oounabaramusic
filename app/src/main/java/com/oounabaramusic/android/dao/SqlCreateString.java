@@ -12,7 +12,7 @@ public class SqlCreateString {
                             "duration integer,"                      + //时长
                             "file_size integer,"                     + //文件大小
                             "md5 text,"                              + //判断是不是同一个文件  当id来用
-                            "download_status integer,"               + //下载状态     0：已下载完成   1：还没下载  2：正在下载
+                            "download_status integer,"               + //下载状态     0：已下载完成   1：不是下载文件  2：正在下载 3:还没下载
                             "is_server integer)"                       //是否是服务器中的音乐   0：不是 1：是  2：待判定
             ,SqlTableString.LOCAL_MUSIC_TBL);
 

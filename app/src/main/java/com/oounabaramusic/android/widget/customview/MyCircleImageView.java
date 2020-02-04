@@ -80,7 +80,7 @@ public class MyCircleImageView extends CircleImageView {
 
         @Override
         public void handleMessage(Message msg) {
-            Bitmap bitmap;
+            Bitmap bitmap=null;
             switch (msg.what){
                 case HttpUtil.NO_NET:
                     Toast.makeText(iv.getContext(), "请检查网络连接", Toast.LENGTH_SHORT).show();
@@ -114,8 +114,12 @@ public class MyCircleImageView extends CircleImageView {
                     break;
             }
 
+
             if(iv.eventHandler!=null){
-                iv.eventHandler.sendEmptyMessage(LOAD_END);
+                Message msg1=new Message();
+                msg1.what=LOAD_END;
+                msg1.obj=bitmap;
+                iv.eventHandler.sendMessage(msg1);
             }
         }
     }

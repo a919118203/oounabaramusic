@@ -15,9 +15,12 @@ import android.view.View;
 import android.widget.RelativeLayout;
 
 import com.google.android.material.tabs.TabLayout;
+import com.oounabaramusic.android.bean.Music;
+import com.oounabaramusic.android.dao.LocalMusicDao;
 import com.oounabaramusic.android.fragment.BaseFragment;
 import com.oounabaramusic.android.fragment.DMMusicFragment;
 import com.oounabaramusic.android.fragment.DMDownloadingFragment;
+import com.oounabaramusic.android.util.LogUtil;
 import com.oounabaramusic.android.util.StatusBarUtil;
 
 import java.util.ArrayList;
@@ -32,7 +35,6 @@ public class DownloadManagementActivity extends BaseActivity {
     private TabLayout tl;
     private ViewPager vp;
     private List<BaseFragment> fragments;
-    private RelativeLayout playControl;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +46,10 @@ public class DownloadManagementActivity extends BaseActivity {
         setSupportActionBar(toolbar);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
 
+    }
+
+    @Override
+    protected void onDownloadBindOk() {
         init();
     }
 
@@ -54,7 +60,6 @@ public class DownloadManagementActivity extends BaseActivity {
 
         vp=findViewById(R.id.view_pager);
         tl=findViewById(R.id.tab_layout);
-        playControl=findViewById(R.id.tool_current_play_layout);
 
         vp.setAdapter(new ViewPagerAdapter());
         tl.setupWithViewPager(vp);
@@ -62,18 +67,18 @@ public class DownloadManagementActivity extends BaseActivity {
 
     public void switchMode(int mode){
         this.mode=mode;
-        invalidateOptionsMenu();//重新加载menu
 
         String title="";
         switch (mode){
             case MODE_NORMAL:
                 tl.setVisibility(View.VISIBLE);
-                playControl.setVisibility(View.VISIBLE);
+                selectAll.setVisible(false);
+                cancelSelectAll.setVisible(false);
                 title="下载管理";
                 break;
             case MODE_CHOICE:
                 tl.setVisibility(View.GONE);
-                playControl.setVisibility(View.GONE);
+                selectAll.setVisible(true);
                 title="已选择0项";
                 break;
         }
@@ -109,11 +114,20 @@ public class DownloadManagementActivity extends BaseActivity {
         }
     }
 
+    private MenuItem selectAll,cancelSelectAll;
+
+    public void setSelectAllVisible(boolean f){
+        selectAll.setVisible(f);
+    }
+
+    public void setCancelSelectAll(boolean f){
+        cancelSelectAll.setVisible(f);
+    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_dm_activity,menu);
-        menu.getItem(0).setVisible(mode==MODE_NORMAL);
-        menu.getItem(1).setVisible(mode==MODE_CHOICE);
+        selectAll=menu.getItem(0);
+        cancelSelectAll=menu.getItem(1);
         return true;
     }
 
@@ -126,6 +140,12 @@ public class DownloadManagementActivity extends BaseActivity {
                     break;
                 }
                 finish();
+                break;
+            case R.id.select_all:
+                ((DMMusicFragment)fragments.get(0)).getChoiceAdapter().selectAll();
+                break;
+            case R.id.cancel_select_all:
+                ((DMMusicFragment)fragments.get(0)).getChoiceAdapter().cancelSelectAll();
                 break;
         }
         return true;
@@ -140,5 +160,9 @@ public class DownloadManagementActivity extends BaseActivity {
             }
         }
         return super.onKeyDown(keyCode, event);
+    }
+
+    public LocalMusicDao getLocalMusicDao(){
+        return localMusicDao;
     }
 }

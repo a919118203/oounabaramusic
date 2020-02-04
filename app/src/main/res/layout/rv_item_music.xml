@@ -55,7 +55,8 @@
             android:layout_width="50dp"
             android:layout_height="60dp"
             android:padding="10dp"
-            tools:ignore="ContentDescription" />
+            tools:ignore="ContentDescription"
+            android:background="@drawable/view_ripple_rectangle"/>
 
         <LinearLayout
             android:visibility="gone"

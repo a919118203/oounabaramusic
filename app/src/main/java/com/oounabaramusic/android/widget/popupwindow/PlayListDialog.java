@@ -15,10 +15,12 @@ import com.google.gson.reflect.TypeToken;
 import com.oounabaramusic.android.R;
 import com.oounabaramusic.android.bean.PlayList;
 import com.oounabaramusic.android.okhttputil.PlayListHttpUtil;
+import com.oounabaramusic.android.util.LogUtil;
 import com.oounabaramusic.android.util.MyEnvironment;
 import com.oounabaramusic.android.widget.customview.MyImageView;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import androidx.annotation.NonNull;
@@ -26,14 +28,23 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class PlayListDialog {
-    private int musicId;
+    private int[] musicId;
+    private String[] musicMd5;
     private AlertDialog dialog;
     private Context context;
     private List<PlayList> dataList;
 
-    public PlayListDialog(Context context, int musicId,int userId){
+    public PlayListDialog(Context context,int userId,int... musicId){
         this.context=context;
         this.musicId=musicId;
+        this.musicMd5=null;
+        PlayListHttpUtil.findPlayListByUser(context,userId+"",new MHandler(this));
+    }
+
+    public PlayListDialog(Context context,int userId,String... musicMd5){
+        this.context=context;
+        this.musicMd5=musicMd5;
+        this.musicId=null;
         PlayListHttpUtil.findPlayListByUser(context,userId+"",new MHandler(this));
     }
 
@@ -98,9 +109,23 @@ public class PlayListDialog {
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    List<Integer> data=new ArrayList<>();
-                    data.add(musicId);
-                    data.add(dataList.get(getAdapterPosition()).getId());
+                    List<String> data=new ArrayList<>();
+                    data.add(dataList.get(getAdapterPosition()).getId()+"");
+
+                    if(musicId!=null){
+                        data.add("musicIdList");
+                        for(int a:musicId){
+                            data.add(a+"");
+                        }
+                    }
+
+                    if(musicMd5!=null){
+                        data.add("musicMd5List");
+                        data.addAll(Arrays.asList(musicMd5));
+                    }
+
+                    LogUtil.printLog("json:  "+new Gson().toJson(data));
+
                     PlayListHttpUtil.addToPlayList(context,new Gson().toJson(data),new Handler());//可以加 添加失败的代码
                     dialog.dismiss();
                 }
@@ -118,7 +143,8 @@ public class PlayListDialog {
         public void handleMessage(Message msg) {
             switch (msg.what){
                 case PlayListHttpUtil.MESSAGE_FIND_MY_PLAY_LIST_END:
-                    dialog.dataList=new Gson().fromJson((String)msg.obj,
+
+                    dialog.dataList= new Gson().fromJson((String)msg.obj,
                             new TypeToken<List<PlayList>>(){}.getType());
                     dialog.initDialog();
                     break;

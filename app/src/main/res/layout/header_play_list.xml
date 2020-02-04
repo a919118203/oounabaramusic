@@ -176,7 +176,7 @@
         android:layout_marginTop="10dp"
         android:paddingStart="10dp"
         android:paddingEnd="10dp"
-        android:background="@drawable/selector_play_all">
+        android:background="@drawable/play_all">
 
         <ImageView
             android:src="@mipmap/play"
@@ -195,8 +195,29 @@
             tools:ignore="HardcodedText" />
 
         <TextView
-            android:text="(共0首)"
+            android:text="(共"
             android:textSize="@dimen/font_medium_size"
+            android:textColor="@color/positive"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:layout_marginStart="5dp"
+            tools:ignore="HardcodedText" />
+
+        <TextView
+            android:id="@+id/playList_cnt"
+            android:text="0"
+            android:textSize="@dimen/font_medium_size"
+            android:textColor="@color/positive"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            tools:ignore="HardcodedText" />
+
+        <TextView
+            android:text="首)"
+            android:textSize="@dimen/font_medium_size"
+            android:textColor="@color/positive"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:gravity="center_vertical"

@@ -2,11 +2,13 @@ package com.oounabaramusic.android.bean;
 
 import android.graphics.Bitmap;
 
+import java.io.Serializable;
+
 /**
  * Created by HuangXiaoyang on 2019/11/02.
  */
 
-public class Message {
+public class Message implements Serializable {
     public static final int TYPE_RECEIVED = 0;
     public static final int TYPE_SENT = 1;
     private String content;

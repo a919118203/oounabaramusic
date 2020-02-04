@@ -12,6 +12,7 @@
         android:layout_height="@dimen/action_bar_size">
 
         <TextView
+            android:id="@+id/start_all"
             android:text="全部开始"
             android:textSize="@dimen/font_medium_size"
             android:textColor="@color/positive"
@@ -23,6 +24,7 @@
             tools:ignore="HardcodedText" />
 
         <TextView
+            android:id="@+id/delete_all"
             android:text="清空"
             android:textSize="@dimen/font_medium_size"
             android:textColor="@color/positive"

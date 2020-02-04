@@ -34,6 +34,7 @@ public class SingerMainFragment extends BaseFragment {
     private RecyclerView rv;
     private SingerMusicMenuAdapter adapter;
     private Handler handler;
+    private TextView singerIntroduction;
 
     public SingerMainFragment(SingerActivity activity){
         this.activity=activity;
@@ -54,8 +55,7 @@ public class SingerMainFragment extends BaseFragment {
     private void init(View view) {
         handler=new MusicHandler(this);
 
-        TextView tv=view.findViewById(R.id.singer_introduction);
-        tv.setText(activity.getSinger().getIntroduction());
+        singerIntroduction=view.findViewById(R.id.singer_introduction);
 
         rv=view.findViewById(R.id.recycler_view);
         rv.setAdapter(adapter=new SingerMusicMenuAdapter(activity));
@@ -69,6 +69,12 @@ public class SingerMainFragment extends BaseFragment {
                 activity.moreTo(1);
             }
         });
+
+        refresh();
+    }
+
+    public void refresh(){
+        singerIntroduction.setText(activity.getSinger().getIntroduction());
     }
 
     static class MusicHandler extends Handler{

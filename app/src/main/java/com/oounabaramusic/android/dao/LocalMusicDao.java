@@ -3,14 +3,10 @@ package com.oounabaramusic.android.dao;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.net.Uri;
 
 import com.oounabaramusic.android.bean.Music;
-import com.oounabaramusic.android.util.LogUtil;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class LocalMusicDao extends BaseDao {
@@ -165,9 +161,39 @@ public class LocalMusicDao extends BaseDao {
     public void updateIsServerByMd5(String... update){
 
         if(update.length==2){
-            db.execSQL(SqlUpdateString.UPDATE_IS_SERVER_BY_MD5,update);
+            db.execSQL(SqlUpdateString.UPDATE_NO_IS_SERVER_BY_MD5,update);
         }else if(update.length==5){
-            db.execSQL(SqlUpdateString.UPDATE_MUSIC_BY_MD5,update);
+            db.execSQL(SqlUpdateString.UPDATE_IS_SERVER_BY_MD5,update);
         }
+    }
+
+    public void updateDownloadStatus(String md5,int status){
+        db.execSQL(SqlUpdateString.UPDATE_DOWNLOAD_STATUS_BY_MD5,new String[]{status+"",md5});
+    }
+
+    public List<Music> selectAllNeedDownload(){
+        List<Music> result=new ArrayList<>();
+        Cursor cursor=db.rawQuery(SqlSelectString.SELECT_ALL_NEED_DOWNLOAD,new String[]{});
+        if(cursor.moveToFirst()){
+            do{
+                result.add(parseCursorToMusic(cursor));
+            }while(cursor.moveToNext());
+        }
+        return result;
+    }
+
+    public List<Music> selectAllDownloadEnd(){
+        List<Music> result=new ArrayList<>();
+        Cursor cursor=db.rawQuery(SqlSelectString.SELECT_ALL_DOWNLOAD_END,new String[]{});
+        if(cursor.moveToFirst()){
+            do{
+                result.add(parseCursorToMusic(cursor));
+            }while(cursor.moveToNext());
+        }
+        return result;
+    }
+
+    public void updateDuration(String md5,int duration){
+        db.execSQL(SqlUpdateString.UPDATE_DURATION_BY_MD5,new String[]{duration+"",md5});
     }
 }

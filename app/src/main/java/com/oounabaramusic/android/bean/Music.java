@@ -6,13 +6,15 @@ import com.google.gson.reflect.TypeToken;
 import com.oounabaramusic.android.util.LogUtil;
 import com.oounabaramusic.android.util.MyEnvironment;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
-public class Music{
+public class Music implements Serializable {
 
     private int id;
     private String musicName;    //音乐名
@@ -54,9 +56,12 @@ public class Music{
         setMusicName(jsonData.get("musicName"));
         setSingerName(singerName.toString());
         setSingerId(singerId.toString());
-        setDownloadStatus(1);
+        setDownloadStatus(3);          //不是下载文件 ，http式的地址
         setIsServer(1);
         setFilePath(MyEnvironment.serverBasePath+"music/"+jsonData.get("fileName"));
+        setFileSize(Long.valueOf(jsonData.get("fileSize")));
+
+        LogUtil.printLog(getFileSize()+"");
     }
 
     public int getId() {
@@ -147,5 +152,29 @@ public class Music{
                 +filePath+",duration = "
                 +duration+",fileSize = "+fileSize+",md5 = "
                 +md5+",downloadStatus = "+downloadStatus+",isServer = "+isServer+"]";
+    }
+
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        if(obj instanceof Music){
+            return ((Music)obj).getMd5().equals(md5);
+        }
+
+        return super.equals(obj);
+    }
+
+    public Music cloneItem() {
+        Music clone=new Music();
+        clone.setId(id);
+        clone.setFilePath(filePath);
+        clone.setDownloadStatus(downloadStatus);
+        clone.setMusicName(musicName);
+        clone.setIsServer(isServer);
+        clone.setMd5(md5);
+        clone.setSingerId(singerId);
+        clone.setSingerName(singerName);
+        clone.setDuration(duration);
+        clone.setFileSize(fileSize);
+        return clone;
     }
 }

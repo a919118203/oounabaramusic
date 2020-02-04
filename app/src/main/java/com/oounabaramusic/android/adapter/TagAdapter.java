@@ -151,7 +151,7 @@ public class TagAdapter extends RecyclerView.Adapter<TagAdapter.ViewHolder> impl
         holder.name.setText(dataList.get(position).getName());
 
         List<PlayListSmallTag> smallTags=dataList.get(position).getTags();
-        int cnt=smallTags.size();//selector_play_all,小标签的个数
+        int cnt=smallTags.size();//play_all,小标签的个数
         reSetHeight(grid,cnt);
 
         GridLayout.Spec rowSpec,columnSpec;

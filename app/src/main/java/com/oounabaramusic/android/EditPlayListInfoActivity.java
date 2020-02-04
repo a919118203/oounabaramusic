@@ -56,7 +56,7 @@ public class EditPlayListInfoActivity extends BaseActivity implements View.OnCli
     private final static int TOOLBAR_MODE_EDIT_NAME=1;//名称编辑模式
     private final static int TOOLBAR_MODE_EDIT_TAG=2;//标签编辑模式
     private final static int TOOLBAR_MODE_EDIT_DESCRIPTION=3;//描述编辑模式
-    private final static int CONTENT_MAX_LENGTH=10;//歌单介绍最大长度
+    private final static int CONTENT_MAX_LENGTH=1000;//歌单介绍最大长度
     private int toolBarMode=TOOLBAR_MODE_NORMAL;
 
     private EditText newPlaylistName;

@@ -129,6 +129,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
         }
         File file=new File(MyEnvironment.cachePath);
         file.mkdirs();
+        file=new File(MyEnvironment.musicPath);
+        file.mkdirs();
+        file=new File(MyEnvironment.musicLrc);
+        file.mkdirs();
     }
 
     @Override

@@ -41,4 +41,5 @@
     <string name="dialog_playlist_name">请输入歌单标题</string>
     <string name="comment">评论</string>
     <string name="singer_name">歌手：</string>
+    <string name="myLoceMusic">我的最爱</string>
 </resources>

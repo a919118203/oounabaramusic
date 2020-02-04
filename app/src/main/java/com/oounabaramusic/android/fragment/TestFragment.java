@@ -16,6 +16,8 @@ import com.oounabaramusic.android.util.MyEnvironment;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -32,6 +34,7 @@ public class TestFragment extends BaseFragment implements View.OnClickListener{
     private MyCollectionActivity activity;
     private View rootView;
 
+    private List<String> list;
     public TestFragment(MyCollectionActivity activity){
         this.activity=activity;
         setTitle("测试用");
@@ -48,10 +51,18 @@ public class TestFragment extends BaseFragment implements View.OnClickListener{
     }
 
     private void init(View rootView) {
-        RecyclerView rv=rootView.findViewById(R.id.recycler_view);
-        rv.setAdapter(new RVAdapter());
-        GridLayoutManager glm;
-        rv.setLayoutManager(glm=new GridLayoutManager(activity,4));
+
+        list=new ArrayList<>();
+
+        for(int i=0;i<30;i++){
+            list.add("1506");
+        }
+        rootView.findViewById(R.id.sss).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                list.remove(0);
+            }
+        });
 
     }
 

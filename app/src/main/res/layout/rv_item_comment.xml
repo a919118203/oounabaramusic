@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@drawable/background_comment_item">
 
-    <de.hdodenhof.circleimageview.CircleImageView
+    <com.oounabaramusic.android.widget.customview.MyCircleImageView
         android:id="@+id/user_header"
-        android:src="@mipmap/default_image"
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:layout_alignParentStart="true"
@@ -19,7 +18,6 @@
 
     <TextView
         android:id="@+id/user_name"
-        android:text="用户名"
         android:textSize="@dimen/font_small_size"
         android:textColor="@color/positive"
         android:layout_width="match_parent"
@@ -30,7 +28,6 @@
 
     <TextView
         android:id="@+id/comment_date"
-        android:text="2017年7月5日"
         android:textSize="@dimen/font_ssmall_size"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -41,7 +38,6 @@
 
     <TextView
         android:id="@+id/comment_content"
-        android:text="评论内容"
         android:textSize="@dimen/font_medium_size"
         android:textColor="@color/positive"
         android:layout_width="match_parent"
@@ -54,7 +50,6 @@
 
     <ImageView
         android:id="@+id/good"
-        android:src="@mipmap/no_good"
         android:layout_width="20dp"
         android:layout_height="20dp"
         android:layout_alignParentEnd="true"
@@ -64,7 +59,6 @@
 
     <TextView
         android:id="@+id/good_cnt"
-        android:text="2"
         android:textSize="@dimen/font_small_size"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -73,72 +67,52 @@
         android:layout_marginEnd="10dp"
         tools:ignore="HardcodedText" />
 
-    <LinearLayout
+    <androidx.cardview.widget.CardView
         android:visibility="gone"
         android:id="@+id/reply_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/comment_content"
-        android:layout_toEndOf="@id/user_header">
+        android:layout_alignStart="@id/comment_content"
+        android:layout_alignEnd="@id/good"
+        android:layout_marginBottom="20dp"
+        app:cardCornerRadius="5dp"
+        app:cardBackgroundColor="@color/negative"
+        app:cardElevation="0dp">
 
-        <TextView
-            android:id="@+id/reply_cnt"
-            android:text="3"
-            android:textSize="@dimen/font_small_size"
-            android:textColor="@color/colorPrimary"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            tools:ignore="HardcodedText" />
-        <TextView
-            android:text="条回复 >"
-            android:textSize="@dimen/font_small_size"
-            android:textColor="@color/colorPrimary"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            tools:ignore="HardcodedText" />
-    </LinearLayout>
-
-    <RelativeLayout
-        android:visibility="gone"
-        android:id="@+id/to_reply"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/comment_content"
-        android:layout_alignStart="@id/comment_content">
-
-        <View
-            android:id="@+id/side"
-            android:background="@color/negative"
-            android:layout_width="2dp"
-            android:layout_height="match_parent"
-            android:layout_alignTop="@id/to_reply_layout"
-            android:layout_alignBottom="@id/to_reply_layout"/>
-
-        <FrameLayout
-            android:id="@+id/to_reply_layout"
+        <LinearLayout
+            android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_toEndOf="@id/side"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="20dp">
+            android:padding="10dp">
 
-            <TextView
-                android:id="@+id/to_reply_content"
-                android:text="\@Mogeko：被回复的评论的内容被回复的评论的内容被回复的评论的内容被回复的评论的内容被回复的评论的内容被回复的评论的内容被回复的评论的内容被回复的评论的内容被回复的评论的内容被回复的评论的内容被回复的评论的内容"
-                android:textSize="12sp"
-                android:lineSpacingExtra="5dp"
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/reply_rv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <LinearLayout
+                android:id="@+id/more_reply"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                tools:ignore="HardcodedText" />
+                android:layout_marginTop="10dp">
 
-            <TextView
-                android:text="\@Mogeko："
-                android:textSize="12sp"
-                android:lineSpacingExtra="5dp"
-                android:textColor="@color/colorPrimary"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                tools:ignore="HardcodedText" />
-        </FrameLayout>
-    </RelativeLayout>
+                <TextView
+                    android:id="@+id/reply_cnt"
+                    android:text="3"
+                    android:textSize="@dimen/font_small_size"
+                    android:textColor="@color/colorPrimary"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:ignore="HardcodedText" />
+                <TextView
+                    android:text="条回复 >"
+                    android:textSize="@dimen/font_small_size"
+                    android:textColor="@color/colorPrimary"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:ignore="HardcodedText" />
+            </LinearLayout>
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
 </RelativeLayout>

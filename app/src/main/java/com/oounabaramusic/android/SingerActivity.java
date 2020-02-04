@@ -272,6 +272,9 @@ public class SingerActivity extends BaseActivity {
 
                     activity.singer=activity.gson.fromJson(json.get("singer"),
                             new TypeToken<Singer>(){}.getType());
+
+                    //获取歌手信息后刷新 主页
+                    ((SingerMainFragment)activity.fragments.get(0)).refresh();
                     String f=json.get("followed");
                     if(f!=null){
                         activity.followed=activity.gson.fromJson(f,

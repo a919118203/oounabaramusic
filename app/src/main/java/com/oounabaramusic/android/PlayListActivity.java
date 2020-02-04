@@ -17,31 +17,41 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.gson.reflect.TypeToken;
 import com.oounabaramusic.android.adapter.MusicAdapter;
+import com.oounabaramusic.android.bean.Music;
 import com.oounabaramusic.android.bean.PlayList;
 import com.oounabaramusic.android.okhttputil.PlayListHttpUtil;
 import com.oounabaramusic.android.util.ImageFilter;
+import com.oounabaramusic.android.util.LogUtil;
 import com.oounabaramusic.android.util.MyEnvironment;
 import com.oounabaramusic.android.util.StatusBarUtil;
 import com.oounabaramusic.android.widget.customview.MyCircleImageView;
 import com.oounabaramusic.android.widget.customview.MyImageView;
+import com.oounabaramusic.android.widget.popupwindow.DownloadDialog;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class PlayListActivity extends BaseActivity implements View.OnClickListener{
 
     private RecyclerView musicRv;
     private MusicAdapter adapter;
+    private ProgressBar loadMusic;
     private AppBarLayout appBar;
     private PlayList playList;
 
     private TextView playListName,userName;
     private MyCircleImageView userHeader;
     private MyImageView playListCover,background;
+    private TextView playListCnt;
     private TextView playListIntroduction;
     private SharedPreferences sp;
+    private PlayListHandler handler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,12 +74,32 @@ public class PlayListActivity extends BaseActivity implements View.OnClickListen
         playList= (PlayList) intent.getSerializableExtra("playList");
 
         init();
+
+        loadMusic();
+
+        handler=new PlayListHandler(this);
     }
+
+    public PlayListHandler getHandler() {
+        return handler;
+    }
+
+    public PlayList getPlayList() {
+        return playList;
+    }
+
+    private void loadMusic(){
+        loadMusic.setVisibility(View.VISIBLE);
+        PlayListHttpUtil.findMusicByPlayList(this,
+                playList.getId()+"",new PlayListHandler(this));
+    }
+
 
     @Override
     protected void onRestart() {
         super.onRestart();
         PlayListHttpUtil.findPlayList(this,""+playList.getId(),new PlayListHandler(this));
+        loadMusic();
     }
 
     private void init() {
@@ -108,7 +138,11 @@ public class PlayListActivity extends BaseActivity implements View.OnClickListen
         userHeader = findViewById(R.id.user_header);
         playListName = findViewById(R.id.playlist_name);
         userName = findViewById(R.id.user_name);
+        loadMusic=findViewById(R.id.load);
         playListIntroduction=findViewById(R.id.playlist_introduction);
+        playListCnt=findViewById(R.id.playList_cnt);
+
+        findViewById(R.id.download).setOnClickListener(this);
 
         setPlayListInfo();
     }
@@ -163,11 +197,23 @@ public class PlayListActivity extends BaseActivity implements View.OnClickListen
         Intent intent;
         switch (v.getId()){
             case R.id.play_all:      //播放全部
+                List<Music> dataList=adapter.getDataList();
+                for(int i=0;i<dataList.size();i++){
+                    if(i==0){
+                        getBinder().playMusic(dataList.get(i));
+                    }else{
+                        getBinder().nextPlay(dataList.get(i));
+                    }
+                }
                 break;
 
             case R.id.user:       //点击用户名
                 intent=new Intent(this,UserInfoActivity.class);
                 startActivity(intent);
+                break;
+
+            case R.id.download:
+                new DownloadDialog(this,adapter.getDataList());
                 break;
         }
     }
@@ -190,6 +236,23 @@ public class PlayListActivity extends BaseActivity implements View.OnClickListen
                     activity.playList=activity.gson.fromJson((String)msg.obj,
                             new TypeToken<PlayList>(){}.getType());
                     activity.setPlayListInfo();
+                    break;
+                case PlayListHttpUtil.MESSAGE_FIND_PLAY_LIST_MUSIC_END:
+                    List<String> data=activity.gson.fromJson((String)msg.obj,
+                            new TypeToken<List<String>>(){}.getType());
+
+                    List<Music> result=new ArrayList<>();
+
+                    for(String item:data){
+                        result.add(new Music(item));
+                    }
+                    activity.playListCnt.setText(result.size()+"");
+                    activity.adapter.setDataList(result);
+                    activity.loadMusic.setVisibility(View.GONE);
+                    activity.musicRv.setVisibility(View.VISIBLE);
+                    break;
+                case PlayListHttpUtil.MESSAGE_DELETE_MUSIC_END:
+                    activity.loadMusic();
                     break;
             }
         }

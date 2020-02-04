@@ -224,17 +224,6 @@ public class SearchActivity extends BaseActivity {
         return super.onKeyDown(keyCode, event);
     }
 
-    @Override
-    public boolean dispatchTouchEvent(MotionEvent ev) {
-        if(ev.getAction()==MotionEvent.ACTION_DOWN){
-            View v=getCurrentFocus();
-            if(!InputMethodUtil.isClickEditText(v,ev)){
-                InputMethodUtil.hideSoftKeyboard(SearchActivity.this);
-            }
-        }
-        return super.dispatchTouchEvent(ev);
-    }
-
     static class SearchHandler extends Handler{
 
         private SearchActivity activity;

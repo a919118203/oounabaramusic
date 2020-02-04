@@ -18,8 +18,11 @@
         tools:ignore="GoogleAppIndexingWarning"
         tools:targetApi="n">
         <activity
-            android:name=".SingerActivity"
+            android:name=".AllReplyActivity"
             android:label=""/>
+        <activity
+            android:name=".SingerActivity"
+            android:label="" />
         <activity
             android:name=".PhotoLoginActivity"
             android:label="手机号登录"
@@ -54,7 +57,9 @@
         <activity
             android:name=".MyMessageActivity"
             android:label="我的消息" />
-        <activity android:name=".MusicPlayActivity" />
+        <activity
+            android:name=".MusicPlayActivity"
+            android:launchMode="singleTask" />
         <activity
             android:name=".ForwardActivity"
             android:label="转发"
@@ -114,6 +119,10 @@
 
         <service
             android:name=".service.MusicPlayService"
+            android:enabled="true"
+            android:exported="false" />
+        <service
+            android:name=".service.DownloadService"
             android:enabled="true"
             android:exported="false" />
     </application>

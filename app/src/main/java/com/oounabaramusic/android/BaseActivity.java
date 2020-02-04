@@ -10,25 +10,33 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
+import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.oounabaramusic.android.adapter.MusicPlayListAdapter;
 import com.oounabaramusic.android.bean.Music;
 import com.oounabaramusic.android.dao.LocalMusicDao;
+import com.oounabaramusic.android.service.DownloadService;
 import com.oounabaramusic.android.service.MusicPlayService;
 import com.oounabaramusic.android.util.ActivityManager;
+import com.oounabaramusic.android.util.InputMethodUtil;
 import com.oounabaramusic.android.util.LogUtil;
 import com.oounabaramusic.android.util.MyEnvironment;
 import com.oounabaramusic.android.widget.customview.MyCircleImageView;
 import com.oounabaramusic.android.widget.customview.PlayButton;
 import com.oounabaramusic.android.widget.popupwindow.MyBottomSheetDialog;
+import com.oounabaramusic.android.widget.popupwindow.PlayListDialog;
+
+import java.util.List;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -40,24 +48,29 @@ public class BaseActivity extends AppCompatActivity {
     private MyBottomSheetDialog musicPlayList;
     private Handler handler=new MusicPlayHandler(this);
     private MusicPlayService.MusicPlayBinder binder;
-    private ServiceConnection connection;
+    private DownloadService.DownloadBinder downloadBinder;
+    private ServiceConnection connection,downloadConnection;
 
     protected RelativeLayout musicPlayBar;
     protected LocalMusicDao localMusicDao;
 
+    public SharedPreferences sp;
     public Gson gson=new Gson();
 
+    private boolean isBind ; //判断是否已绑定音乐播放服务
+    private boolean autoCloseInputMethod;  //是否开启点输入框之外的地方关闭输入法
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         LogUtil.printLog("onCreate: "+this.toString());
         super.onCreate(savedInstanceState);
         ActivityManager.addActivity(this);
         localMusicDao=new LocalMusicDao(this);
+        sp= PreferenceManager.getDefaultSharedPreferences(this);
+        autoCloseInputMethod=true;
     }
 
     private void init(){
         musicPlayBar=findViewById(R.id.tool_current_play_layout);
-
     }
 
     @Override
@@ -70,9 +83,11 @@ public class BaseActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         LogUtil.printLog("onStop: "+this.toString()+"musicPlayBar==null?:  "+String.valueOf(musicPlayBar==null));
-        if(musicPlayBar!=null){
+        if(isBind){
+            isBind=false;
             unbindService(connection);
         }
+        unbindService(downloadConnection);
         super.onStop();
     }
 
@@ -82,24 +97,45 @@ public class BaseActivity extends AppCompatActivity {
         super.onStart();
         init();
 
-        LogUtil.printLog("musicPlayBar: "+(musicPlayBar==null?null:musicPlayBar.toString()));
-        if(musicPlayBar!=null){
-            bindService(new Intent(this, MusicPlayService.class),connection=new ServiceConnection() {
-                @Override
-                public void onServiceConnected(ComponentName name, IBinder service) {
-                    binder= (MusicPlayService.MusicPlayBinder) service;
-                    binder.setHandler(handler);
-                    binder.setLocalMusicDao(localMusicDao);
+        //如果这里需要获取service信息,就绑定MusicPlayService
+        bindService(new Intent(this, MusicPlayService.class),connection=new ServiceConnection() {
+            @Override
+            public void onServiceConnected(ComponentName name, IBinder service) {
+                isBind=true;
+                binder= (MusicPlayService.MusicPlayBinder) service;
+                binder.addHandler(handler);
+                binder.setLocalMusicDao(localMusicDao);
+
+                //初始化播放列表弹窗
+                musicPlayList=new MyBottomSheetDialog(BaseActivity.this);
+                musicPlayList.setContentView(createContentView());
+
+                //初始化播放条
+                if(musicPlayBar!=null){
                     initPlay();
-                    onBindOk();
                 }
+                onBindOk();
+            }
 
-                @Override
-                public void onServiceDisconnected(ComponentName name) {
+            @Override
+            public void onServiceDisconnected(ComponentName name) {
 
-                }
-            }, BIND_AUTO_CREATE);
-        }
+            }
+        }, BIND_AUTO_CREATE);
+
+
+        bindService(new Intent(this, DownloadService.class),downloadConnection=new ServiceConnection() {
+            @Override
+            public void onServiceConnected(ComponentName name, IBinder service) {
+                downloadBinder= (DownloadService.DownloadBinder) service;
+                onDownloadBindOk();
+            }
+
+            @Override
+            public void onServiceDisconnected(ComponentName name) {
+
+            }
+        },BIND_AUTO_CREATE);
     }
 
 
@@ -115,8 +151,6 @@ public class BaseActivity extends AppCompatActivity {
             return;
         }
         one=true;
-        musicPlayList=new MyBottomSheetDialog(this);
-        musicPlayList.setContentView(createContentView());
         if(musicPlayBar!=null){
             playButton=musicPlayBar.findViewById(R.id.music_play_button);
             musicName=musicPlayBar.findViewById(R.id.music_name);
@@ -138,12 +172,11 @@ public class BaseActivity extends AppCompatActivity {
             findViewById(R.id.music_play_list).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    listAdapter.setDataList(binder.getPlayList());
-                    musicPlayList.show();
+                    showPlayList();
                 }
             });
 
-            findViewById(R.id.tool_current_play_layout).setOnClickListener(new View.OnClickListener() {
+            musicPlayBar.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Intent intent=new Intent(BaseActivity.this, MusicPlayActivity.class);
@@ -153,6 +186,11 @@ public class BaseActivity extends AppCompatActivity {
 
             refreshPlayBar();
         }
+    }
+
+    protected void showPlayList(){
+        listAdapter.setDataList(binder.getPlayList());
+        musicPlayList.show();
     }
 
     //刷新所有控件
@@ -189,6 +227,10 @@ public class BaseActivity extends AppCompatActivity {
             Bitmap bitmap=BitmapFactory.decodeResource(getResources(),R.mipmap.default_image);
             cover.setImageBitmap(bitmap);
         }
+    }
+
+    public void refreshPlayList(){
+        listAdapter.setDataList(binder.getPlayList());
     }
 
     private MusicPlayListAdapter listAdapter;
@@ -258,6 +300,27 @@ public class BaseActivity extends AppCompatActivity {
                 binder.deleteAllMusic();
             }
         });
+
+        view.findViewById(R.id.collection_all).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(sp.getBoolean("login",false)){
+                    String userId=sp.getString("userId","-1");
+                    List<Music> playList=binder.getPlayList();
+                    int[] musicIds=new int[playList.size()];
+                    for(int i=0;i<playList.size();i++){
+                        if(playList.get(i).getIsServer()==1){
+                            musicIds[i] = playList.get(i).getId();
+                        }
+                    }
+
+                    new PlayListDialog(BaseActivity.this,Integer.valueOf(userId),musicIds);
+                    musicPlayList.dismiss();
+                }else{
+                    Toast.makeText(BaseActivity.this, "请先登录", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
         return view;
     }
 
@@ -266,6 +329,20 @@ public class BaseActivity extends AppCompatActivity {
         intent.setType("image/*");
         startActivityForResult(intent,CHOOSE_PHOTO);
     }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        if(autoCloseInputMethod&&ev.getAction()==MotionEvent.ACTION_DOWN){
+            View v=getCurrentFocus();
+            if(!InputMethodUtil.isClickEditText(v,ev)){
+                InputMethodUtil.hideSoftKeyboard(this);
+                onClosedInputMethod();
+            }
+        }
+        return super.dispatchTouchEvent(ev);
+    }
+
+    protected void onClosedInputMethod(){}
 
     static class MusicPlayHandler extends Handler{
         private BaseActivity activity;
@@ -276,7 +353,7 @@ public class BaseActivity extends AppCompatActivity {
 
         @Override
         public void handleMessage(Message msg) {
-            if(activity.findViewById(R.id.tool_current_play_layout)==null)
+            if(activity.musicPlayBar==null)
                 return;
 
             switch (msg.what){
@@ -294,12 +371,33 @@ public class BaseActivity extends AppCompatActivity {
                 case MusicPlayService.EVENT_DELETE_MUSIC:
                     activity.refreshPlayBar();
                     break;
+                case MusicPlayService.EVENT_START_NEW_MUSIC:
+
+                    Music item= (Music) msg.obj;
+                    activity.musicName.setText(item.getMusicName());
+                    activity.singerName.setText(item.getSingerName());
+                    int isServer=item.getIsServer();
+
+                    if(isServer==1){
+                        activity.cover.setImageUrl(MyEnvironment.serverBasePath+"music/loadMusicCover?singerId="+item.getSingerId().split("/")[0]);
+                    }else{
+                        LogUtil.printLog("加载图片：本地音乐图片，无封面，设置为默认图片");
+                        Bitmap bitmap=BitmapFactory.decodeResource(activity.getResources(),R.mipmap.default_image);
+                        activity.cover.setImageBitmap(bitmap);
+                    }
+                    activity.playButton.setProgress(0);
+                    activity.musicPlayBar.setVisibility(View.VISIBLE);
+                    break;
             }
         }
     }
 
     public MusicPlayService.MusicPlayBinder getBinder() {
         return binder;
+    }
+
+    public DownloadService.DownloadBinder getDownloadBinder() {
+        return downloadBinder;
     }
 
     /**
@@ -309,10 +407,22 @@ public class BaseActivity extends AppCompatActivity {
 
     }
 
+    protected void onDownloadBindOk(){
+
+    }
+
     /**
      * 音乐将要开始时调用
      */
     protected void musicIsToStart(){
 
+    }
+
+    public LocalMusicDao getLocalMusicDao() {
+        return localMusicDao;
+    }
+
+    public void setAutoCloseInputMethod(boolean autoCloseInputMethod) {
+        this.autoCloseInputMethod = autoCloseInputMethod;
     }
 }

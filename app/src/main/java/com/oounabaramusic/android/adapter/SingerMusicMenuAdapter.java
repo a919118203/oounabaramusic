@@ -28,6 +28,7 @@ import com.oounabaramusic.android.widget.customview.MyCircleImageView;
 import com.oounabaramusic.android.widget.customview.MyImageView;
 import com.oounabaramusic.android.widget.popupwindow.MyBottomSheetDialog;
 import com.oounabaramusic.android.widget.popupwindow.PlayListDialog;
+import com.oounabaramusic.android.widget.popupwindow.SingerDialog;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -80,7 +81,8 @@ public class SingerMusicMenuAdapter extends RecyclerView.Adapter<SingerMusicMenu
                     String userId=sp.getString("userId","-1");
                     spw.dismiss();
                     new PlayListDialog(activity,
-                            dataList.get(popupPosition).getId(),Integer.valueOf(userId));
+                            Integer.valueOf(userId),
+                            dataList.get(popupPosition).getId());
                 }else{
                     Toast.makeText(activity, "请先登录", Toast.LENGTH_SHORT).show();
                 }
@@ -106,57 +108,17 @@ public class SingerMusicMenuAdapter extends RecyclerView.Adapter<SingerMusicMenu
             public void onClick(View v) {
                 String[] singerNames=dataList.get(popupPosition).getSingerName().split("/");
                 if(singerNames.length>1){
-                    showSingerChooseDialog(singerNames);
+                    new SingerDialog(activity,
+                            dataList.get(popupPosition).getSingerName(),
+                            dataList.get(popupPosition).getSingerId(),
+                            activity.getSinger().getId());
                 }else{
                     toSingerActivity(Integer.valueOf(dataList.get(popupPosition).getSingerId()));
                 }
-            }
-        });
-        return view;
-    }
-
-    /**
-     * 显示选择歌手dialog
-     * @param singerNames
-     */
-    private AlertDialog dialog;
-    private String[] singerIds;
-    private ListView lv;
-    private void showSingerChooseDialog(String[] singerNames){
-        singerIds=dataList.get(popupPosition).getSingerId().split("/");
-
-        if(dialog!=null){
-            lv.setAdapter(new ArrayAdapter<String>(
-                    activity,
-                    android.R.layout.simple_list_item_1,
-                    singerNames));
-            dialog.show();
-            return ;
-        }
-
-        lv=new ListView(activity);
-        lv.setLayoutParams(new ViewGroup.LayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT));
-        lv.setAdapter(new ArrayAdapter<String>(
-                activity,
-                android.R.layout.simple_list_item_1,
-                singerNames));
-        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                toSingerActivity(Integer.valueOf(singerIds[position]));
-                dialog.dismiss();
                 spw.dismiss();
             }
         });
-
-        dialog=new AlertDialog.Builder(activity)
-                .setView(lv)
-                .create();
-
-        dialog.getWindow().setBackgroundDrawable(activity.getResources().getDrawable(R.drawable.layout_card_2));
-        dialog.show();
+        return view;
     }
 
     /**
@@ -165,9 +127,6 @@ public class SingerMusicMenuAdapter extends RecyclerView.Adapter<SingerMusicMenu
      */
     private void toSingerActivity(int singerId){
         if(singerId==activity.getSinger().getId()){
-            if(spw.isShowing()){
-                spw.dismiss();
-            }
             return ;
         }
 
@@ -175,6 +134,7 @@ public class SingerMusicMenuAdapter extends RecyclerView.Adapter<SingerMusicMenu
         intent.putExtra("singerId",singerId);
         activity.startActivity(intent);
     }
+
 
     private MyImageView musicCover;
     private TextView titleMusicName,titleSingerName,singerName;

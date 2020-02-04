@@ -108,7 +108,10 @@ public class MyImageView extends ImageView {
             }
             iv.setImageBitmap(bitmap);
             if(iv.eventHandler!=null){
-                iv.eventHandler.sendEmptyMessage(MyCircleImageView.LOAD_END);
+                Message msg1=new Message();
+                msg1.what=MyCircleImageView.LOAD_END;
+                msg1.obj=bitmap;
+                iv.eventHandler.sendMessage(msg1);
             }
         }
     }

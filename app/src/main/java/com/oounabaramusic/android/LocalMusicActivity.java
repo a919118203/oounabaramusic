@@ -160,6 +160,7 @@ public class LocalMusicActivity extends BaseActivity implements View.OnClickList
                 if(!(list==null||list.size()==0)){
                     HttpUtil.checkIsServer(LocalMusicActivity.this,list,handler);
                 }else{
+                    refreshPlayBar();
                     srl.setRefreshing(false);
                 }
             }
@@ -289,9 +290,11 @@ public class LocalMusicActivity extends BaseActivity implements View.OnClickList
 
         String filePath;
         String md5;
+        int downloadStatus;
         for(Music m:musics){
             filePath=m.getFilePath();
             md5=m.getMd5();
+            downloadStatus=m.getDownloadStatus();
 
             File file=new File(filePath);
             if(file.exists()){
@@ -299,16 +302,24 @@ public class LocalMusicActivity extends BaseActivity implements View.OnClickList
                     if(md5.equals(DigestUtils.md5HexOfFile(file))){
                         filter.add(md5);
                     }else{
-                        localMusicDao.deleteMusicByMd5(md5);
+                        if(downloadStatus!=1&&downloadStatus!=2){     //如果这个音乐是还没下载，或是正在下载的时候，不删除这条记录
+                            localMusicDao.deleteMusicByMd5(md5);
+                        }
                     }
                 }else{
-                    localMusicDao.deleteMusicByMd5(md5);
+                    if(downloadStatus!=1&&downloadStatus!=2){
+                        localMusicDao.deleteMusicByMd5(md5);
+                    }
                 }
             }else{
-                localMusicDao.deleteMusicByMd5(md5);
+                if(downloadStatus!=1&&downloadStatus!=2){
+                    localMusicDao.deleteMusicByMd5(md5);
+                }
             }
         }
     }
+
+
 
     /**
      * 显示扫描文件的dialog
@@ -384,7 +395,7 @@ public class LocalMusicActivity extends BaseActivity implements View.OnClickList
             return;
         }
 
-        item.setDownloadStatus(3);
+        item.setDownloadStatus(1);
         item.setDuration(duration/1000);
         item.setFilePath(f.getPath());
         item.setFileSize(f.length());

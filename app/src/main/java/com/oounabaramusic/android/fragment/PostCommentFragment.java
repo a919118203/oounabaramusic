@@ -37,9 +37,9 @@ public class PostCommentFragment extends Fragment {
     }
 
     private void init(View view) {
-        RecyclerView recyclerView=view.findViewById(R.id.latest_comments);
-        recyclerView.setAdapter(adapter=new CommentAdapter(activity));
-        recyclerView.setLayoutManager(new LinearLayoutManager(activity));
+//        RecyclerView recyclerView=view.findViewById(R.id.latest_comments);
+//        recyclerView.setAdapter(adapter=new CommentAdapter(activity));
+//        recyclerView.setLayoutManager(new LinearLayoutManager(activity));
 
         reSetFocus=view.findViewById(R.id.re);
         reSetFocus.setFocusable(true);

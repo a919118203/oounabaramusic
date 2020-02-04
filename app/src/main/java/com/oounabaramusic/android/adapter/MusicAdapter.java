@@ -2,16 +2,28 @@ package com.oounabaramusic.android.adapter;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.oounabaramusic.android.MusicPlayActivity;
+import com.oounabaramusic.android.PlayListActivity;
 import com.oounabaramusic.android.R;
+import com.oounabaramusic.android.SingerActivity;
 import com.oounabaramusic.android.bean.Music;
+import com.oounabaramusic.android.okhttputil.PlayListHttpUtil;
+import com.oounabaramusic.android.util.MyEnvironment;
+import com.oounabaramusic.android.widget.customview.MyImageView;
 import com.oounabaramusic.android.widget.popupwindow.MyBottomSheetDialog;
+import com.oounabaramusic.android.widget.popupwindow.PlayListDialog;
+import com.oounabaramusic.android.widget.popupwindow.SingerDialog;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,12 +33,15 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.ViewHolder> {
 
-    private Activity activity;
+    private PlayListActivity activity;
     private MyBottomSheetDialog spw;
     private List<Music> dataList;
+    private int popupPosition;
+    private SharedPreferences sp;
 
-    public MusicAdapter(Activity activity){
+    public MusicAdapter(PlayListActivity activity){
         this.activity=activity;
+        sp= PreferenceManager.getDefaultSharedPreferences(activity);
         spw=new MyBottomSheetDialog(activity);
         spw.setContentView(createContentView());
         dataList=new ArrayList<>();
@@ -37,9 +52,105 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.ViewHolder> 
         notifyDataSetChanged();
     }
 
+    public List<Music> getDataList() {
+        return dataList;
+    }
+
+    private MyImageView musicCover;
+    private TextView titleMusicName,titleMusicSinger;
+    private TextView musicSinger;
     private View createContentView() {
-        return LayoutInflater.from(activity).inflate(R.layout.pw_music_menu,
+        View view=LayoutInflater.from(activity).inflate(R.layout.pw_music_menu,
                 (ViewGroup) activity.getWindow().getDecorView(),false);
+
+        musicCover=view.findViewById(R.id.music_cover);
+        titleMusicName=view.findViewById(R.id.music_name);
+        titleMusicSinger=view.findViewById(R.id.music_singer_in_title);
+        musicSinger=view.findViewById(R.id.music_singer);
+
+        view.findViewById(R.id.music_next_play).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                activity.getBinder().nextPlay(dataList.get(popupPosition));
+                spw.dismiss();
+            }
+        });
+
+        view.findViewById(R.id.music_add_to_playlist).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(sp.getBoolean("login",false)){
+                    String userId=sp.getString("userId","-1");
+                    new PlayListDialog(activity,
+                            Integer.valueOf(userId),
+                            dataList.get(popupPosition).getId());
+                    spw.dismiss();
+                }else{
+                    Toast.makeText(activity, "请先登录", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        view.findViewById(R.id.music_download).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                activity.getDownloadBinder().addTask(dataList.get(popupPosition));
+                spw.dismiss();
+            }
+        });
+
+        view.findViewById(R.id.music_comment).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+        view.findViewById(R.id.music_search_singer).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String singerNames = dataList.get(popupPosition).getSingerName(),
+                        singerIds = dataList.get(popupPosition).getSingerId();
+                if(singerIds.contains("/")){
+                    new SingerDialog(activity,
+                            singerNames,
+                            singerIds);
+                }else{
+                    Intent intent=new Intent(activity, SingerActivity.class);
+                    intent.putExtra("singerId",Integer.valueOf(singerIds));
+                    activity.startActivity(intent);
+                }
+                spw.dismiss();
+            }
+        });
+
+        boolean vis=false;
+
+        if(sp.getBoolean("login",false)){
+            String userId=sp.getString("userId","-1");
+            if(activity.getPlayList().getCreateUserId()==Integer.valueOf(userId)){
+                vis=true;
+            }
+        }
+
+        LinearLayout delete=view.findViewById(R.id.music_delete);
+        if(vis){
+            delete.setVisibility(View.VISIBLE);
+        }else{
+            delete.setVisibility(View.GONE);
+        }
+
+        delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PlayListHttpUtil.deletePlayListMusic(activity,
+                        activity.getPlayList().getId(),
+                        dataList.get(popupPosition).getId(),
+                        activity.getHandler());
+                spw.dismiss();
+            }
+        });
+        return view;
     }
 
 
@@ -54,7 +165,7 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.ViewHolder> 
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         holder.index.setText(String.valueOf(position+1));
         holder.musicName.setText(dataList.get(position).getMusicName());
-        holder.musicSinger.setText(dataList.get(position).getSingerName());
+        holder.musicSinger.setText(dataList.get(position).getSingerName().replace("/"," "));
     }
 
     @Override
@@ -65,16 +176,14 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.ViewHolder> 
     class ViewHolder extends RecyclerView.ViewHolder{
 
         TextView musicName,musicSinger,index;
-        ImageView musicMenu,musicCover;
-        TextView MusicSinger,titleMusicName;
+        ImageView musicMenu;
 
         ViewHolder(@NonNull View itemView) {
             super(itemView);
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent=new Intent(activity, MusicPlayActivity.class);
-                    activity.startActivity(intent);
+                    activity.getBinder().playMusic(dataList.get(getAdapterPosition()));
                 }
             });
 
@@ -86,6 +195,14 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.ViewHolder> 
             musicMenu.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    popupPosition=getAdapterPosition();
+                    musicCover.setImageUrl(MyEnvironment.serverBasePath+"music/loadMusicCover?singerId="+
+                            dataList.get(popupPosition).getSingerId().split("/")[0]);
+                    titleMusicName.setText(dataList.get(popupPosition).getMusicName());
+                    titleMusicSinger.setText(dataList.get(popupPosition).
+                            getSingerName().replace("/"," "));
+                    MusicAdapter.this.musicSinger.setText(dataList.get(popupPosition).
+                            getSingerName().replace("/"," "));
                     spw.show();
                 }
             });

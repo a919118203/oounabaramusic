@@ -31,6 +31,10 @@ public class PlayListHttpUtil {
     public static final int MESSAGE_SAVE_NAME_END=3;
     public static final int MESSAGE_SAVE_INTRODUCTION_END=4;
     public static final int MESSAGE_UPLOAD_PL_COVER_END=5;
+    public static final int MESSAGE_FIND_PLAY_LIST_MUSIC_END=6;
+    public static final int MESSAGE_DELETE_MUSIC_END=7;
+    public static final int MESSAGE_COLLECTION_MUSIC_EDN=8;
+    public static final int MESSAGE_CANCEL_COLLECTION_EDN=9;
 
     public static void findPlayListByUser(Context context, String userId, Handler handler){
         if(!InternetUtil.checkNet(context)){
@@ -186,5 +190,90 @@ public class PlayListHttpUtil {
                 .build();
 
         client.newCall(request).enqueue(new HttpUtil.StringCallBack(handler,MESSAGE_SAVE_INTRODUCTION_END));//没用
+    }
+
+    public static void findMusicByPlayList(Context context,String playListId,Handler handler){
+        if(!InternetUtil.checkNet(context)){
+            Toast.makeText(context, "请检查网络连接", Toast.LENGTH_SHORT).show();
+            handler.sendEmptyMessage(HttpUtil.NO_NET);
+            return;
+        }
+
+        OkHttpClient client=new OkHttpClient();
+
+        RequestBody body=new FormBody.Builder()
+                .add("playListId",playListId)
+                .build();
+
+        Request request=new Request.Builder()
+                .url(MyEnvironment.serverBasePath+"findMusicByPlayList")
+                .post(body)
+                .build();
+
+        client.newCall(request).enqueue(new HttpUtil.StringCallBack(handler,MESSAGE_FIND_PLAY_LIST_MUSIC_END));
+    }
+
+    public static void deletePlayListMusic(Context context,int playListId,int musicId,Handler handler){
+        if(!InternetUtil.checkNet(context)){
+            Toast.makeText(context, "请检查网络连接", Toast.LENGTH_SHORT).show();
+            handler.sendEmptyMessage(HttpUtil.NO_NET);
+            return;
+        }
+
+        OkHttpClient client=new OkHttpClient();
+
+        RequestBody body=new FormBody.Builder()
+                .add("playListId",playListId+"")
+                .add("musicId",musicId+"")
+                .build();
+
+        Request request=new Request.Builder()
+                .url(MyEnvironment.serverBasePath+"deletePlayListMusic")
+                .post(body)
+                .build();
+
+        client.newCall(request).enqueue(new HttpUtil.StringCallBack(handler,MESSAGE_DELETE_MUSIC_END));//没用
+    }
+
+    public static void collectionMusic(Context context,String json,Handler handler){
+        if(!InternetUtil.checkNet(context)){
+            Toast.makeText(context, "请检查网络连接", Toast.LENGTH_SHORT).show();
+            handler.sendEmptyMessage(HttpUtil.NO_NET);
+            return;
+        }
+
+        OkHttpClient client=new OkHttpClient();
+
+        RequestBody body=new FormBody.Builder()
+                .add("json",json)
+                .build();
+
+        Request request=new Request.Builder()
+                .url(MyEnvironment.serverBasePath+"collectionMusic")
+                .post(body)
+                .build();
+
+        client.newCall(request).enqueue(new HttpUtil.StringCallBack(handler,MESSAGE_COLLECTION_MUSIC_EDN));
+    }
+
+    public static void cancelCollectionMusic(Context context,String json,Handler handler){
+        if(!InternetUtil.checkNet(context)){
+            Toast.makeText(context, "请检查网络连接", Toast.LENGTH_SHORT).show();
+            handler.sendEmptyMessage(HttpUtil.NO_NET);
+            return;
+        }
+
+        OkHttpClient client=new OkHttpClient();
+
+        RequestBody body=new FormBody.Builder()
+                .add("json",json)
+                .build();
+
+        Request request=new Request.Builder()
+                .url(MyEnvironment.serverBasePath+"cancelCollectionMusic")
+                .post(body)
+                .build();
+
+        client.newCall(request).enqueue(new HttpUtil.StringCallBack(handler,MESSAGE_CANCEL_COLLECTION_EDN));
     }
 }
