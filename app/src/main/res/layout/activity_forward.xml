@@ -25,11 +25,11 @@
         android:layout_height="match_parent"
         android:hint="说说我的看法"
         android:gravity="top|start"
-        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
         tools:ignore="HardcodedText" />
 
     <TextView
-        android:text="140"
+        android:id="@+id/content_cnt"
         android:textSize="@dimen/font_medium_size"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

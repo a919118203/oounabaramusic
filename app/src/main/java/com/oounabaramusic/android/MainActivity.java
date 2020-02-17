@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -21,7 +22,9 @@ import com.oounabaramusic.android.service.MusicPlayService;
 import com.oounabaramusic.android.util.LinksTextViewAndViewPager;
 import com.oounabaramusic.android.util.LogUtil;
 import com.oounabaramusic.android.util.MyEnvironment;
+import com.oounabaramusic.android.util.SharedPreferencesUtil;
 import com.oounabaramusic.android.util.StatusBarUtil;
+import com.oounabaramusic.android.widget.customview.MyCircleImageView;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -43,7 +46,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
     private DrawerLayout dl;
     private List<Fragment> fragments=new ArrayList<>();
     private LinksTextViewAndViewPager link;
+    private String userId,userName;
 
+    private MyCircleImageView userHeader;
+    private TextView userNameTV;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,14 +83,25 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
                 Intent intent;
+                int userId =  SharedPreferencesUtil.getUserId(sp);
                 switch (menuItem.getItemId()){
                     case R.id.my_friends:
-                        intent=new Intent(MainActivity.this,MyFriendActivity.class);
-                        startActivity(intent);
+                        MyFriendActivity.startActivity(
+                                MainActivity.this,
+                                userId,
+                                MyFriendActivity.TO_FOLLOW);
                         break;
                     case R.id.my_news:
                         intent=new Intent(MainActivity.this, MyMessageActivity.class);
                         startActivity(intent);
+                        break;
+                    case R.id.quit:
+                        SharedPreferences.Editor editor=sp.edit();
+                        editor.putBoolean("login",false);
+                        editor.apply();
+
+                        startActivity(new Intent(MainActivity.this,ChooseLoginActivity.class));
+                        MainActivity.this.finish();
                         break;
                 }
                 dl.closeDrawer(GravityCompat.START);
@@ -120,6 +137,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
 
             }
         });
+
+        userHeader = view.getHeaderView(0).findViewById(R.id.user_header);
+        userNameTV = view.getHeaderView(0).findViewById(R.id.user_name);
+
+        initContent();
     }
 
     private void initDir() {
@@ -133,6 +155,21 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
         file.mkdirs();
         file=new File(MyEnvironment.musicLrc);
         file.mkdirs();
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        initContent();
+    }
+
+    private void initContent(){
+        userId = sp.getString("userId","-1");
+        userName = sp.getString("userName","null");
+
+        userHeader.setImageUrl(MyEnvironment.
+                serverBasePath+"/loadUserHeader?userId="+userId);
+        userNameTV.setText(userName);
     }
 
     @Override
@@ -157,7 +194,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
                 break;
             case R.id.to_user_info:                     //点击NavigationView的header部分时
                 intent=new Intent(this,UserInfoActivity.class);
-                intent.putExtra("mode",UserInfoActivity.MODE_SELF);
+                intent.putExtra("userId",Integer.valueOf(userId));
                 startActivity(intent);
                 dl.closeDrawer(GravityCompat.START);
                 break;

@@ -30,31 +30,66 @@
                 android:contentDescription="排行榜"
                 tools:ignore="HardcodedText" />
 
-            <TextView
+            <LinearLayout
                 android:id="@+id/music_play_ranking_title"
-                android:text="听歌排行"
-                android:textSize="@dimen/font_medium_size"
-                android:textColor="@color/positive"
+                android:orientation="horizontal"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_toEndOf="@id/music_play_ranking"
                 android:layout_alignTop="@id/music_play_ranking"
                 android:layout_marginTop="8dp"
-                android:layout_marginStart="15dp"
-                tools:ignore="HardcodedText"/>
+                android:layout_marginStart="15dp">
 
-            <TextView
-                android:text="累计听歌8497首"
-                android:textSize="@dimen/font_small_size"
+                <TextView
+                    android:id="@+id/other_listen_rank"
+                    android:textSize="@dimen/font_medium_size"
+                    android:textColor="@color/positive"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:ignore="HardcodedText"/>
+
+                <TextView
+                    android:text="听歌排行"
+                    android:textSize="@dimen/font_medium_size"
+                    android:textColor="@color/positive"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:ignore="HardcodedText"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/music_play_ranking_title"
                 android:layout_alignStart="@id/music_play_ranking_title"
-                android:layout_marginTop="3dp"
-                tools:ignore="HardcodedText"/>
+                android:layout_marginTop="3dp">
+
+                <TextView
+                    android:text="累计听歌"
+                    android:textSize="@dimen/font_small_size"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:ignore="HardcodedText"/>
+
+                <TextView
+                    android:id="@+id/listen_cnt"
+                    android:textSize="@dimen/font_small_size"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:ignore="HardcodedText"/>
+
+                <TextView
+                    android:text="首"
+                    android:textSize="@dimen/font_small_size"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:ignore="HardcodedText"/>
+            </LinearLayout>
         </RelativeLayout>
 
         <RelativeLayout
+            android:id="@+id/my_collection"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/view_ripple_rectangle">
@@ -72,35 +107,63 @@
                 android:contentDescription="排行榜"
                 tools:ignore="HardcodedText" />
 
-            <TextView
+            <LinearLayout
                 android:id="@+id/my_favorite_music_title"
-                android:text="我喜欢的音乐"
-                android:textSize="@dimen/font_medium_size"
-                android:textColor="@color/positive"
+                android:orientation="horizontal"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_toEndOf="@id/my_favorite_music"
                 android:layout_alignTop="@id/my_favorite_music"
                 android:layout_marginTop="8dp"
-                android:layout_marginStart="15dp"
-                tools:ignore="HardcodedText"/>
+                android:layout_marginStart="15dp">
 
-            <TextView
-                android:text="504首，播放4643次"
-                android:textSize="@dimen/font_small_size"
+                <TextView
+                    android:id="@+id/who"
+                    android:textSize="@dimen/font_medium_size"
+                    android:textColor="@color/positive"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:ignore="HardcodedText"/>
+
+                <TextView
+                    android:text="喜欢的音乐"
+                    android:textSize="@dimen/font_medium_size"
+                    android:textColor="@color/positive"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:ignore="HardcodedText"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/my_favorite_music_title"
                 android:layout_alignStart="@id/my_favorite_music_title"
-                android:layout_marginTop="3dp"
-                tools:ignore="HardcodedText"/>
+                android:layout_marginTop="3dp">
+
+                <TextView
+                    android:id="@+id/collect_cnt"
+                    android:textSize="@dimen/font_small_size"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:ignore="HardcodedText"/>
+
+                <TextView
+                    android:text="首"
+                    android:textSize="@dimen/font_small_size"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:ignore="HardcodedText"/>
+            </LinearLayout>
         </RelativeLayout>
 
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="50dp">
+            android:layout_marginTop="50dp"
+            android:layout_marginBottom="10dp">
 
             <TextView
                 android:id="@+id/my_playlist_title"
@@ -110,27 +173,46 @@
                 android:textStyle="bold"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="22dp"
+                android:layout_marginStart="20dp"
                 tools:ignore="HardcodedText" />
 
-            <TextView
-                android:id="@+id/my_playlist_cnt"
-                android:text="(11个)"
-                android:textSize="@dimen/font_small_size"
+            <LinearLayout
+                android:orientation="horizontal"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="5dp"
-                tools:ignore="HardcodedText" />
+                android:layout_marginStart="5dp">
+
+                <TextView
+                    android:text="("
+                    android:textSize="@dimen/font_small_size"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:ignore="HardcodedText" />
+
+                <TextView
+                    android:id="@+id/my_playlist_cnt"
+                    android:textSize="@dimen/font_small_size"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:ignore="HardcodedText" />
+
+                <TextView
+                    android:text="个)"
+                    android:textSize="@dimen/font_small_size"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:ignore="HardcodedText" />
+            </LinearLayout>
         </LinearLayout>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/my_playlist_recycler_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="12dp"
-            android:layout_marginEnd="12dp"/>
+            android:layout_marginBottom="20dp"/>
 
         <TextView
+            android:visibility="gone"
             android:id="@+id/more_my_playlist"
             android:text="更多歌单>"
             android:textSize="@dimen/font_small_size"
@@ -144,7 +226,9 @@
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="10dp">
 
             <TextView
                 android:id="@+id/favorite_playlist_title"
@@ -154,53 +238,45 @@
                 android:textStyle="bold"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="22dp"
+                android:layout_marginStart="20dp"
                 tools:ignore="HardcodedText" />
 
-            <TextView
-                android:id="@+id/favorite_playlist_cnt"
-                android:text="(12个)"
-                android:textSize="@dimen/font_small_size"
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="5dp"
-                tools:ignore="HardcodedText" />
+                android:layout_marginStart="5dp">
+
+                <TextView
+                    android:text="("
+                    android:textSize="@dimen/font_small_size"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:ignore="HardcodedText" />
+
+                <TextView
+                    android:id="@+id/favorite_playlist_cnt"
+                    android:textSize="@dimen/font_small_size"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:ignore="HardcodedText" />
+
+                <TextView
+                    android:text="个)"
+                    android:textSize="@dimen/font_small_size"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:ignore="HardcodedText" />
+            </LinearLayout>
         </LinearLayout>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/favorite_playlist_recycler_view"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="12dp"
-            android:layout_marginEnd="12dp"/>
+            android:layout_height="wrap_content"/>
 
         <TextView
             android:id="@+id/more_favorite_playlist"
             android:text="更多歌单>"
-            android:textSize="@dimen/font_small_size"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-            android:padding="20dp"
-            android:background="@drawable/view_ripple_rectangle"
-            tools:ignore="HardcodedText" />
-
-        <TextView
-            android:text="我的评论"
-            android:textSize="@dimen/font_medium_size"
-            android:textColor="@color/positive"
-            android:textStyle="bold"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:layout_marginStart="22dp"
-            tools:ignore="HardcodedText" />
-
-        <include layout="@layout/rv_item_user_comment"/>
-
-        <TextView
-            android:id="@+id/more_comment"
-            android:text="更多评论>"
             android:textSize="@dimen/font_small_size"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -217,37 +293,125 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:layout_marginStart="22dp"
+            android:layout_marginStart="20dp"
             tools:ignore="HardcodedText" />
 
-        <TextView
-            android:text="乐龄：2年（2017年3月注册）"
-            android:textSize="@dimen/font_small_size"
+        <LinearLayout
+            android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:layout_marginStart="22dp"
-            tools:ignore="HardcodedText" />
+            android:layout_marginStart="20dp">
 
-        <TextView
-            android:text="年龄：95后 天秤座"
-            android:textSize="@dimen/font_small_size"
+            <TextView
+                android:text="乐龄："
+                android:textSize="@dimen/font_medium_size"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:ignore="HardcodedText" />
+
+            <TextView
+                android:id="@+id/year"
+                android:textSize="@dimen/font_medium_size"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:ignore="HardcodedText" />
+
+            <TextView
+                android:text="年（"
+                android:textSize="@dimen/font_medium_size"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:ignore="HardcodedText" />
+
+            <TextView
+                android:id="@+id/sign_up_year"
+                android:textSize="@dimen/font_medium_size"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:ignore="HardcodedText" />
+
+            <TextView
+                android:text="年"
+                android:textSize="@dimen/font_medium_size"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:ignore="HardcodedText" />
+
+            <TextView
+                android:id="@+id/sign_up_month"
+                android:textSize="@dimen/font_medium_size"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:ignore="HardcodedText" />
+
+            <TextView
+                android:text="月注册）"
+                android:textSize="@dimen/font_medium_size"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:ignore="HardcodedText" />
+        </LinearLayout>
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:layout_marginStart="22dp"
+            android:layout_marginStart="20dp">
+
+            <TextView
+                android:text="年龄："
+                android:textSize="@dimen/font_medium_size"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:ignore="HardcodedText" />
+
+            <TextView
+                android:id="@+id/year_suffix"
+                android:textSize="@dimen/font_medium_size"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginStart="20dp">
+
+            <TextView
+                android:text="性别："
+                android:textSize="@dimen/font_medium_size"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:ignore="HardcodedText" />
+
+            <TextView
+                android:id="@+id/sex"
+                android:textSize="@dimen/font_medium_size"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
+
+        <TextView
+            android:text="个人介绍"
+            android:textSize="@dimen/font_medium_size"
+            android:textColor="@color/positive"
+            android:textStyle="bold"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_marginStart="20dp"
             tools:ignore="HardcodedText" />
 
         <TextView
-            android:id="@+id/more_user_info"
-            android:text="更多信息>"
-            android:textSize="@dimen/font_small_size"
+            android:id="@+id/introduction"
+            android:textSize="@dimen/font_medium_size"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="100dp"
-            android:gravity="center_horizontal"
-            android:padding="20dp"
-            android:background="@drawable/view_ripple_rectangle"
-            tools:ignore="HardcodedText" />
+            android:layout_marginTop="10dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginBottom="20dp"/>
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>

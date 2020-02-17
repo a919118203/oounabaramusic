@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.Handler;
@@ -17,18 +18,23 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.gson.reflect.TypeToken;
 import com.oounabaramusic.android.adapter.MusicAdapter;
+import com.oounabaramusic.android.bean.Comment;
 import com.oounabaramusic.android.bean.Music;
 import com.oounabaramusic.android.bean.PlayList;
+import com.oounabaramusic.android.code.BasicCode;
 import com.oounabaramusic.android.okhttputil.PlayListHttpUtil;
+import com.oounabaramusic.android.okhttputil.S2SHttpUtil;
 import com.oounabaramusic.android.util.ImageFilter;
-import com.oounabaramusic.android.util.LogUtil;
 import com.oounabaramusic.android.util.MyEnvironment;
+import com.oounabaramusic.android.util.SharedPreferencesUtil;
 import com.oounabaramusic.android.util.StatusBarUtil;
 import com.oounabaramusic.android.widget.customview.MyCircleImageView;
 import com.oounabaramusic.android.widget.customview.MyImageView;
@@ -50,8 +56,16 @@ public class PlayListActivity extends BaseActivity implements View.OnClickListen
     private MyImageView playListCover,background;
     private TextView playListCnt;
     private TextView playListIntroduction;
+    private ImageView collectionImage;
+
+    private LinearLayout collectionLayout;
+
     private SharedPreferences sp;
     private PlayListHandler handler;
+
+    private boolean isMyLove;     //是否是“我喜欢的音乐”歌单
+
+    private Bitmap noCollect,collected;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,12 +86,11 @@ public class PlayListActivity extends BaseActivity implements View.OnClickListen
         sp= PreferenceManager.getDefaultSharedPreferences(this);
         Intent intent=getIntent();
         playList= (PlayList) intent.getSerializableExtra("playList");
+        isMyLove = intent.getBooleanExtra("isMyLove",false);
 
         init();
 
         loadMusic();
-
-        handler=new PlayListHandler(this);
     }
 
     public PlayListHandler getHandler() {
@@ -103,6 +116,8 @@ public class PlayListActivity extends BaseActivity implements View.OnClickListen
     }
 
     private void init() {
+        handler=new PlayListHandler(this);
+
         //初始化音乐列表
         musicRv=findViewById(R.id.music_recycler_view);
         musicRv.setAdapter(adapter=new MusicAdapter(this));
@@ -141,25 +156,53 @@ public class PlayListActivity extends BaseActivity implements View.OnClickListen
         loadMusic=findViewById(R.id.load);
         playListIntroduction=findViewById(R.id.playlist_introduction);
         playListCnt=findViewById(R.id.playList_cnt);
+        collectionImage=findViewById(R.id.collection_image);
 
         findViewById(R.id.download).setOnClickListener(this);
+        findViewById(R.id.comment).setOnClickListener(this);
+        collectionLayout = findViewById(R.id.collection);
+        collectionLayout.setOnClickListener(this);
 
-        setPlayListInfo();
+        noCollect= BitmapFactory.decodeResource(getResources(),R.mipmap.collection_before);
+        collected= BitmapFactory.decodeResource(getResources(),R.mipmap.collection_after);
+
+        initContent();
     }
 
-    private void setPlayListInfo(){
+    private void initContent(){
+
+        //设置歌单内容
         playListName.setText(playList.getPlayListName());
         userName.setText(playList.getCreateUserName());
         playListCover.setEventHandler(new PlayListHandler(this));
         playListCover.setImageUrl(MyEnvironment.serverBasePath+
                 "loadPlayListCover?playListId="+
                 playList.getId());
-
         userHeader.setImageUrl(MyEnvironment.serverBasePath+
                 "loadUserHeader?userId="+
                 playList.getCreateUserId());
-
         playListIntroduction.setText(playList.getIntroduction());
+
+        //获取用户是否已收藏该歌单
+        //如果是自己的歌单就不显示收藏按钮
+        if(sp.getBoolean("login",false)){
+            if(sp.getString("userId","-1").equals(playList.getCreateUserId()+"")){
+                collectionLayout.setVisibility(View.INVISIBLE);
+            }else{
+                int userId = SharedPreferencesUtil.getUserId(sp);
+                int playListId = playList.getId();
+
+                List<Integer> data = new ArrayList<>();
+                data.add(userId);
+                data.add(playListId);
+                new S2SHttpUtil(
+                        this,
+                        gson.toJson(data),
+                        MyEnvironment.serverBasePath+"playListIsCollect",
+                        new PlayListHandler(this))
+                        .call(BasicCode.PLAY_LIST_IS_COLLECT);
+            }
+        }
     }
 
     @Override
@@ -169,7 +212,11 @@ public class PlayListActivity extends BaseActivity implements View.OnClickListen
         boolean f=false;
         if(sp.getBoolean("login",false)){
             if(sp.getString("userId","-1").equals(playList.getCreateUserId()+"")){
-                f=true;
+                if(isMyLove){
+                    f=false;
+                }else{
+                    f=true;
+                }
             }
         }
 
@@ -209,11 +256,37 @@ public class PlayListActivity extends BaseActivity implements View.OnClickListen
 
             case R.id.user:       //点击用户名
                 intent=new Intent(this,UserInfoActivity.class);
+                intent.putExtra("userId",playList.getCreateUserId());
                 startActivity(intent);
                 break;
 
             case R.id.download:
                 new DownloadDialog(this,adapter.getDataList());
+                break;
+
+            case R.id.comment:
+                CommentActivity.startActivity(this,playList.getId(),Comment.PLAY_LIST);
+                break;
+
+            case R.id.collection:
+                if(!SharedPreferencesUtil.isLogin(sp)){
+                    Toast.makeText(this, "请先登录", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                int userId = Integer.valueOf(sp.getString("userId","-1"));
+                int playListId = playList.getId();
+
+                List<Integer> data = new ArrayList<>();
+                data.add(userId);
+                data.add(playListId);
+
+                new S2SHttpUtil(
+                        this,
+                        gson.toJson(data),
+                        MyEnvironment.serverBasePath+"collectPlayList",
+                        new PlayListHandler(this))
+                .call(BasicCode.COLLECT_PLAY_LIST);
                 break;
         }
     }
@@ -235,7 +308,7 @@ public class PlayListActivity extends BaseActivity implements View.OnClickListen
                 case PlayListHttpUtil.MESSAGE_FIND_PLAY_LIST_END:
                     activity.playList=activity.gson.fromJson((String)msg.obj,
                             new TypeToken<PlayList>(){}.getType());
-                    activity.setPlayListInfo();
+                    activity.initContent();
                     break;
                 case PlayListHttpUtil.MESSAGE_FIND_PLAY_LIST_MUSIC_END:
                     List<String> data=activity.gson.fromJson((String)msg.obj,
@@ -253,6 +326,16 @@ public class PlayListActivity extends BaseActivity implements View.OnClickListen
                     break;
                 case PlayListHttpUtil.MESSAGE_DELETE_MUSIC_END:
                     activity.loadMusic();
+                    break;
+
+                case BasicCode.COLLECT_PLAY_LIST:
+                case BasicCode.PLAY_LIST_IS_COLLECT:
+                    int isCollect = Integer.valueOf((String) msg.obj);
+                    if(isCollect>0){
+                        activity.collectionImage.setImageBitmap(activity.collected);
+                    }else{
+                        activity.collectionImage.setImageBitmap(activity.noCollect);
+                    }
                     break;
             }
         }

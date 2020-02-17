@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_enabled="false"
+        android:drawable="@drawable/btn_gray"/>
+
+    <item android:state_pressed="true" >
+        <layer-list>
+            <item android:drawable="@drawable/btn_light_gray"/>
+            <item android:drawable="@drawable/view_ripple_rectangle_2"/>
+        </layer-list>
+    </item>
+
+    <item android:drawable="@drawable/btn_light_gray"/>
+</selector>

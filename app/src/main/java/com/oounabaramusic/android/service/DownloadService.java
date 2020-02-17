@@ -294,6 +294,7 @@ public class DownloadService extends Service {
 
             if(status==STATUS_NO_TASK){
                 startNewTask(0);
+                Toast.makeText(DownloadService.this, "开始下载", Toast.LENGTH_SHORT).show();
             }
         }
 

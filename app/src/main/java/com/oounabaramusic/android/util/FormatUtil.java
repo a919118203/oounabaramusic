@@ -68,8 +68,42 @@ public class FormatUtil {
         return sb.toString();
     }
 
-    public static String DateToString(Date date){
+    public static String DateTimeToString(Date date){
+        if(date==null)
+            return "";
+
         SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         return sdf.format(date);
+    }
+
+    public static String DateToString(Date date){
+        if(date==null)
+            return "";
+
+        SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
+        return sdf.format(date);
+    }
+
+    /**
+     * 将数字转为字符串
+     * @param v        数字
+     * @param len      要求的长度，不够就补0
+     * @return
+     */
+    public static String numberToString(int v,int len){
+        int vLen=0;
+        int vv=v;
+        do{
+            vv/=10;
+            vLen++;
+        }while(vv!=0);
+
+        StringBuilder sb=new StringBuilder();
+
+        for(int i=0;i<len-vLen;i++){
+            sb.append("0");
+        }
+        sb.append(v);
+        return sb.toString();
     }
 }

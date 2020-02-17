@@ -2,26 +2,29 @@ package com.oounabaramusic.android;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 
 import com.google.android.material.tabs.TabLayout;
+import com.google.gson.Gson;
+import com.oounabaramusic.android.bean.Music;
+import com.oounabaramusic.android.code.BasicCode;
 import com.oounabaramusic.android.fragment.BaseFragment;
 import com.oounabaramusic.android.fragment.RPMusicFragment;
-import com.oounabaramusic.android.fragment.RPPlayListFragment;
-import com.oounabaramusic.android.fragment.RPVideoFragment;
+import com.oounabaramusic.android.okhttputil.S2SHttpUtil;
+import com.oounabaramusic.android.util.MyEnvironment;
 import com.oounabaramusic.android.util.StatusBarUtil;
 
 import java.util.ArrayList;
@@ -36,8 +39,8 @@ public class RecentlyPlayedActivity extends BaseActivity {
     private TabLayout tl;
     private ViewPager vp;
     private List<BaseFragment> fragments;
-    private RelativeLayout playControl;
-
+    private int userId;
+    public MenuItem selectAll,cancelSelectAll;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,15 +57,26 @@ public class RecentlyPlayedActivity extends BaseActivity {
     private void init() {
         fragments=new ArrayList<>();
         fragments.add(new RPMusicFragment(this));
-        fragments.add(new RPVideoFragment(this));
-        fragments.add(new RPPlayListFragment(this));
 
         vp=findViewById(R.id.view_pager);
         tl=findViewById(R.id.tab_layout);
-        playControl=findViewById(R.id.tool_current_play_layout);
 
         vp.setAdapter(new ViewPagerAdapter());
         tl.setupWithViewPager(vp);
+
+        initContent();
+    }
+
+    private void initContent(){
+        userId = Integer.valueOf(sp.getString("userId","-1"));
+    }
+
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setTitle(String title){
+        getSupportActionBar().setTitle(title);
     }
 
     public void switchMode(int mode){
@@ -73,12 +87,10 @@ public class RecentlyPlayedActivity extends BaseActivity {
         switch (mode){
             case MODE_NORMAL:
                 tl.setVisibility(View.VISIBLE);
-                playControl.setVisibility(View.VISIBLE);
                 title="最近播放";
                 break;
             case MODE_CHOICE:
                 tl.setVisibility(View.GONE);
-                playControl.setVisibility(View.GONE);
                 title="已选择0项";
                 break;
         }
@@ -119,6 +131,10 @@ public class RecentlyPlayedActivity extends BaseActivity {
         getMenuInflater().inflate(R.menu.menu_rp_activity,menu);
         menu.getItem(0).setVisible(mode==MODE_NORMAL);
         menu.getItem(1).setVisible(mode==MODE_CHOICE);
+        menu.getItem(2).setVisible(false);
+
+        selectAll = menu.getItem(1);
+        cancelSelectAll = menu.getItem(2);
         return true;
     }
 
@@ -132,14 +148,52 @@ public class RecentlyPlayedActivity extends BaseActivity {
                 }
                 finish();
                 break;
+
             case R.id.clear:
+                clearRPMusic();
                 break;
+
             case R.id.select_all:
+                ((RPMusicFragment)fragments.get(0)).getChoiceAdapter().selectAll();
+                selectAll.setVisible(false);
+                cancelSelectAll.setVisible(true);
                 break;
+
             case R.id.cancel_select_all:
+                ((RPMusicFragment)fragments.get(0)).getChoiceAdapter().clearSelected();
+                selectAll.setVisible(true);
+                cancelSelectAll.setVisible(false);
                 break;
         }
         return true;
+    }
+
+    private void clearRPMusic(){
+        AlertDialog dialog=new AlertDialog.Builder(this)
+                .setTitle("确定要清空最近播放的音乐记录")
+                .setNegativeButton("取消",null)
+                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        List<Music> dataList = ((RPMusicFragment)fragments.get(0)).getNormalAdapter().getDataList();
+
+                        List<Integer> jsonData = new ArrayList<>();
+                        jsonData.add(getUserId());
+                        for(Music item:dataList){
+                            jsonData.add(item.getId());
+                        }
+                        new S2SHttpUtil(
+                                RecentlyPlayedActivity.this,
+                                new Gson().toJson(jsonData),
+                                MyEnvironment.serverBasePath+"music/deleteRPMusic",
+                                new MyHandler(RecentlyPlayedActivity.this))
+                                .call(BasicCode.DELETE_RP_MUSIC_END);
+                    }
+                })
+                .create();
+
+        dialog.getWindow().setBackgroundDrawable(getResources().getDrawable(R.drawable.layout_card_2));
+        dialog.show();
     }
 
     @Override
@@ -151,5 +205,23 @@ public class RecentlyPlayedActivity extends BaseActivity {
             }
         }
         return super.onKeyDown(keyCode, event);
+    }
+
+    static class MyHandler extends Handler{
+        RecentlyPlayedActivity activity;
+        MyHandler(RecentlyPlayedActivity activity){
+            this.activity=activity;
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what){
+                case BasicCode.DELETE_RP_MUSIC_END:
+                    ((RPMusicFragment)activity.fragments.get(0))
+                            .getNormalAdapter()
+                            .initContent();
+                    break;
+            }
+        }
     }
 }

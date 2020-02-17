@@ -18,9 +18,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.oounabaramusic.android.BaseActivity;
+import com.oounabaramusic.android.CommentActivity;
 import com.oounabaramusic.android.MusicPlayActivity;
 import com.oounabaramusic.android.R;
 import com.oounabaramusic.android.SingerActivity;
+import com.oounabaramusic.android.bean.Comment;
 import com.oounabaramusic.android.bean.Music;
 import com.oounabaramusic.android.okhttputil.PlayListHttpUtil;
 import com.oounabaramusic.android.util.MyEnvironment;
@@ -71,6 +73,7 @@ public class SingerMusicMenuAdapter extends RecyclerView.Adapter<SingerMusicMenu
             @Override
             public void onClick(View v) {
                 activity.getBinder().nextPlay(dataList.get(popupPosition));
+                spw.dismiss();
             }
         });
 
@@ -92,14 +95,17 @@ public class SingerMusicMenuAdapter extends RecyclerView.Adapter<SingerMusicMenu
         view.findViewById(R.id.music_download).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                activity.getDownloadBinder().addTask(dataList.get(popupPosition));
+                spw.dismiss();
             }
         });
 
         view.findViewById(R.id.music_comment).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                CommentActivity.startActivity(activity,
+                        dataList.get(popupPosition).getId(),Comment.MUSIC);
+                spw.dismiss();
             }
         });
 

@@ -280,7 +280,6 @@ public class MusicPlayActivity extends BaseActivity implements View.OnClickListe
             public void onClick(View v) {
 
                 if(sp.getBoolean("login",false)){
-
                     String userId=sp.getString("userId","-1");
                     new PlayListDialog(MusicPlayActivity.this,
                             Integer.valueOf(userId),music.getMd5());
@@ -297,6 +296,19 @@ public class MusicPlayActivity extends BaseActivity implements View.OnClickListe
         view.findViewById(R.id.music_comment).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(sp.getBoolean("login",false)){
+
+                    new S2SHttpUtil(
+                            MusicPlayActivity.this,
+                            music.getMd5(),
+                            MyEnvironment.serverBasePath+"getMusicId",
+                            mHandler)
+                    .call(BasicCode.GET_MUSIC_ID);
+
+                }else{
+                    Toast.makeText(MusicPlayActivity.this,
+                            "请先登录", Toast.LENGTH_SHORT).show();
+                }
                 musicMenu.dismiss();
             }
         });
@@ -399,8 +411,6 @@ public class MusicPlayActivity extends BaseActivity implements View.OnClickListe
                     int a=(adapter.getHeight(position)-adapter.getHeight(position-1))/2
                             +adapter.getHeight(position-1);
                     rv.smoothScrollBy(0,a-sum);
-
-                    LogUtil.printLog("a: "+a+" sum: "+sum);
 
                     long seek=adapter.getLrc().getTimes().get(position);
                     if(seek<Integer.MAX_VALUE){
@@ -524,7 +534,11 @@ public class MusicPlayActivity extends BaseActivity implements View.OnClickListe
                 break;
 
             case R.id.download:
-                getDownloadBinder().addTask(music);
+                if(music.getIsServer()==1){
+                    getDownloadBinder().addTask(music);
+                }else{
+                    Toast.makeText(this, "这是本地音乐", Toast.LENGTH_SHORT).show();
+                }
                 break;
 
             case R.id.info:
@@ -533,10 +547,19 @@ public class MusicPlayActivity extends BaseActivity implements View.OnClickListe
 
             case R.id.comment:
                 if(sp.getBoolean("login",false)){
-                    intent=new Intent(this,CommentActivity.class);
-                    intent.putExtra("data",music);
-                    intent.putExtra("dataType", Comment.MUSIC);
-                    startActivity(intent);
+                    if(music.getIsServer()==1){
+
+                        //获取音乐ID
+                        new S2SHttpUtil(
+                                MusicPlayActivity.this,
+                                music.getMd5(),
+                                MyEnvironment.serverBasePath+"getMusicId",
+                                mHandler)
+                                .call(BasicCode.GET_MUSIC_ID);
+
+                    }else{
+                        Toast.makeText(this, "本地音乐没有评论", Toast.LENGTH_SHORT).show();
+                    }
                 }else{
                     Toast.makeText(this, "请先登录", Toast.LENGTH_SHORT).show();
                 }
@@ -672,6 +695,11 @@ public class MusicPlayActivity extends BaseActivity implements View.OnClickListe
 
                 case BasicCode.NO_LRC:
                     activity.adapter.setLrc(Lrc.getSimple("没有歌词"));
+                    break;
+
+                case BasicCode.GET_MUSIC_ID:
+                    int musicId = Integer.valueOf((String)msg.obj);
+                    CommentActivity.startActivity(activity,musicId,Comment.MUSIC);
                     break;
             }
         }

@@ -6,16 +6,31 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import com.oounabaramusic.android.adapter.MyPlayListAdapter;
 import com.oounabaramusic.android.adapter.MyPlayListTagAdapter;
 import com.oounabaramusic.android.adapter.OtherPlayListTagAdapter;
+import com.oounabaramusic.android.bean.PlayListBigTag;
+import com.oounabaramusic.android.bean.PlayListSmallTag;
+import com.oounabaramusic.android.code.BasicCode;
+import com.oounabaramusic.android.okhttputil.S2SHttpUtil;
+import com.oounabaramusic.android.okhttputil.TagHttpUtil;
 import com.oounabaramusic.android.util.LogUtil;
+import com.oounabaramusic.android.util.MyEnvironment;
 import com.oounabaramusic.android.util.StatusBarUtil;
 
 import java.util.ArrayList;
@@ -26,10 +41,12 @@ import java.util.Objects;
 
 public class PlayListTagActivity extends BaseActivity {
 
-    private List<String> titles;
-    private Map<String,List<String>> tags;
+    private List<PlayListBigTag> bigTags;
     private List<RecyclerView.Adapter> adapters;
     private LinearLayout content;
+
+    private List<PlayListSmallTag> myTags;
+    private int userId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,105 +63,143 @@ public class PlayListTagActivity extends BaseActivity {
     }
 
     private void init() {
-        initTag();
-
         adapters=new ArrayList<>();
+        userId = Integer.valueOf(sp.getString("userId","-1"));
+
         content=findViewById(R.id.content);
 
-        for(int i=0;i<titles.size();i++){
+        Intent intent=getIntent();
+        myTags=(ArrayList<PlayListSmallTag>)intent.getSerializableExtra("tags");
+
+        //初始化自己的歌单标签
+        LinearLayout ll= (LinearLayout) LayoutInflater
+                .from(this)
+                .inflate(R.layout.activity_play_list_tag_item,
+                        (ViewGroup) getWindow().getDecorView(),
+                        false);
+        TextView title=ll.findViewById(R.id.title);
+        title.setText("我的标签");
+        RecyclerView rv=ll.findViewById(R.id.recycler_view);
+        RecyclerView.Adapter adapter;
+        rv.setAdapter(adapter = new MyPlayListTagAdapter(this,
+                myTags));
+        adapters.add(adapter);
+        rv.setLayoutManager(new GridLayoutManager(this,4));
+        content.addView(ll);
+
+        //获取并初始化服务器歌单标签
+        initTag();
+    }
+
+    public void addTag(PlayListSmallTag tag){
+        ((MyPlayListTagAdapter)adapters.get(0)).addTag(tag);
+    }
+
+    public void removeTag(PlayListSmallTag tag){
+
+        //寻找对应大标签的位置
+        int index = bigTags.indexOf(tag);
+
+        //第一个为我的标签 所以+1
+        ((OtherPlayListTagAdapter)adapters.get(index+1)).activationTag(tag);
+    }
+
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case android.R.id.home:
+                finish();
+                break;
+            case R.id.save:
+                List<PlayListSmallTag> dataList =
+                        ((MyPlayListTagAdapter)adapters.get(0)).getTags();
+
+                List<Integer> data = new ArrayList<>();
+                data.add(userId);
+                for(PlayListSmallTag tag:dataList){
+                    data.add(tag.getId());
+                }
+
+                new S2SHttpUtil(
+                        this,
+                        gson.toJson(data),
+                        MyEnvironment.serverBasePath+"saveUserPlayListTag",
+                        new MyHandler(this))
+                .call(BasicCode.SAVE_TO_SERVER);
+                break;
+        }
+        return true;
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_play_list_tag,menu);
+        return true;
+    }
+
+    private void initTag() {
+        if(bigTags==null){
+            TagHttpUtil.getPlayListTag(this,new MyHandler(this));
+            return;
+        }
+
+        //初始化歌单标签
+        for(int i=0;i<bigTags.size();i++){
             LinearLayout ll= (LinearLayout) LayoutInflater
                     .from(this)
                     .inflate(R.layout.activity_play_list_tag_item,
                             (ViewGroup) getWindow().getDecorView(),
                             false);
 
+            PlayListBigTag item=bigTags.get(i);
+
             TextView title=ll.findViewById(R.id.title);
-            title.setText(titles.get(i));
+            title.setText(item.getName());
             RecyclerView rv=ll.findViewById(R.id.recycler_view);
             RecyclerView.Adapter adapter;
-            if(i==0){
-                adapter=new MyPlayListTagAdapter(this,tags.get(titles.get(i)));
-            }else{
-                adapter=new OtherPlayListTagAdapter(this,tags.get(titles.get(i)),i);
-            }
+
+            adapter=new OtherPlayListTagAdapter(this,item.getTags());
+
             adapters.add(adapter);
             rv.setAdapter(adapter);
             rv.setLayoutManager(new GridLayoutManager(this,4));
 
             content.addView(ll);
         }
+
+        //将我已拥有的标签设为已选择
+        for(PlayListSmallTag tag:myTags){
+            //寻找对应大标签的位置
+            int index = bigTags.indexOf(tag);
+
+            //第一个为我的标签 所以+1
+            ((OtherPlayListTagAdapter)adapters.get(index+1)).selectTag(tag);
+        }
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        finish();
-        return true;
-    }
+    static class MyHandler extends Handler{
+        PlayListTagActivity activity;
 
-    private void initTag() {
-        titles=new ArrayList<>();
-        tags=new HashMap<>();
-        List<String> item=null;
+        MyHandler(PlayListTagActivity activity){
+            this.activity=activity;
+        }
 
-        titles.add("我的歌单广场");
-        item=new ArrayList<>();
-        item.add("推荐");
-        tags.put(titles.get(tags.size()),item);
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what){
+                case TagHttpUtil.MESSAGE_GET_PLAY_LIST_TAG_END:
+                    activity.bigTags = new Gson().fromJson((String)msg.obj,
+                            new TypeToken<List<PlayListBigTag>>(){}.getType());
+                    activity.initTag();
+                    break;
 
-        titles.add("语种");
-        item=new ArrayList<>();
-        item.add("华语");
-        item.add("日语");
-        item.add("欧美");
-        item.add("粤语");
-        item.add("韩语");
-        tags.put(titles.get(tags.size()),item);
-
-        titles.add("风格");
-        item=new ArrayList<>();
-        item.add("流行");
-        item.add("摇滚");
-        item.add("民谣");
-        item.add("电子");
-        item.add("舞曲");
-        item.add("说唱");
-        item.add("轻音乐");
-        item.add("爵士");
-        item.add("乡村");
-        item.add("民族");
-        item.add("古风");
-        tags.put(titles.get(tags.size()),item);
-
-        titles.add("场景");
-        item=new ArrayList<>();
-        item.add("清晨");
-        item.add("夜晚");
-        item.add("学习");
-        item.add("工作");
-        item.add("午休");
-        item.add("下午茶");
-        item.add("地铁");
-        item.add("驾车");
-        item.add("运动");
-        item.add("旅行");
-        item.add("散步");
-        item.add("酒吧");
-        tags.put(titles.get(tags.size()),item);
-
-        titles.add("情感");
-        item=new ArrayList<>();
-        item.add("怀旧");
-        item.add("清新");
-        item.add("浪漫");
-        item.add("伤感");
-        item.add("治愈");
-        item.add("放松");
-        item.add("孤独");
-        item.add("感动");
-        item.add("兴奋");
-        item.add("快乐");
-        item.add("安静");
-        item.add("思念");
-        tags.put(titles.get(tags.size()),item);
+                case BasicCode.SAVE_TO_SERVER:
+                    Toast.makeText(activity, "保存成功", Toast.LENGTH_SHORT).show();
+                    activity.finish();
+                    break;
+            }
+        }
     }
 }

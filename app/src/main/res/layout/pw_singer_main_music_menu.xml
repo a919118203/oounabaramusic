@@ -19,13 +19,11 @@
 
         <com.oounabaramusic.android.widget.customview.MyImageView
             android:id="@+id/music_cover"
-            android:src="@mipmap/default_image"
             android:layout_width="50dp"
             android:layout_height="50dp"/>
 
         <TextView
             android:id="@+id/music_name"
-            android:text="歌曲：津軽海峡・冬景色"
             android:textSize="@dimen/font_medium_size"
             android:textColor="@color/positive"
             android:layout_width="match_parent"
@@ -37,7 +35,6 @@
 
         <TextView
             android:id="@+id/music_singer_in_title"
-            android:text="石川さゆり"
             android:textSize="@dimen/font_small_size"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

@@ -111,6 +111,7 @@ public class SearchActivity extends BaseActivity {
                         searchText=et.getHint().toString();
                     }
                     search(searchText);
+                    InputMethodUtil.hideSoftKeyboard(SearchActivity.this);
                 }
                 return true;
             }

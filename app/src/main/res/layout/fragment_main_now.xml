@@ -1,27 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.google.android.material.tabs.TabLayout
-        android:id="@+id/tab_layout"
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="30dp"
-        app:tabSelectedTextColor="@color/colorPrimary"
-        app:tabIndicatorFullWidth="false"
-        app:tabIndicatorColor="@color/colorPrimary"/>
+        android:layout_height="match_parent">
 
-    <View
-        android:background="@color/negative"
-        android:layout_width="match_parent"
-        android:layout_height="0.5dp"/>
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tab_layout"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            app:tabSelectedTextColor="@color/colorPrimary"
+            app:tabIndicatorFullWidth="false"
+            app:tabIndicatorColor="@color/colorPrimary"/>
 
-    <androidx.viewpager.widget.ViewPager
-        android:id="@+id/view_pager"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:background="#E2E2E2"/>
-</LinearLayout>
+        <View
+            android:background="@color/negative"
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"/>
+
+        <androidx.viewpager.widget.ViewPager
+            android:id="@+id/view_pager"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="#E2E2E2"/>
+    </LinearLayout>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/send_post"
+        android:src="@mipmap/add"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="start|bottom"
+        android:layout_marginBottom="50dp"
+        android:layout_marginStart="20dp"/>
+</FrameLayout>

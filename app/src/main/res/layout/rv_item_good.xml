@@ -10,16 +10,14 @@
     android:paddingStart="20dp"
     android:paddingEnd="20dp">
     
-    <de.hdodenhof.circleimageview.CircleImageView
+    <com.oounabaramusic.android.widget.customview.MyCircleImageView
         android:id="@+id/user_header"
-        android:src="@mipmap/default_image"
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:layout_marginEnd="10dp"/>
 
     <TextView
         android:id="@+id/user_name"
-        android:text="用户名"
         android:textSize="@dimen/font_medium_size"
         android:textColor="@color/positive"
         android:maxLines="1"

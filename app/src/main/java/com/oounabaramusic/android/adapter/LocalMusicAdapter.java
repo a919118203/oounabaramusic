@@ -2,6 +2,7 @@ package com.oounabaramusic.android.adapter;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
 import android.view.LayoutInflater;
@@ -14,9 +15,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.oounabaramusic.android.CommentActivity;
 import com.oounabaramusic.android.LocalMusicActivity;
 import com.oounabaramusic.android.R;
+import com.oounabaramusic.android.bean.Comment;
 import com.oounabaramusic.android.bean.Music;
+import com.oounabaramusic.android.code.BasicCode;
+import com.oounabaramusic.android.okhttputil.S2SHttpUtil;
 import com.oounabaramusic.android.service.MusicPlayService;
 import com.oounabaramusic.android.util.DensityUtil;
 import com.oounabaramusic.android.util.FormatUtil;
@@ -24,6 +29,8 @@ import com.oounabaramusic.android.util.LogUtil;
 import com.oounabaramusic.android.util.MyEnvironment;
 import com.oounabaramusic.android.widget.customview.MyImageView;
 import com.oounabaramusic.android.widget.popupwindow.MyBottomSheetDialog;
+import com.oounabaramusic.android.widget.popupwindow.PlayListDialog;
+import com.oounabaramusic.android.widget.popupwindow.SingerDialog;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -188,7 +195,13 @@ public class LocalMusicAdapter extends RecyclerView.Adapter<LocalMusicAdapter.Lo
         view.findViewById(R.id.music_add_to_playlist).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                if(activity.sp.getBoolean("login",false)){
+                    int userId = Integer.valueOf(activity.sp.getString("userId","-1"));
+                    new PlayListDialog(activity,userId,musicList.get(popupPosition).getMd5());
+                }else{
+                    Toast.makeText(activity, "请先登录", Toast.LENGTH_SHORT).show();
+                }
+                spwMusicMenuIsServer.dismiss();
             }
         });
 
@@ -196,7 +209,13 @@ public class LocalMusicAdapter extends RecyclerView.Adapter<LocalMusicAdapter.Lo
         view.findViewById(R.id.music_comment).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                new S2SHttpUtil(
+                        activity,
+                        musicList.get(popupPosition).getMd5(),
+                        MyEnvironment.serverBasePath+"getMusicId",
+                        new MyHandler(LocalMusicAdapter.this))
+                .call(BasicCode.GET_MUSIC_ID);
+                spwMusicMenuIsServer.dismiss();
             }
         });
 
@@ -204,7 +223,9 @@ public class LocalMusicAdapter extends RecyclerView.Adapter<LocalMusicAdapter.Lo
         view.findViewById(R.id.music_search_singer).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Music item = musicList.get(popupPosition);
+                new SingerDialog(activity,item.getSingerName(),item.getSingerId());
+                spwMusicMenuIsServer.dismiss();
             }
         });
 
@@ -286,15 +307,6 @@ public class LocalMusicAdapter extends RecyclerView.Adapter<LocalMusicAdapter.Lo
             public void onClick(View v) {
                 activity.getBinder().nextPlay(musicList.get(popupPosition));
                 spwMusicMenu.dismiss();
-            }
-        });
-
-        //菜单中收藏到歌单被点击时
-        view.findViewById(R.id.item_menu_add_to_playlist).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                spwMusicMenu.dismiss();
-                spwAddToPlaylist.show();
             }
         });
 
@@ -489,6 +501,23 @@ public class LocalMusicAdapter extends RecyclerView.Adapter<LocalMusicAdapter.Lo
                     }
                 }
             });
+        }
+    }
+
+    static class MyHandler extends Handler{
+        LocalMusicAdapter adapter;
+        MyHandler(LocalMusicAdapter adapter){
+            this.adapter=adapter;
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what){
+                case BasicCode.GET_MUSIC_ID:
+                    int musicId = Integer.valueOf((String)msg.obj);
+                    CommentActivity.startActivity(adapter.activity,musicId,Comment.MUSIC);
+                    break;
+            }
         }
     }
 

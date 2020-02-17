@@ -7,11 +7,13 @@ import android.graphics.BitmapFactory;
 import android.os.Handler;
 import android.os.Message;
 import android.util.AttributeSet;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.oounabaramusic.android.R;
 import com.oounabaramusic.android.okhttputil.HttpUtil;
+import com.oounabaramusic.android.util.DensityUtil;
 import com.oounabaramusic.android.util.LogUtil;
 
 import org.jetbrains.annotations.NotNull;
@@ -30,6 +32,13 @@ import okhttp3.Response;
 @SuppressLint("AppCompatCustomView")
 public class MyImageView extends ImageView {
 
+    private Handler handler=new ImageHandler(this);
+    private Bitmap defaultImage;
+    private Handler eventHandler;
+    private String url;
+    private boolean sizeAdaptive;
+    private int datumWidth;
+
     public MyImageView(Context context) {
         super(context);
     }
@@ -46,13 +55,18 @@ public class MyImageView extends ImageView {
         super(context, attrs, defStyleAttr, defStyleRes);
     }
 
-    private Handler handler=new ImageHandler(this);
-    private Bitmap defaultImage;
-    private Handler eventHandler;
-    private String url;
     public void setImageUrl(String url){
         this.url=url;
         HttpUtil.loadImage(getContext(),url,new ImageHandler(this));
+    }
+
+    /**
+     * 是否根据图片大小自适应ImageView的大小
+     * @param sizeAdaptive
+     */
+    public void setSizeAdaptive(boolean sizeAdaptive,int width) {
+        this.sizeAdaptive = sizeAdaptive;
+        datumWidth=width;
     }
 
     public void refresh(){
@@ -106,7 +120,18 @@ public class MyImageView extends ImageView {
                     }
                     break;
             }
+            if(bitmap!=null&&iv.sizeAdaptive&&iv.datumWidth!=0){
+                int height=bitmap.getHeight();
+                int width=bitmap.getWidth();
+                ViewGroup.LayoutParams lp = iv.getLayoutParams();
+                lp.width=iv.datumWidth;
+                lp.height=(iv.datumWidth*height)/width;
+                iv.requestLayout();
+                iv.setImageBitmap(bitmap);
+            }
+
             iv.setImageBitmap(bitmap);
+
             if(iv.eventHandler!=null){
                 Message msg1=new Message();
                 msg1.what=MyCircleImageView.LOAD_END;

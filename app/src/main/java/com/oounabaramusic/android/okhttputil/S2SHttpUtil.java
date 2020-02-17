@@ -10,6 +10,7 @@ import com.oounabaramusic.android.util.InternetUtil;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
+import java.io.Serializable;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -32,12 +33,17 @@ public class S2SHttpUtil {
     private String url;
     private String json;
     private Handler handler;
+    private boolean cancel;
 
     public S2SHttpUtil(Context context, String json, String url, Handler handler){
         this.context=context;
         this.json=json;
         this.url=url;
         this.handler=handler;
+    }
+
+    public void cancel() {
+        cancel=true;
     }
 
     public void call(final int requestCode) {
@@ -64,6 +70,10 @@ public class S2SHttpUtil {
 
             @Override
             public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                if(cancel){
+                    return;
+                }
+
                 Message msg=new Message();
                 msg.what=requestCode;
                 msg.obj=response.body().string();

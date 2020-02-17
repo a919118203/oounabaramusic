@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -17,15 +18,18 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.oounabaramusic.android.adapter.CommentAdapter;
 import com.oounabaramusic.android.bean.Comment;
 import com.oounabaramusic.android.bean.Music;
+import com.oounabaramusic.android.bean.PlayList;
 import com.oounabaramusic.android.bean.Reply;
 import com.oounabaramusic.android.code.BasicCode;
 import com.oounabaramusic.android.okhttputil.S2SHttpUtil;
 import com.oounabaramusic.android.util.InputMethodUtil;
 import com.oounabaramusic.android.util.MyEnvironment;
+import com.oounabaramusic.android.util.SharedPreferencesUtil;
 import com.oounabaramusic.android.util.StatusBarUtil;
 import com.oounabaramusic.android.widget.customview.MyImageView;
 import com.oounabaramusic.android.widget.popupwindow.SingerDialog;
@@ -35,7 +39,10 @@ import java.util.List;
 public class CommentActivity extends BaseActivity implements View.OnClickListener{
 
     private CommentAdapter adapter;
+
     private Music music;
+    private PlayList playList;
+
     private int dataType;
     private int dataId;
     private String userId;
@@ -44,7 +51,6 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
     public SwipeRefreshLayout srl;
 
     private MyHandler mHandler;
-    private Comment selectComment;
     private int orderByType;
     private TextView orderBy;
     private TextView orderByName;
@@ -52,6 +58,13 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
     private MyImageView contentCover;
     private TextView contentName,creatorName;
     private View content;
+
+    public static void startActivity(Context context,int dataId,int dataType){
+        Intent intent=new Intent(context,CommentActivity.class);
+        intent.putExtra("dataId",dataId);
+        intent.putExtra("dataType",dataType);
+        context.startActivity(intent);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,22 +81,11 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
 
         Intent intent=getIntent();
         dataType=intent.getIntExtra("dataType",-1);
+        dataId=intent.getIntExtra("dataId",-1);
         if(dataType==-1)
             return ;
 
-        switch (dataType){
-            case Comment.MUSIC:
-                music= (Music) intent.getSerializableExtra("data");
-                break;
-        }
-
         init();
-
-        switch (dataType){
-            case Comment.MUSIC:
-                initMusicContent();
-                break;
-        }
     }
 
     @Override
@@ -115,17 +117,34 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
         });
     }
 
-    public void replyTo(Comment comment){
-        selectComment=comment;
-        commentContent.setHint("回复 @"+comment.getUserName()+"：");
-        commentContent.requestFocus();
-        InputMethodUtil.showSoftKeyboard(this,commentContent);
+    private void initPlayListContent(){
+        contentCover.setImageUrl(MyEnvironment.serverBasePath+
+                "loadPlayListCover?playListId="+playList.getId());
+        contentName.setText(playList.getPlayListName());
+        creatorName.setText(playList.getCreateUserName());
+
+        content.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent=new Intent(CommentActivity.this,PlayListActivity.class);
+                intent.putExtra("playList",playList);
+                startActivity(intent);
+            }
+        });
+
+        creatorName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                UserInfoActivity.startActivity(CommentActivity.this,
+                        playList.getCreateUserId());
+            }
+        });
     }
 
     @Override
     protected void onClosedInputMethod() {
-        selectComment=null;
-        commentContent.setHint("留下无敌的评论...(最长1000个字)");
+        adapter.cancelSelect();
+        commentContent.setHint("留下无敌的评论...(最长"+Comment.MAX_LEN+"个字)");
     }
 
     @Override
@@ -141,10 +160,6 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
     }
 
     private void init() {
-        RecyclerView latestComments = findViewById(R.id.latest_comments);
-        latestComments.setAdapter(adapter=new CommentAdapter(this));
-        latestComments.setLayoutManager(new LinearLayoutManager(this));
-
         commentContent=findViewById(R.id.message_edit);
         send=findViewById(R.id.add_comment);
         srl=findViewById(R.id.swipe_refresh);
@@ -154,6 +169,10 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
         content=findViewById(R.id.comment_for);
         orderBy=findViewById(R.id.order_by);
         orderByName=findViewById(R.id.order_by_name);
+
+        RecyclerView latestComments = findViewById(R.id.latest_comments);
+        latestComments.setAdapter(adapter=new CommentAdapter(this,commentContent));
+        latestComments.setLayoutManager(new LinearLayoutManager(this));
 
         send.setOnClickListener(this);
         orderBy.setOnClickListener(this);
@@ -166,24 +185,43 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
         });
 
         orderByType=Comment.ORDER_BY_GOOD_CNT;
+        commentContent.setHint("留下无敌的评论...(最长"+Comment.MAX_LEN+"个字)");
 
         initContent();
+
+        initTopData();
+    }
+
+    private void initTopData(){
+        String url=MyEnvironment.serverBasePath;
+
+        switch (dataType){
+            case Comment.MUSIC:
+                url+="music/getMusicById";
+                break;
+            case Comment.PLAY_LIST:
+                url+="findPlayListById";
+                break;
+        }
+
+        new S2SHttpUtil(
+                this,
+                dataId+"",
+                url,
+                new MyHandler(this))
+                .call(BasicCode.GET_CONTENT);
     }
 
     private void initContent() {
-        userId=sp.getString("userId","-1");
+        userId= SharedPreferencesUtil.getUserId(sp)+"";
         mHandler=new MyHandler(this);
-        selectComment=null;
+        adapter.cancelSelect();
 
         Comment comment=new Comment();
         comment.setMainUserId(Integer.valueOf(userId));
         comment.setTargetType(dataType);
+        comment.setTargetId(dataId);
         comment.setOrderByType(orderByType);
-        if(dataType==Comment.MUSIC){
-            comment.setTargetMd5(music.getMd5());
-        }else{
-            comment.setTargetId(dataId);
-        }
 
         srl.setRefreshing(true);
 
@@ -206,19 +244,17 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
             case R.id.add_comment:
                 if(commentContent.getText().length()==0){
                     Toast.makeText(this, "还没输入内容", Toast.LENGTH_SHORT).show();
-                }else if(commentContent.getText().length()>1000){
+                }else if(commentContent.getText().length()>Comment.MAX_LEN){
                     Toast.makeText(this, "长度过长", Toast.LENGTH_SHORT).show();
                 }else{
                     srl.setRefreshing(true);
 
-                    if(selectComment==null){
+                    if(adapter.getSelectPosition()==-1){
                         Comment comment=new Comment();
                         comment.setUserId(Integer.valueOf(userId));
                         comment.setContent(commentContent.getText().toString());
                         comment.setTargetType(dataType);
-                        if(dataType==Comment.MUSIC){
-                            comment.setTargetMd5(music.getMd5());
-                        }
+                        comment.setTargetId(dataId);
 
                         new S2SHttpUtil(this,gson.toJson(comment),
                                 MyEnvironment.serverBasePath+"addComment",mHandler).call(BasicCode.SEND_COMMENT_END);
@@ -227,8 +263,7 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
                         Reply reply=new Reply();
                         reply.setContent(commentContent.getText().toString());
                         reply.setUserId(Integer.valueOf(userId));
-                        reply.setReplyTo(selectComment.getUserId());
-                        reply.setCommentId(selectComment.getId());
+                        reply.setCommentId(adapter.getDataList().get(adapter.getSelectPosition()).getId());
 
                         new S2SHttpUtil(this,gson.toJson(reply),
                                 MyEnvironment.serverBasePath+"addReply",mHandler).call(BasicCode.SEND_COMMENT_END);
@@ -275,28 +310,21 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
                     break;
 
                 case BasicCode.SEND_COMMENT_END:
-                    activity.selectComment=null;
+                    activity.adapter.cancelSelect();
                     activity.initContent();
                     break;
-                case BasicCode.TO_GOOD_END:
-                    String goodCnt= (String) msg.obj;
-                    int selectPosition=activity.adapter.getSelectPosition();
 
-                    activity.adapter.getDataList().get(
-                            selectPosition).setGooded(Integer.valueOf(goodCnt));
-
-                    if(goodCnt.equals("0")){
-                        activity.adapter.getDataList().get(selectPosition).setGoodCnt(
-                                activity.adapter.getDataList().get(selectPosition).getGoodCnt()-1
-                        );
-                    }else{
-                        activity.adapter.getDataList().get(selectPosition).setGoodCnt(
-                                activity.adapter.getDataList().get(selectPosition).getGoodCnt()+1
-                        );
+                case BasicCode.GET_CONTENT:
+                    switch (activity.dataType){
+                        case Comment.MUSIC:
+                            activity.music= new Music((String) msg.obj);
+                            activity.initMusicContent();
+                            break;
+                        case Comment.PLAY_LIST:
+                            activity.playList=new Gson().fromJson((String) msg.obj,PlayList.class);
+                            activity.initPlayListContent();
+                            break;
                     }
-
-                    activity.adapter.notifyItemChanged(selectPosition,
-                            CommentAdapter.CHANGE_GOOD);
                     break;
             }
         }

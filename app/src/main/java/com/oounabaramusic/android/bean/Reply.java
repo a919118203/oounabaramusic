@@ -3,6 +3,8 @@ package com.oounabaramusic.android.bean;
 import java.io.Serializable;
 import java.util.Date;
 
+import androidx.annotation.Nullable;
+
 public class Reply implements Serializable {
 	private int id;
 	private String content;
@@ -11,9 +13,15 @@ public class Reply implements Serializable {
 	private String userName;
 	private int goodCnt;
 	private int replyTo;
+	private int replayToUserId;
 	private String replyToUserName;
 	private int commentId;
 	private int gooded;
+
+	//如果replyTo为0  就说明回复的是Comment 否则回复的是Reply
+	private Comment comment;
+	private Reply reply;
+
 	public int getId() {
 		return id;
 	}
@@ -79,5 +87,29 @@ public class Reply implements Serializable {
 
 	public void setReplyToUserName(String replyToUserName) {
 		this.replyToUserName = replyToUserName;
+	}
+
+	public Comment getComment() {
+		return comment;
+	}
+
+	public void setComment(Comment comment) {
+		this.comment = comment;
+	}
+
+	public Reply getReply() {
+		return reply;
+	}
+
+	public void setReply(Reply reply) {
+		this.reply = reply;
+	}
+
+	public int getReplayToUserId() {
+		return replayToUserId;
+	}
+
+	public void setReplayToUserId(int replayToUserId) {
+		this.replayToUserId = replayToUserId;
 	}
 }

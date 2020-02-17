@@ -11,17 +11,22 @@ import android.os.Message;
 import android.preference.PreferenceManager;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.oounabaramusic.android.bean.Music;
 import com.oounabaramusic.android.dao.LocalMusicDao;
+import com.oounabaramusic.android.okhttputil.S2SHttpUtil;
 import com.oounabaramusic.android.util.LogUtil;
+import com.oounabaramusic.android.util.MyEnvironment;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 import androidx.annotation.Nullable;
@@ -56,6 +61,7 @@ public class MusicPlayService extends Service {
     public static final int LOOP_TYPE_LIST=13;
     private int currentLoopType=LOOP_TYPE_LIST;
 
+    private Handler handler=new Handler();
     @Override
     public void onCreate() {
         LogUtil.printLog("onCreate ");
@@ -81,6 +87,8 @@ public class MusicPlayService extends Service {
             playMusic(saveComment);
             return;
         }
+
+        currentMusic.setDuration(mp.getDuration()/1000);
 
         //通知已经准备完毕
         for(Handler handler:handlers){
@@ -113,6 +121,19 @@ public class MusicPlayService extends Service {
 
     private int saveComment = -1;
     private void playMusic(int position) {
+
+        synchronized (this){
+            if(playlist.get(position).getIsServer()==1){
+                //更新这首歌的最后听歌时间
+                Map<String,String> data=new HashMap<>();
+                data.put("userId",sp.getString("userId","-1"));
+                data.put("md5",playlist.get(position).getMd5());
+                new S2SHttpUtil(this,
+                        new Gson().toJson(data),
+                        MyEnvironment.serverBasePath+"music/listenMusic",handler
+                ).call(-1);
+            }
+        }
 
         for(Handler handler:handlers){
             Message msg=new Message();
@@ -285,6 +306,8 @@ public class MusicPlayService extends Service {
             if(status==NOT_PREPARE){
                 playlist.add(item);
                 MusicPlayService.this.playMusic(0);
+            }else if(status==IS_PAUSE){
+                playMusic(item);
             }else{
                 if(!playlist.contains(item)){
                     playlist.add(currentPlayPosition +1,item);
@@ -347,12 +370,6 @@ public class MusicPlayService extends Service {
         //刷新
         public void refresh(){
 
-            //刷新isServer是待确定的项
-            for(Music music:playlist){
-                if(music.getIsServer()==2){
-                    music=localMusicDao.selectMusicByMd5(music.getMd5());
-                }
-            }
         }
 
         public void seekTo(int t){
@@ -417,9 +434,19 @@ public class MusicPlayService extends Service {
     }
 
     private class PlayRunnable implements Runnable{
-
+        Date startDate;
+        Date endDate;
+        int musicLen;
+        String md5;
         @Override
         public void run() {
+            //获取开始时间
+            if(currentMusic.getIsServer()==1){
+                startDate=new Date();
+                md5=currentMusic.getMd5();
+                musicLen=mp.getDuration();
+            }
+
             while(true){
                 try {
                     //400ms更新一次UI
@@ -452,9 +479,24 @@ public class MusicPlayService extends Service {
                 }
             }
 
+            //记录听歌次数
+            if(md5!=null){
+                endDate=new Date();
+                long t=endDate.getTime()-startDate.getTime();
+                if(10*t>9*musicLen){
+                    Map<String,String> data=new HashMap<>();
+                    data.put("userId",sp.getString("userId","-1"));
+                    data.put("md5",md5);
+                    data.put("cnt","1");
+                    new S2SHttpUtil(MusicPlayService.this,
+                            new Gson().toJson(data),
+                            MyEnvironment.serverBasePath+"music/listenMusic",
+                            handler).call(-1);
+                }
+            }
+
             //自然结束时，根据循环类型选择下一首
             playNextMusic();
-
         }
     }
 }

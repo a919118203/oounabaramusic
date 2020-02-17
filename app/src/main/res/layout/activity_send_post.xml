@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimaryDark"
+        app:elevation="0dp">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/action_bar_size"/>
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+            <EditText
+                android:id="@+id/post_content"
+                android:textSize="@dimen/font_medium_size"
+                android:textColor="@color/positive"
+                android:hint="因为你才是电竞选手"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="start|top"
+                tools:ignore="HardcodedText" />
+
+            <TextView
+                android:id="@+id/text_cnt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="20dp"
+                android:layout_gravity="bottom|end" />
+        </FrameLayout>
+
+        <View
+            android:background="@color/negative"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"/>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp">
+
+            <FrameLayout
+                android:id="@+id/choose_image"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_marginEnd="20dp">
+
+                <TextView
+                    android:id="@+id/image_text"
+                    android:text="相册图片"
+                    android:textSize="@dimen/font_small_size"
+                    android:textColor="@color/positive"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/view_ripple_rectangle"
+                    android:gravity="center"
+                    tools:ignore="HardcodedText" />
+
+                <ImageView
+                    android:id="@+id/image"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"/>
+            </FrameLayout>
+
+            <View
+                android:background="@color/negative"
+                android:layout_width="1dp"
+                android:layout_height="match_parent"/>
+
+            <FrameLayout
+                android:id="@+id/choose_music"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="match_parent">
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/view_ripple_rectangle">
+
+                    <TextView
+                        android:text="给动态配上音乐"
+                        android:textColor="@color/positive"
+                        android:textSize="@dimen/font_small_size"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="30dp"
+                        tools:ignore="HardcodedText" />
+
+                    <ImageView
+                        android:src="@mipmap/right_arrow"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_margin="30dp"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/display_music"
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginEnd="20dp"
+                    android:gravity="center"
+                    android:background="@drawable/background_music_play_tool">
+
+                    <com.oounabaramusic.android.widget.customview.MyImageView
+                        android:id="@+id/cover"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"/>
+
+                    <LinearLayout
+                        android:orientation="vertical"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="match_parent"
+                        android:layout_marginStart="10dp"
+                        android:gravity="center_vertical">
+
+                        <TextView
+                            android:id="@+id/name"
+                            android:textSize="@dimen/font_medium_size"
+                            android:textColor="@color/positive"
+                            android:maxLines="1"
+                            android:ellipsize="end"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"/>
+
+                        <TextView
+                            android:id="@+id/singer"
+                            android:textSize="@dimen/font_small_size"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"/>
+                    </LinearLayout>
+                </LinearLayout>
+
+            </FrameLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -72,12 +72,20 @@
                 android:layout_gravity="center_vertical"/>
 
             <TextView
-                android:text="3次"
+                android:id="@+id/cnt"
                 android:textSize="@dimen/font_small_size"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:layout_marginStart="5dp"
+                tools:ignore="HardcodedText" />
+
+            <TextView
+                android:text="次"
+                android:textSize="@dimen/font_small_size"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
                 tools:ignore="HardcodedText" />
         </LinearLayout>
     </FrameLayout>

@@ -6,9 +6,8 @@
     android:layout_height="wrap_content"
     android:background="@drawable/background_comment_item">
 
-    <de.hdodenhof.circleimageview.CircleImageView
+    <com.oounabaramusic.android.widget.customview.MyCircleImageView
         android:id="@+id/user_header"
-        android:src="@mipmap/default_image"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_alignParentTop="true"
@@ -20,7 +19,6 @@
 
     <TextView
         android:id="@+id/user_name"
-        android:text="用户名用户名用户名用户名用户名用户名用户名用户名用户名用户名用户名用户名用户名用户名"
         android:textColor="@color/positive"
         android:textSize="@dimen/font_medium_size"
         android:maxLines="1"
@@ -36,7 +34,6 @@
 
     <TextView
         android:id="@+id/new_message"
-        android:text="最新消息最新消息最新消息最新消息最新消息最新消息最新消息最新消息最新消息最新消息最新消息最新消息最新消息最新消息最新消息"
         android:textSize="@dimen/font_small_size"
         android:maxLines="1"
         android:ellipsize="end"
@@ -50,7 +47,6 @@
 
     <TextView
         android:id="@+id/new_message_date"
-        android:text="2019年12月31日"
         android:textSize="@dimen/font_ssmall_size"
         android:layout_width="wrap_content"
         android:layout_height="25dp"

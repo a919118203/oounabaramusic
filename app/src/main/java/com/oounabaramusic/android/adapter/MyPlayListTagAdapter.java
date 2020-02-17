@@ -6,8 +6,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.oounabaramusic.android.PlayListTagActivity;
 import com.oounabaramusic.android.R;
+import com.oounabaramusic.android.bean.PlayListSmallTag;
 import com.oounabaramusic.android.util.DensityUtil;
 
 import java.util.List;
@@ -18,51 +21,48 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class MyPlayListTagAdapter extends RecyclerView.Adapter<MyPlayListTagAdapter.ViewHolder> {
 
-    private Activity activity;
-    private List<String> tags;
-    private int width,height;
+    private PlayListTagActivity activity;
+    private List<PlayListSmallTag> tags;
 
-    public MyPlayListTagAdapter(Activity activity,List<String> tags){
+    private Drawable delete;
+
+    public MyPlayListTagAdapter(PlayListTagActivity activity,List<PlayListSmallTag> tags){
         this.activity=activity;
         this.tags=tags;
+
+        initDrawable();
+    }
+
+    private void initDrawable(){
+        delete=activity.getDrawable(R.mipmap.delete_2);
+        Objects.requireNonNull(delete).setBounds(
+                DensityUtil.dip2px(activity,10),
+                0,
+                DensityUtil.dip2px(activity,20),
+                DensityUtil.dip2px(activity,10));
+    }
+
+    public void addTag(PlayListSmallTag tag){
+        tags.add(tag);
+        notifyDataSetChanged();
+    }
+
+    public List<PlayListSmallTag> getTags() {
+        return tags;
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view= LayoutInflater.from(activity).inflate(R.layout.rv_item_play_list_tag,parent,false);
-        init(view);
         return new ViewHolder(view);
-    }
-
-    /**
-     * 计算View的宽高，在左边添加drawable
-     * @param view
-     */
-    private void init(View view) {
-        if(width==0){
-            int a= DensityUtil.getDisplayWidth(activity);
-            int b=a-DensityUtil.dip2px(activity,80);
-            width=b/4;
-            height=width/2;
-        }
-
-        ViewGroup.LayoutParams lp=view.getLayoutParams();
-        lp.width=this.width;
-        lp.height=this.height;
-        view.requestLayout();
-
-        Drawable drawable=activity.getDrawable(R.mipmap.add);
-        Objects.requireNonNull(drawable).setBounds(DensityUtil.dip2px(activity,10),0,DensityUtil.dip2px(activity,20),DensityUtil.dip2px(activity,10));
-
-        TextView tv=view.findViewById(R.id.selectable);
-        tv.setCompoundDrawables(drawable,null,null,null);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.tv1.setText(tags.get(position));
-        holder.tv2.setText(tags.get(position));
+        PlayListSmallTag item = tags.get(position);
+
+        holder.tag.setText(item.getName());
     }
 
     @Override
@@ -72,13 +72,26 @@ public class MyPlayListTagAdapter extends RecyclerView.Adapter<MyPlayListTagAdap
 
     class ViewHolder extends RecyclerView.ViewHolder{
 
-        TextView tv1,tv2;
+        TextView tag;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            tv1=itemView.findViewById(R.id.selectable);
-            tv2=itemView.findViewById(R.id.not_selectable);
+            tag=itemView.findViewById(R.id.tag);
+            tag.setCompoundDrawables(delete,null,null,null);
+            tag.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(tags.size()==3){
+                        Toast.makeText(activity, "至少要有三个标签", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                    PlayListSmallTag tag = tags.remove(getAdapterPosition());
+                    notifyDataSetChanged();
+                    activity.removeTag(tag);
+                }
+            });
         }
     }
 }

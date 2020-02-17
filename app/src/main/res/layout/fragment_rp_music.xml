@@ -1,62 +1,74 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
+    android:orientation="vertical"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <LinearLayout
-        android:id="@+id/play_all"
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/action_bar_size"
-        android:background="@drawable/view_ripple_rectangle">
-
-        <ImageView
-            android:src="@mipmap/play"
-            android:layout_width="@dimen/action_bar_size"
-            android:layout_height="match_parent"
-            android:padding="15dp"/>
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:text="@string/play_all"
-            android:textColor="@color/positive"
-            android:textSize="@dimen/font_medium_size"
-            android:gravity="center_vertical"/>
-
-        <LinearLayout
-            android:id="@+id/multiple_choice"
-            android:orientation="horizontal"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:background="@drawable/view_ripple_rectangle">
-
-            <ImageView
-                android:src="@mipmap/setting"
-                android:layout_width="@dimen/action_bar_size"
-                android:layout_height="match_parent"
-                android:padding="18dp"/>
-
-            <TextView
-                android:text="@string/multiple_choice"
-                android:textColor="@color/positive"
-                android:textSize="@dimen/font_small_size"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginEnd="10dp"
-                android:gravity="center_vertical"/>
-        </LinearLayout>
-    </LinearLayout>
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler_view"
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"/>
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:id="@+id/play_all"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/action_bar_size"
+                android:background="@drawable/view_ripple_rectangle">
+
+                <ImageView
+                    android:src="@mipmap/play"
+                    android:layout_width="@dimen/action_bar_size"
+                    android:layout_height="match_parent"
+                    android:padding="15dp"/>
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="@string/play_all"
+                    android:textColor="@color/positive"
+                    android:textSize="@dimen/font_medium_size"
+                    android:gravity="center_vertical"/>
+
+                <LinearLayout
+                    android:id="@+id/multiple_choice"
+                    android:orientation="horizontal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/view_ripple_rectangle">
+
+                    <ImageView
+                        android:src="@mipmap/setting"
+                        android:layout_width="@dimen/action_bar_size"
+                        android:layout_height="match_parent"
+                        android:padding="18dp"/>
+
+                    <TextView
+                        android:text="@string/multiple_choice"
+                        android:textColor="@color/positive"
+                        android:textSize="@dimen/font_small_size"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginEnd="10dp"
+                        android:gravity="center_vertical"/>
+                </LinearLayout>
+            </LinearLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"/>
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
 
     <LinearLayout
         android:visibility="gone"

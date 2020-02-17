@@ -36,6 +36,7 @@ import com.oounabaramusic.android.widget.customview.PlayButton;
 import com.oounabaramusic.android.widget.popupwindow.MyBottomSheetDialog;
 import com.oounabaramusic.android.widget.popupwindow.PlayListDialog;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import androidx.annotation.Nullable;
@@ -45,6 +46,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class BaseActivity extends AppCompatActivity {
     protected static final int CHOOSE_PHOTO=1;     //打开相册选择图片
+    protected static final int CHOOSE_VIDEO=3;
+    protected static final int CHOOSE_USER_HEADER_PHOTO=2;  //标记这是换头像的
     private MyBottomSheetDialog musicPlayList;
     private Handler handler=new MusicPlayHandler(this);
     private MusicPlayService.MusicPlayBinder binder;
@@ -86,6 +89,7 @@ public class BaseActivity extends AppCompatActivity {
         if(isBind){
             isBind=false;
             unbindService(connection);
+            binder.removeHandler(handler);
         }
         unbindService(downloadConnection);
         super.onStop();
@@ -307,14 +311,17 @@ public class BaseActivity extends AppCompatActivity {
                 if(sp.getBoolean("login",false)){
                     String userId=sp.getString("userId","-1");
                     List<Music> playList=binder.getPlayList();
-                    int[] musicIds=new int[playList.size()];
+                    List<String> md5s=new ArrayList<>();
                     for(int i=0;i<playList.size();i++){
                         if(playList.get(i).getIsServer()==1){
-                            musicIds[i] = playList.get(i).getId();
+                            md5s.add(playList.get(i).getMd5());
                         }
                     }
 
-                    new PlayListDialog(BaseActivity.this,Integer.valueOf(userId),musicIds);
+                    new PlayListDialog(
+                            BaseActivity.this,
+                            Integer.valueOf(userId),
+                            md5s.toArray(new String[]{}));
                     musicPlayList.dismiss();
                 }else{
                     Toast.makeText(BaseActivity.this, "请先登录", Toast.LENGTH_SHORT).show();
@@ -328,6 +335,12 @@ public class BaseActivity extends AppCompatActivity {
         Intent intent=new Intent(Intent.ACTION_GET_CONTENT);
         intent.setType("image/*");
         startActivityForResult(intent,CHOOSE_PHOTO);
+    }
+
+    protected void openVideoAlbum(){
+        Intent intent=new Intent(Intent.ACTION_GET_CONTENT);
+        intent.setType("video/*");
+        startActivityForResult(intent,CHOOSE_VIDEO);
     }
 
     @Override

@@ -17,9 +17,19 @@
         android:theme="@style/LightAppTheme"
         tools:ignore="GoogleAppIndexingWarning"
         tools:targetApi="n">
+        <activity android:name=".SendVideoPostActivity"
+            android:label="发表视频"
+            android:windowSoftInputMode="adjustResize"/>
+        <activity
+            android:name=".ChooseMusicActivity"
+            android:label="" />
+        <activity
+            android:name=".SendPostActivity"
+            android:label="发动态"
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".AllReplyActivity"
-            android:label=""/>
+            android:label="" />
         <activity
             android:name=".SingerActivity"
             android:label="" />
@@ -68,9 +78,6 @@
             android:name=".PostActivity"
             android:label="动态" />
         <activity
-            android:name=".MoreInfoActivity"
-            android:label="基本信息" />
-        <activity
             android:name=".UserCommentActivity"
             android:label="评论" />
         <activity
@@ -86,9 +93,7 @@
             android:name=".UserInfoEditActivity"
             android:label="我的资料"
             android:windowSoftInputMode="adjustResize" />
-        <activity
-            android:name=".MessageActivity"
-            android:windowSoftInputMode="adjustResize" />
+        <activity android:name=".MessageActivity" />
         <activity
             android:name=".MyFriendActivity"
             android:label="我的好友" />
@@ -97,7 +102,8 @@
             android:label="" />
         <activity
             android:name=".PlayListActivity"
-            android:label="" />
+            android:label=""
+            android:launchMode="singleTask" />
         <activity
             android:name=".EditPlayListInfoActivity"
             android:label="编辑歌单信息"
@@ -115,7 +121,8 @@
         </activity>
         <activity
             android:name=".MainActivity"
-            android:label="" />
+            android:label=""
+            android:launchMode="singleTask" />
 
         <service
             android:name=".service.MusicPlayService"

@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.oounabaramusic.android.R;
+import com.oounabaramusic.android.UserInfoActivity;
 import com.oounabaramusic.android.bean.Reply;
 import com.oounabaramusic.android.util.DensityUtil;
 import com.oounabaramusic.android.util.LogUtil;
@@ -54,17 +55,17 @@ public class ReplyAdapter extends RecyclerView.Adapter<ReplyAdapter.ViewHolder> 
     @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Reply item=dataList.get(position);
+        final Reply item=dataList.get(position);
         SpannableString ss;
 
-        if(item.getReplyTo()==commentUser){
+        if(item.getReplyTo()==0){
             String text=item.getUserName()+": "+item.getContent();
 
             ss=new SpannableString(text);
             ss.setSpan(new ClickableSpan() {
                 @Override
                 public void onClick(@NonNull View widget) {
-                    LogUtil.printLog("回复人的名字");
+                    UserInfoActivity.startActivity(activity,item.getUserId());
                 }
 
                 @Override
@@ -80,7 +81,7 @@ public class ReplyAdapter extends RecyclerView.Adapter<ReplyAdapter.ViewHolder> 
             ss.setSpan(new ClickableSpan() {
                 @Override
                 public void onClick(@NonNull View widget) {
-                    LogUtil.printLog("回复人的名字");
+                    UserInfoActivity.startActivity(activity,item.getUserId());
                 }
 
                 @Override
@@ -97,7 +98,7 @@ public class ReplyAdapter extends RecyclerView.Adapter<ReplyAdapter.ViewHolder> 
             ss.setSpan(new ClickableSpan() {
                 @Override
                 public void onClick(@NonNull View widget) {
-                    LogUtil.printLog("被回复人的名字");
+                    UserInfoActivity.startActivity(activity,item.getReplayToUserId());
                 }
 
                 @Override

@@ -1,8 +1,11 @@
 package com.oounabaramusic.android.bean;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class PlayListBigTag {
+import androidx.annotation.Nullable;
+
+public class PlayListBigTag implements Serializable {
 	private int id;
 	private String name;
 	private List<PlayListSmallTag> tags;
@@ -24,5 +27,4 @@ public class PlayListBigTag {
 	public void setTags(List<PlayListSmallTag> tags) {
 		this.tags = tags;
 	}
-	
 }

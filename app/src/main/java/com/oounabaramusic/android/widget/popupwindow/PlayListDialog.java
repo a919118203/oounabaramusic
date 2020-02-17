@@ -2,11 +2,14 @@ package com.oounabaramusic.android.widget.popupwindow;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Handler;
 import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -14,14 +17,19 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.oounabaramusic.android.R;
 import com.oounabaramusic.android.bean.PlayList;
+import com.oounabaramusic.android.code.BasicCode;
 import com.oounabaramusic.android.okhttputil.PlayListHttpUtil;
+import com.oounabaramusic.android.okhttputil.S2SHttpUtil;
+import com.oounabaramusic.android.util.DensityUtil;
 import com.oounabaramusic.android.util.LogUtil;
 import com.oounabaramusic.android.util.MyEnvironment;
 import com.oounabaramusic.android.widget.customview.MyImageView;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -33,19 +41,49 @@ public class PlayListDialog {
     private AlertDialog dialog;
     private Context context;
     private List<PlayList> dataList;
+    private DialogInterface.OnDismissListener listener;
 
     public PlayListDialog(Context context,int userId,int... musicId){
         this.context=context;
         this.musicId=musicId;
         this.musicMd5=null;
-        PlayListHttpUtil.findPlayListByUser(context,userId+"",new MHandler(this));
+        getPlayList(userId);
     }
 
     public PlayListDialog(Context context,int userId,String... musicMd5){
         this.context=context;
         this.musicMd5=musicMd5;
         this.musicId=null;
-        PlayListHttpUtil.findPlayListByUser(context,userId+"",new MHandler(this));
+        getPlayList(userId);
+    }
+
+    public PlayListDialog(DialogInterface.OnDismissListener listener , Context context,int userId,int... musicId){
+        this.listener=listener;
+        this.context=context;
+        this.musicId=musicId;
+        this.musicMd5=null;
+        getPlayList(userId);
+    }
+
+    public PlayListDialog(DialogInterface.OnDismissListener listener ,Context context,int userId,String... musicMd5){
+        this.listener=listener;
+        this.context=context;
+        this.musicMd5=musicMd5;
+        this.musicId=null;
+        getPlayList(userId);
+    }
+
+    private void getPlayList(int userId){
+        Map<String,Integer> data = new HashMap<>();
+        data.put("userId",userId);
+        data.put("start",-1);
+
+        new S2SHttpUtil(
+                context,
+                new Gson().toJson(data),
+                MyEnvironment.serverBasePath+"findPlayListByUser",
+                new MHandler(this))
+                .call(BasicCode.GET_CONTENT);
     }
 
     private void initDialog() {
@@ -55,8 +93,6 @@ public class PlayListDialog {
         }
 
         RecyclerView rv=new RecyclerView(context);
-        rv.setLayoutParams(new ViewGroup.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.MATCH_PARENT));
 
         rv.setAdapter(new RecyclerView.Adapter<MyViewHolder>() {
 
@@ -89,7 +125,18 @@ public class PlayListDialog {
                 .setView(rv)
                 .create();
 
+        if(listener!=null){
+            dialog.setOnDismissListener(listener);
+        }
+
+        dialog.getWindow().setBackgroundDrawable(context.getResources().getDrawable(R.drawable.layout_card_2));
         dialog.show();
+
+        //必须在show之后更改大小
+        Window window=dialog.getWindow();
+        WindowManager.LayoutParams lp = window.getAttributes();
+        lp.height=DensityUtil.dip2px(context,400);
+        window.setAttributes(lp);
     }
 
 
@@ -142,10 +189,16 @@ public class PlayListDialog {
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what){
-                case PlayListHttpUtil.MESSAGE_FIND_MY_PLAY_LIST_END:
+                case BasicCode.GET_CONTENT:
 
-                    dialog.dataList= new Gson().fromJson((String)msg.obj,
+                    Map<String,String> data = new Gson().fromJson((String)msg.obj,
+                            new TypeToken<Map<String,String>>(){}.getType());
+
+                    dialog.dataList= new Gson().fromJson(data.get("playLists"),
                             new TypeToken<List<PlayList>>(){}.getType());
+                    PlayList myLove = dialog.dataList.remove(dialog.dataList.size()-1);
+                    dialog.dataList.add(0,myLove);
+
                     dialog.initDialog();
                     break;
             }

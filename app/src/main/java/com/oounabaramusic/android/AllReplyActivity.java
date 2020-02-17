@@ -1,12 +1,12 @@
 package com.oounabaramusic.android;
 
 import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.widget.NestedScrollView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -21,6 +21,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.oounabaramusic.android.adapter.AllReplyAdapter;
 import com.oounabaramusic.android.bean.Comment;
@@ -29,8 +30,8 @@ import com.oounabaramusic.android.code.BasicCode;
 import com.oounabaramusic.android.okhttputil.S2SHttpUtil;
 import com.oounabaramusic.android.util.FormatUtil;
 import com.oounabaramusic.android.util.InputMethodUtil;
-import com.oounabaramusic.android.util.LogUtil;
 import com.oounabaramusic.android.util.MyEnvironment;
+import com.oounabaramusic.android.util.SharedPreferencesUtil;
 import com.oounabaramusic.android.util.StatusBarUtil;
 import com.oounabaramusic.android.widget.customview.MyCircleImageView;
 
@@ -64,12 +65,25 @@ public class AllReplyActivity extends BaseActivity implements View.OnClickListen
     private Reply selectReply;
 
     private int scrollToReplyId;
+    private int commentId;
+
+    /**
+     *
+     * @param context         上下文
+     * @param commentId       评论ID
+     * @param replyId         滚动到这个回复ID
+     */
+    public static void startActivity(Context context,int commentId,int replyId){
+        Intent intent =new Intent(context,AllReplyActivity.class);
+        intent.putExtra("commentId",commentId);
+        intent.putExtra("replyId",replyId);
+        context.startActivity(intent);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_all_reply);
-
-        setAutoCloseInputMethod(false);
         StatusBarUtil.setWhiteStyleStatusBar(this);
         setAutoCloseInputMethod(false);
         Toolbar toolbar=findViewById(R.id.toolbar);
@@ -81,7 +95,20 @@ public class AllReplyActivity extends BaseActivity implements View.OnClickListen
 
         Intent intent=getIntent();
 
-        comment= (Comment) intent.getSerializableExtra("comment");
+        commentId = intent.getIntExtra("commentId",-1);
+        if(commentId==-1)
+            return;
+        Comment comment =new Comment();
+        comment.setId(commentId);
+        comment.setMainUserId(SharedPreferencesUtil.getUserId(sp));
+
+        new S2SHttpUtil(
+                this,
+                gson.toJson(comment),
+                MyEnvironment.serverBasePath+"getSingleComment",
+                new MyHandler(this))
+        .call(BasicCode.GET_CONTENT);
+
         scrollToReplyId = intent.getIntExtra("replyId",0);
         init();
     }
@@ -101,8 +128,9 @@ public class AllReplyActivity extends BaseActivity implements View.OnClickListen
 
         send.setOnClickListener(this);
         good.setOnClickListener(this);
+        userHeader.setOnClickListener(this);
 
-        rv.setAdapter(adapter=new AllReplyAdapter(this,comment.getUserId(),scrollToReplyId));
+        rv.setAdapter(adapter=new AllReplyAdapter(this,commentId,scrollToReplyId));
         rv.setLayoutManager(new LinearLayoutManager(this));
 
         goodBitmap= BitmapFactory.decodeResource(getResources(),R.mipmap.good);
@@ -111,8 +139,6 @@ public class AllReplyActivity extends BaseActivity implements View.OnClickListen
         mHandler=new MyHandler(this);
         selectReply=null;
         userId=sp.getString("userId","-1");
-
-        initContent();
     }
 
     public void smoothScrollTo(int y){
@@ -120,11 +146,12 @@ public class AllReplyActivity extends BaseActivity implements View.OnClickListen
     }
 
     private void initContent(){
+
         replyCnt.setText(String.valueOf(comment.getReplyCnt()));
         userHeader.setImageUrl(MyEnvironment.serverBasePath
                 +"loadUserHeader?userId="+comment.getUserId());
         userName.setText(comment.getUserName());
-        commentDate.setText(FormatUtil.DateToString(comment.getDate()));
+        commentDate.setText(FormatUtil.DateTimeToString(comment.getDate()));
         commentContent.setText(comment.getContent());
         if(comment.getGooded()==0){
             good.setImageBitmap(noGoodBitmap);
@@ -190,7 +217,6 @@ public class AllReplyActivity extends BaseActivity implements View.OnClickListen
                         Reply reply=new Reply();
                         reply.setUserId(Integer.valueOf(userId));
                         reply.setContent(replyContent.getText().toString());
-                        reply.setReplyTo(comment.getUserId());
                         reply.setCommentId(comment.getId());
 
                         new S2SHttpUtil(this,gson.toJson(reply),
@@ -200,7 +226,7 @@ public class AllReplyActivity extends BaseActivity implements View.OnClickListen
                         Reply reply=new Reply();
                         reply.setContent(replyContent.getText().toString());
                         reply.setUserId(Integer.valueOf(userId));
-                        reply.setReplyTo(selectReply.getUserId());
+                        reply.setReplyTo(selectReply.getId());
                         reply.setCommentId(comment.getId());
 
                         new S2SHttpUtil(this,gson.toJson(reply),
@@ -220,6 +246,10 @@ public class AllReplyActivity extends BaseActivity implements View.OnClickListen
                 new S2SHttpUtil(this,gson.toJson(data),
                         MyEnvironment.serverBasePath+"goodToCommentOrReply",
                         mHandler).call(BasicCode.TO_GOOD_END_NO_RV);
+                break;
+
+            case R.id.user_header:
+                UserInfoActivity.startActivity(this,comment.getUserId());
                 break;
         }
     }
@@ -285,6 +315,11 @@ public class AllReplyActivity extends BaseActivity implements View.OnClickListen
                         activity.good.setImageBitmap(activity.goodBitmap);
                     }
                     activity.goodCnt.setText(String.valueOf(activity.comment.getGoodCnt()));
+                    break;
+
+                case BasicCode.GET_CONTENT:
+                    activity.comment=new Gson().fromJson((String) msg.obj,Comment.class);
+                    activity.initContent();
                     break;
             }
         }

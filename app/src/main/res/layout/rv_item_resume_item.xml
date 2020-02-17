@@ -6,7 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:paddingTop="10dp"
-    android:paddingBottom="10dp">
+    android:paddingBottom="10dp"
+    android:background="@drawable/view_ripple_rectangle">
 
     <CheckBox
         android:id="@+id/item_check_box"
@@ -17,11 +18,11 @@
         android:layout_marginEnd="10dp"
         android:theme="@style/MyCheckBox"/>
 
-    <ImageView
+    <com.oounabaramusic.android.widget.customview.MyImageView
         android:id="@+id/item_cover"
-        android:src="@mipmap/default_image"
         android:layout_width="50dp"
-        android:layout_height="50dp"/>
+        android:layout_height="50dp"
+        android:scaleType="centerCrop"/>
 
     <LinearLayout
         android:id="@+id/item_info"
@@ -56,16 +57,4 @@
             android:gravity="center_vertical"
             tools:ignore="HardcodedText,NestedWeights" />
     </LinearLayout>
-
-    <TextView
-        android:visibility="gone"
-        android:id="@+id/header"
-        android:text="全选"
-        android:textColor="@color/positive"
-        android:textSize="@dimen/font_medium_size"
-        android:layout_width="0dp"
-        android:layout_weight="1"
-        android:layout_height="match_parent"
-        android:gravity="center_vertical"
-        tools:ignore="HardcodedText" />
 </LinearLayout>

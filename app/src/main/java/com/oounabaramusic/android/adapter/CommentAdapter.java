@@ -3,22 +3,29 @@ package com.oounabaramusic.android.adapter;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Handler;
+import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.oounabaramusic.android.AllReplyActivity;
+import com.oounabaramusic.android.BaseActivity;
 import com.oounabaramusic.android.CommentActivity;
 import com.oounabaramusic.android.R;
+import com.oounabaramusic.android.UserInfoActivity;
 import com.oounabaramusic.android.bean.Comment;
 import com.oounabaramusic.android.code.BasicCode;
 import com.oounabaramusic.android.okhttputil.S2SHttpUtil;
 import com.oounabaramusic.android.util.FormatUtil;
+import com.oounabaramusic.android.util.InputMethodUtil;
 import com.oounabaramusic.android.util.LogUtil;
 import com.oounabaramusic.android.util.MyEnvironment;
+import com.oounabaramusic.android.util.SharedPreferencesUtil;
 import com.oounabaramusic.android.widget.customview.MyCircleImageView;
 
 import java.util.ArrayList;
@@ -34,22 +41,23 @@ import androidx.recyclerview.widget.RecyclerView;
 public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHolder> {
 
     public static final String CHANGE_GOOD="a";
-    private CommentActivity activity;
+    private BaseActivity activity;
     private List<Comment> dataList;
     private int selectPosition;
     private Bitmap good,noGood;
+    private EditText et;
 
-    public CommentAdapter(CommentActivity activity){
+    public CommentAdapter(BaseActivity activity,EditText et){
+        this.et=et;
         this.activity=activity;
         dataList=new ArrayList<>();
-
+        selectPosition=-1;
         good = BitmapFactory.decodeResource(activity.getResources(),R.mipmap.good);
         noGood = BitmapFactory.decodeResource(activity.getResources(),R.mipmap.no_good);
     }
 
     public void setDataList(List<Comment> dataList) {
         this.dataList = dataList;
-        LogUtil.printLog("有多少条评论： "+dataList.size());
         notifyDataSetChanged();
     }
 
@@ -70,7 +78,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
 
         holder.goodCnt.setText(String.valueOf(item.getGoodCnt()));
         holder.commentContent.setText(item.getContent());
-        holder.commentDate.setText(FormatUtil.DateToString(item.getDate()));
+        holder.commentDate.setText(FormatUtil.DateTimeToString(item.getDate()));
         holder.userName.setText(item.getUserName());
         holder.userHeader.setImageUrl(MyEnvironment.serverBasePath+
                 "loadUserHeader?userId="+item.getUserId());
@@ -152,7 +160,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
                 @Override
                 public void onClick(View v) {
                     selectPosition=getAdapterPosition();
-                    activity.replyTo(dataList.get(getAdapterPosition()));
+                    replyTo(dataList.get(getAdapterPosition()));
                 }
             });
 
@@ -161,11 +169,11 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
                 public void onClick(View v) {
                     selectPosition=getAdapterPosition();
                     Map<String,Integer> data=new HashMap<>();
-                    data.put("userId",Integer.valueOf(activity.getUserId()));
+                    data.put("userId",SharedPreferencesUtil.getUserId(activity.sp));
                     data.put("commentId",dataList.get(getAdapterPosition()).getId());
                     new S2SHttpUtil(activity,activity.gson.toJson(data),
                             MyEnvironment.serverBasePath+"goodToCommentOrReply",
-                            activity.getHandler()).call(BasicCode.TO_GOOD_END);
+                            new MyHandler(CommentAdapter.this)).call(BasicCode.TO_GOOD_END);
                 }
             });
 
@@ -173,22 +181,71 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
                 @Override
                 public void onClick(View v) {
                     selectPosition=getAdapterPosition();
-                    Intent intent=new Intent(activity, AllReplyActivity.class);
-                    intent.putExtra("comment",dataList.get(getAdapterPosition()));
-                    activity.startActivity(intent);
+                    AllReplyActivity.startActivity(activity,
+                            dataList.get(getAdapterPosition()).getId(),0);
+                }
+            });
+
+            userHeader.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    UserInfoActivity.startActivity(activity,
+                            dataList.get(getAdapterPosition()).getUserId());
                 }
             });
         }
     }
 
+    private void replyTo(Comment comment){
+        et.setHint("回复 @"+comment.getUserName()+"：");
+        et.requestFocus();
+        InputMethodUtil.showSoftKeyboard(activity,et);
+    }
+
     public void startAllReplyActivity(int position,int replyId){
-        Intent intent=new Intent(activity, AllReplyActivity.class);
-        intent.putExtra("comment",dataList.get(position));
-        intent.putExtra("replyId",replyId);
-        activity.startActivity(intent);
+        AllReplyActivity.startActivity(activity,
+                dataList.get(position).getId(),replyId);
     }
 
     public int getSelectPosition() {
         return selectPosition;
+    }
+
+    public void cancelSelect(){
+        selectPosition=-1;
+    }
+
+    static class MyHandler extends Handler{
+        CommentAdapter adapter;
+        MyHandler(CommentAdapter adapter){
+            this.adapter=adapter;
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what){
+                case BasicCode.TO_GOOD_END:
+
+                    String goodCnt= (String) msg.obj;
+                    int selectPosition=adapter.getSelectPosition();
+
+                    adapter.getDataList().get(
+                            selectPosition).setGooded(Integer.valueOf(goodCnt));
+
+                    if(goodCnt.equals("0")){
+                        adapter.getDataList().get(selectPosition).setGoodCnt(
+                                adapter.getDataList().get(selectPosition).getGoodCnt()-1
+                        );
+                    }else{
+                        adapter.getDataList().get(selectPosition).setGoodCnt(
+                                adapter.getDataList().get(selectPosition).getGoodCnt()+1
+                        );
+                    }
+
+                    adapter.notifyItemChanged(selectPosition,
+                            CommentAdapter.CHANGE_GOOD);
+                    break;
+            }
+        }
     }
 }

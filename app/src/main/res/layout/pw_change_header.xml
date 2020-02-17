@@ -1,16 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<LinearLayout
+    android:orientation="vertical"
     android:id="@+id/rootLayout"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="match_parent"
+    android:background="@color/alpha_background">
 
     <ImageView
         android:id="@+id/user_header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="70dp"/>
+        android:scaleType="centerCrop"/>
 
     <TextView
         android:id="@+id/user_change_header"
@@ -19,12 +21,12 @@
         android:textColor="@color/colorPrimaryDark"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/user_header"
-        android:layout_centerInParent="true"
+        android:layout_marginTop="20dp"
         android:paddingTop="8dp"
         android:paddingBottom="8dp"
         android:paddingStart="15dp"
         android:paddingEnd="15dp"
+        android:layout_gravity="center_horizontal"
         android:background="@drawable/btn_change_header"
         tools:ignore="HardcodedText" />
-</RelativeLayout>
+</LinearLayout>

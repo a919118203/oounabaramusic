@@ -26,6 +26,7 @@ public class Music implements Serializable {
     private String md5;          //判断是不是同一个文件
     private int downloadStatus;  //下载状态     0：已下载完成   1：还没下载  2：正在下载 3:不是下载文件
     private int isServer;        //音乐类型     0 本地音乐 1 服务器音乐 2:待判定
+    private int listenCnt;
 
     public Music(){}
 
@@ -60,8 +61,7 @@ public class Music implements Serializable {
         setIsServer(1);
         setFilePath(MyEnvironment.serverBasePath+"music/"+jsonData.get("fileName"));
         setFileSize(Long.valueOf(jsonData.get("fileSize")));
-
-        LogUtil.printLog(getFileSize()+"");
+        setListenCnt(Integer.valueOf(jsonData.get("listenCnt")));
     }
 
     public int getId() {
@@ -144,14 +144,12 @@ public class Music implements Serializable {
         this.isServer = isServer;
     }
 
-    @NonNull
-    @Override
-    public String toString() {
-        return "[id = "+id+",musicName = "+musicName+",singerName = "
-                +singerName+",singerId = "+singerId+",filePath = "
-                +filePath+",duration = "
-                +duration+",fileSize = "+fileSize+",md5 = "
-                +md5+",downloadStatus = "+downloadStatus+",isServer = "+isServer+"]";
+    public int getListenCnt() {
+        return listenCnt;
+    }
+
+    public void setListenCnt(int listenCnt) {
+        this.listenCnt = listenCnt;
     }
 
     @Override
@@ -175,6 +173,7 @@ public class Music implements Serializable {
         clone.setSingerName(singerName);
         clone.setDuration(duration);
         clone.setFileSize(fileSize);
+        clone.setListenCnt(listenCnt);
         return clone;
     }
 }

@@ -1,34 +1,27 @@
 package com.oounabaramusic.android;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentPagerAdapter;
-import androidx.viewpager.widget.ViewPager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
 import android.view.MenuItem;
 
-import com.google.android.material.tabs.TabLayout;
-import com.oounabaramusic.android.fragment.AllListenFragment;
-import com.oounabaramusic.android.fragment.WeekListenFragment;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import com.oounabaramusic.android.adapter.ListenRankAdapter;
+import com.oounabaramusic.android.util.StatusBarUtil;
 
 public class ListenRankActivity extends BaseActivity {
 
-    private List<Fragment> fragments;
-    private FragmentPagerAdapter adapter;
+    private int userId;
+    private RecyclerView rv;
+    private ListenRankAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_listen_rank);
+        StatusBarUtil.setWhiteStyleStatusBar(this);
 
         Toolbar toolbar=findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -37,77 +30,32 @@ public class ListenRankActivity extends BaseActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
+        userId = getIntent().getIntExtra("userId",-1);
+
         init();
     }
 
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        adapter.refresh();
+    }
+
+    public int getUserId() {
+        return userId;
+    }
+
     private void init() {
-        fragments=new ArrayList<>();
-        fragments.add(new WeekListenFragment(this));
-        fragments.add(new AllListenFragment(this));
+        rv=findViewById(R.id.recycler_view);
+        rv.setAdapter(adapter=new ListenRankAdapter(this));
+        rv.setLayoutManager(new LinearLayoutManager(this));
 
-        final ViewPager viewPager=findViewById(R.id.view_pager);
-        viewPager.setAdapter(adapter=new ViewPagerAdapter());
-
-        final TabLayout tabLayout=findViewById(R.id.tab_layout);
-        tabLayout.addTab(tabLayout.newTab().setText("最近一周"));
-        tabLayout.addTab(tabLayout.newTab().setText("所有时间"));
-
-        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-                Objects.requireNonNull(tabLayout.getTabAt(position)).select();
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-
-            }
-        });
-
-        tabLayout.addOnTabSelectedListener(new TabLayout.BaseOnTabSelectedListener() {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                viewPager.setCurrentItem(tab.getPosition());
-            }
-
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-
-            }
-
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-
-            }
-        });
-
+        adapter.refresh();
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         finish();
         return true;
-    }
-
-    class ViewPagerAdapter extends FragmentPagerAdapter{
-
-        ViewPagerAdapter() {
-            super(ListenRankActivity.this.getSupportFragmentManager(), FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
-        }
-
-        @NonNull
-        @Override
-        public Fragment getItem(int position) {
-            return fragments.get(position);
-        }
-
-        @Override
-        public int getCount() {
-            return fragments.size();
-        }
     }
 }

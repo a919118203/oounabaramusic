@@ -7,6 +7,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Environment;
@@ -42,6 +44,7 @@ import com.oounabaramusic.android.util.InputMethodUtil;
 import com.oounabaramusic.android.util.InternetUtil;
 import com.oounabaramusic.android.util.LogUtil;
 import com.oounabaramusic.android.util.StatusBarUtil;
+import com.oounabaramusic.android.widget.popupwindow.PlayListDialog;
 
 import java.io.File;
 import java.io.IOException;
@@ -286,7 +289,7 @@ public class LocalMusicActivity extends BaseActivity implements View.OnClickList
      * 检查表里存的数据的正确性，删除不正确的
      */
     private void checkTableData() {
-        List<Music> musics=localMusicDao.selectAllLocalMusic();
+        List<Music> musics=localMusicDao.selectAllMusic();
 
         String filePath;
         String md5;
@@ -297,23 +300,31 @@ public class LocalMusicActivity extends BaseActivity implements View.OnClickList
             downloadStatus=m.getDownloadStatus();
 
             File file=new File(filePath);
+            String thisMd5=DigestUtils.md5HexOfFile(file);
+
             if(file.exists()){
                 if(file.length()==m.getFileSize()){
-                    if(md5.equals(DigestUtils.md5HexOfFile(file))){
+                    if(md5.equals(thisMd5)){
                         filter.add(md5);
                     }else{
-                        if(downloadStatus!=1&&downloadStatus!=2){     //如果这个音乐是还没下载，或是正在下载的时候，不删除这条记录
+                        if(downloadStatus!=2){     //如果这个音乐是还没下载，或是正在下载的时候，不删除这条记录
                             localMusicDao.deleteMusicByMd5(md5);
+                        }else{
+                            filter.add(thisMd5);
                         }
                     }
                 }else{
-                    if(downloadStatus!=1&&downloadStatus!=2){
+                    if(downloadStatus!=2){
                         localMusicDao.deleteMusicByMd5(md5);
+                    }else{
+                        filter.add(thisMd5);
                     }
                 }
             }else{
-                if(downloadStatus!=1&&downloadStatus!=2){
+                if(downloadStatus!=2){
                     localMusicDao.deleteMusicByMd5(md5);
+                }else{
+                    filter.add(thisMd5);
                 }
             }
         }
@@ -391,7 +402,7 @@ public class LocalMusicActivity extends BaseActivity implements View.OnClickList
         Music item=new Music();
         item.setMd5(DigestUtils.md5HexOfFile(f));
 
-        if(localMusicDao.md5IsExists(item.getMd5())){
+        if(filter.contains(item.getMd5())){
             return;
         }
 
@@ -540,12 +551,37 @@ public class LocalMusicActivity extends BaseActivity implements View.OnClickList
                 }
                 break;
             case R.id.bottom_tool_add_to_playlist:
+                if(!sp.getBoolean("login",false)){
+                    Toast.makeText(this, "请先登录", Toast.LENGTH_SHORT).show();
+                    return ;
+                }
+
                 if(!adapter.checkSelected()){
                     Toast toast=Toast.makeText(this, "请选择歌曲", Toast.LENGTH_SHORT);
                     toast.setGravity(Gravity.BOTTOM,0,200);
                     toast.show();
+                }else{
+                    List<Music> list2=adapter.getSelected();
+                    List<String> md5s=new ArrayList<>();
+                    for(Music item:list2){
+                        if(item.getIsServer()==1){
+                            md5s.add(item.getMd5());
+                        }
+                    }
+                    
+                    if(md5s.size()==0){
+                        Toast.makeText(this, "没有服务器中存在的音乐", Toast.LENGTH_SHORT).show();
+                    }else{
+                        int userId = Integer.valueOf(sp.getString("userId","-1"));
+                        Dialog.OnDismissListener listener = new DialogInterface.OnDismissListener() {
+                            @Override
+                            public void onDismiss(DialogInterface dialog) {
+                                switchToolBar(TOOLBAR_MODE_NORMAL);
+                            }
+                        };
+                        new PlayListDialog(listener,this,userId,md5s.toArray(new String[]{}));
+                    }
                 }
-                int a=1;
                 break;
             case R.id.bottom_tool_delete:
                 if(!adapter.checkSelected()){

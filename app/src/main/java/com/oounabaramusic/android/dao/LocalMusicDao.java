@@ -29,10 +29,31 @@ public class LocalMusicDao extends BaseDao {
         return db.insert(SqlTableString.LOCAL_MUSIC_TBL,null,cv);
     }
 
+    /**
+     * 检索全部本地音乐，不包括下载中的音乐
+     * @return
+     */
     public List<Music> selectAllLocalMusic(){
         List<Music> musics=new ArrayList<>();
         Music item;
         Cursor cursor=db.rawQuery(SqlSelectString.SELECT_ALL_LOCAL_MUSIC,null);
+        if(cursor.moveToFirst()){
+            do{
+                musics.add(parseCursorToMusic(cursor));
+            }while(cursor.moveToNext());
+        }
+        cursor.close();
+        return musics;
+    }
+
+    /**
+     * 检索全部本地音乐，包括下载中的音乐
+     * @return
+     */
+    public List<Music> selectAllMusic(){
+        List<Music> musics=new ArrayList<>();
+        Music item;
+        Cursor cursor=db.rawQuery(SqlSelectString.SELECT_ALL_MUSIC,null);
         if(cursor.moveToFirst()){
             do{
                 musics.add(parseCursorToMusic(cursor));

@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    android:orientation="vertical"
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="100dp"
+    android:layout_width="match_parent"
     android:layout_height="50dp">
 
     <TextView
-        android:id="@+id/selectable"
+        android:id="@+id/tag"
         android:text="标签"
         android:textSize="@dimen/font_small_size"
         android:textColor="@color/positive"
@@ -15,21 +14,8 @@
         android:layout_height="match_parent"
         android:layout_margin="5dp"
         android:gravity="center"
-        android:background="@drawable/btn_gray"
+        android:background="@drawable/btn_play_list_tag"
         tools:ignore="HardcodedText">
     </TextView>
 
-    <TextView
-        android:visibility="gone"
-        android:id="@+id/not_selectable"
-        android:text="标签"
-        android:textSize="@dimen/font_small_size"
-        android:textColor="@color/negative"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_margin="5dp"
-        android:gravity="center"
-        android:background="@drawable/btn_light_gray"
-        tools:ignore="HardcodedText">
-    </TextView>
-</LinearLayout>
+</FrameLayout>

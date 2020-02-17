@@ -81,24 +81,26 @@ public class PhotoLoginActivity extends BaseActivity {
     }
 
     public void onLogin(View view){
-        String strVerificationCode=verificationCode.getText().toString();
-
-        if(strPhoto==null){
-            Toast.makeText(this,"你还没去获取验证码呢",Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        if(strVerificationCode.length()==0){
-            Toast.makeText(this, "还没写验证码呢", Toast.LENGTH_SHORT).show();
-        }else if(strVerificationCode.length()!=4){
-            Toast.makeText(this, "验证码得4位", Toast.LENGTH_SHORT).show();
-        }else{
-            if(StringUtil.checkAllNumbers(strVerificationCode)){
-                SMSSDK.submitVerificationCode("86",strPhoto,strVerificationCode);
-            }else{
-                Toast.makeText(this, "请输入数字", Toast.LENGTH_SHORT).show();
-            }
-        }
+//        String strVerificationCode=verificationCode.getText().toString();
+//
+//        if(strPhoto==null){
+//            Toast.makeText(this,"你还没去获取验证码呢",Toast.LENGTH_SHORT).show();
+//            return;
+//        }
+//
+//        if(strVerificationCode.length()==0){
+//            Toast.makeText(this, "还没写验证码呢", Toast.LENGTH_SHORT).show();
+//        }else if(strVerificationCode.length()!=4){
+//            Toast.makeText(this, "验证码得4位", Toast.LENGTH_SHORT).show();
+//        }else{
+//            if(StringUtil.checkAllNumbers(strVerificationCode)){
+//                SMSSDK.submitVerificationCode("86",strPhoto,strVerificationCode);
+//            }else{
+//                Toast.makeText(this, "请输入数字", Toast.LENGTH_SHORT).show();
+//            }
+//        }
+        strPhoto=photo.getText().toString();
+        login();
     }
 
     public void onGetVerificationCode(View view){

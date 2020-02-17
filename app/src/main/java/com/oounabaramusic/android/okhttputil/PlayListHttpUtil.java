@@ -36,27 +36,6 @@ public class PlayListHttpUtil {
     public static final int MESSAGE_COLLECTION_MUSIC_EDN=8;
     public static final int MESSAGE_CANCEL_COLLECTION_EDN=9;
 
-    public static void findPlayListByUser(Context context, String userId, Handler handler){
-        if(!InternetUtil.checkNet(context)){
-            Toast.makeText(context, "请检查网络连接", Toast.LENGTH_SHORT).show();
-            handler.sendEmptyMessage(HttpUtil.NO_NET);
-            return;
-        }
-
-        OkHttpClient client=new OkHttpClient();
-
-        RequestBody body=new FormBody.Builder()
-                .add("userId",userId)
-                .build();
-
-        Request request=new Request.Builder()
-                .url(MyEnvironment.serverBasePath+"findPlayListByUser")
-                .post(body)
-                .build();
-
-        client.newCall(request).enqueue(new HttpUtil.StringCallBack(handler,MESSAGE_FIND_MY_PLAY_LIST_END));
-    }
-
     public static void findPlayList(Context context, String playListId, Handler handler){
         if(!InternetUtil.checkNet(context)){
             Toast.makeText(context, "请检查网络连接", Toast.LENGTH_SHORT).show();

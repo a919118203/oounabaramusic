@@ -16,29 +16,47 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class FavoritePlayListFragment extends Fragment {
+public class FavoritePlayListFragment extends BaseFragment {
 
     private Activity activity;
     private View rootView;
     private AllFavoritePlayListAdapter adapter;
+    private int userId;
+    private boolean initOK;
 
     public FavoritePlayListFragment(Activity activity){
         this.activity=activity;
+        initOK=false;
+        setTitle("收藏的歌单");
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
+        initContent();
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        if(rootView==null){
-            rootView=LayoutInflater.from(activity).inflate(R.layout.fragment_my_playlist,container,false);
-            init(rootView);
-        }
+        rootView=LayoutInflater.from(activity).inflate(R.layout.fragment_my_playlist,container,false);
+        init();
         return rootView;
     }
 
-    private void init(View view) {
-        RecyclerView recyclerView= (RecyclerView) view;
+    private void init() {
+        RecyclerView recyclerView= (RecyclerView) rootView;
         recyclerView.setAdapter(adapter=new AllFavoritePlayListAdapter(activity));
         recyclerView.setLayoutManager(new LinearLayoutManager(activity));
+
+        initOK=true;
+        initContent();
+    }
+
+    private void initContent(){
+        if(userId==0||!initOK){
+            return;
+        }
+
+        adapter.setUserId(userId);
     }
 }

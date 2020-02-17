@@ -65,30 +65,6 @@
         android:layout_height="1dp"
         android:background="@color/negative"/>
 
-    <LinearLayout
-        android:id="@+id/item_menu_add_to_playlist"
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:background="@drawable/view_ripple_rectangle"
-        android:layout_height="50dp">
-
-        <ImageView
-            android:src="@mipmap/add_to_playlist"
-            android:layout_width="50dp"
-            android:layout_height="match_parent"
-            android:padding="10dp"/>
-
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:text="@string/add_to_playlist"
-            android:textSize="@dimen/font_medium_size"
-            android:textColor="@color/positive"
-            android:gravity="center_vertical"/>
-    </LinearLayout>
-
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"

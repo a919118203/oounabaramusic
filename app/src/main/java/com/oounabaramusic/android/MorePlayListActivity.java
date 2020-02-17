@@ -1,8 +1,8 @@
 package com.oounabaramusic.android;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentPagerAdapter;
@@ -12,10 +12,10 @@ import android.os.Bundle;
 import android.view.MenuItem;
 
 import com.google.android.material.tabs.TabLayout;
-import com.oounabaramusic.android.fragment.AllListenFragment;
+import com.oounabaramusic.android.fragment.BaseFragment;
 import com.oounabaramusic.android.fragment.FavoritePlayListFragment;
 import com.oounabaramusic.android.fragment.MyPlayListFragment;
-import com.oounabaramusic.android.fragment.WeekListenFragment;
+import com.oounabaramusic.android.util.StatusBarUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,14 +23,14 @@ import java.util.Objects;
 
 public class MorePlayListActivity extends BaseActivity {
 
-    private List<Fragment> fragments;
-    private FragmentPagerAdapter adapter;
+    private List<BaseFragment> fragments;
+    private int userId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_more_play_list);
-
+        StatusBarUtil.setWhiteStyleStatusBar(this);
         Toolbar toolbar=findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         ActionBar actionBar=getSupportActionBar();
@@ -47,46 +47,18 @@ public class MorePlayListActivity extends BaseActivity {
         fragments.add(new MyPlayListFragment(this));
         fragments.add(new FavoritePlayListFragment(this));
 
-        final ViewPager viewPager=findViewById(R.id.view_pager);
-        viewPager.setAdapter(adapter=new MorePlayListActivity.ViewPagerAdapter());
+        ViewPager viewPager=findViewById(R.id.view_pager);
+        viewPager.setAdapter(new ViewPagerAdapter());
+        TabLayout tabLayout=findViewById(R.id.tab_layout);
+        tabLayout.setupWithViewPager(viewPager);
 
-        final TabLayout tabLayout=findViewById(R.id.tab_layout);
-        tabLayout.addTab(tabLayout.newTab().setText("创建的歌单"));
-        tabLayout.addTab(tabLayout.newTab().setText("收藏的歌单"));
+        initContent();
+    }
 
-        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-                Objects.requireNonNull(tabLayout.getTabAt(position)).select();
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-
-            }
-        });
-
-        tabLayout.addOnTabSelectedListener(new TabLayout.BaseOnTabSelectedListener() {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                viewPager.setCurrentItem(tab.getPosition());
-            }
-
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-
-            }
-
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-
-            }
-        });
-
+    private void initContent(){
+        userId = getIntent().getIntExtra("userId",0);
+        ((MyPlayListFragment)fragments.get(0)).setUserId(userId);
+        ((FavoritePlayListFragment)fragments.get(1)).setUserId(userId);
     }
 
     @Override
@@ -110,6 +82,12 @@ public class MorePlayListActivity extends BaseActivity {
         @Override
         public int getCount() {
             return fragments.size();
+        }
+
+        @Nullable
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return fragments.get(position).getTitle();
         }
     }
 }

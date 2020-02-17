@@ -30,6 +30,7 @@
             android:layout_weight="1"/>
 
         <LinearLayout
+            android:id="@+id/delete"
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="@dimen/action_bar_size"

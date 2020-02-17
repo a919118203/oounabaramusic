@@ -5,9 +5,11 @@ import java.util.Date;
 import java.util.List;
 
 public class Comment implements Serializable {
+	public static final int MAX_LEN=1000;
 	public static final int MUSIC=1;
 	public static final int PLAY_LIST=2;
 	public static final int VIDEO=3;
+	public static final int POST=4;
 	public static final int ORDER_BY_GOOD_CNT=0;
 	public static final int ORDER_BY_DATE=1;
 	public static final int SEARCH_TYPE_SIMPLE=0;
@@ -27,7 +29,6 @@ public class Comment implements Serializable {
 	//检索用部分
 	private int mainUserId;
 	private int targetId;
-	private String targetMd5;
 	private int targetType;
 	private int orderByType;
 	private int limitStart;
@@ -124,14 +125,6 @@ public class Comment implements Serializable {
 	public void setSearchType(int searchType) {
 		this.searchType = searchType;
 	}
-	public String getTargetMd5() {
-		return targetMd5;
-	}
-
-	public void setTargetMd5(String targetMd5) {
-		this.targetMd5 = targetMd5;
-	}
-
 	public int getReplyCnt() {
 		return replyCnt;
 	}

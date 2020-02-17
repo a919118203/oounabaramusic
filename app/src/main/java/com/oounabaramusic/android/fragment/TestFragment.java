@@ -1,22 +1,35 @@
 package com.oounabaramusic.android.fragment;
 
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Adapter;
+import android.widget.ImageView;
+import android.widget.MediaController;
 import android.widget.TextView;
+import android.widget.Toast;
+import android.widget.VideoView;
 
 import com.oounabaramusic.android.MyCollectionActivity;
 import com.oounabaramusic.android.R;
+import com.oounabaramusic.android.bean.Video;
 import com.oounabaramusic.android.util.DensityUtil;
 import com.oounabaramusic.android.util.LogUtil;
 import com.oounabaramusic.android.util.MyEnvironment;
+import com.oounabaramusic.android.util.VideoUtil;
+import com.oounabaramusic.android.widget.customview.MyVideoPlayer;
+import com.oounabaramusic.android.widget.textview.TextViewCell;
 
 
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import androidx.annotation.NonNull;
@@ -33,8 +46,11 @@ public class TestFragment extends BaseFragment implements View.OnClickListener{
 
     private MyCollectionActivity activity;
     private View rootView;
+    private VideoView videoView;
 
-    private List<String> list;
+    private ImageView imageView;
+
+    private MyVideoPlayer videoPlayer;
     public TestFragment(MyCollectionActivity activity){
         this.activity=activity;
         setTitle("测试用");
@@ -45,60 +61,56 @@ public class TestFragment extends BaseFragment implements View.OnClickListener{
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         if(rootView==null){
             rootView=inflater.inflate(R.layout.fragment_test,container,false);
-            init(rootView);
+            init();
         }
         return rootView;
     }
 
-    private void init(View rootView) {
 
-        list=new ArrayList<>();
+    private void init(){
 
-        for(int i=0;i<30;i++){
-            list.add("1506");
-        }
-        rootView.findViewById(R.id.sss).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                list.remove(0);
-            }
-        });
 
+//        imageView=rootView.findViewById(R.id.image);
+//        imageView.setImageBitmap(VideoUtil.getVideoCover("http://192.168.1.7:8080/OounabaraMusic/video/2.mp4"));
+
+
+//        rootView.findViewById(R.id.dianji).setOnClickListener(this);
+//        videoView=rootView.findViewById(R.id.video);
+//        videoView.setVideoURI(Uri.parse("http://192.168.1.7:8080/OounabaraMusic/video/2.mp4"));
+//        videoView.requestFocus();
+//        videoView.start();
+
+//        OkHttpClient client = new OkHttpClient();
+//
+//        Request request = new Request.Builder()
+//                .url("http://192.168.1.7:8080/OounabaraMusic/video/2.mp4")
+//                .build();
+//
+//        client.newCall(request).enqueue(new Callback() {
+//            @Override
+//            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+//
+//            }
+//
+//            @Override
+//            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+//                InputStream is = response.body().byteStream();
+//                byte[] lins = new byte[1024];
+//                int len;
+//                while((len=is.read(lins))!=-1){
+//                    LogUtil.printLog("len:  "+len);
+//                }
+//                LogUtil.printLog(response.body().string());
+//            }
+//        });
     }
 
     @Override
     public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.dianji:
 
-    }
-
-    class RVAdapter extends RecyclerView.Adapter<RVAdapter.ViewHolder>{
-
-
-        @NonNull
-        @Override
-        public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            View view=LayoutInflater.from(activity).inflate(
-                    R.layout.rv_item_tag_cell,
-                    (ViewGroup) activity.getWindow().getDecorView(),
-                    false);
-            return new ViewHolder(view);
-        }
-
-        @Override
-        public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-
-        }
-
-        @Override
-        public int getItemCount() {
-            return 20;
-        }
-
-        class ViewHolder extends RecyclerView.ViewHolder{
-
-            public ViewHolder(@NonNull View itemView) {
-                super(itemView);
-            }
+                break;
         }
     }
 }

@@ -14,7 +14,6 @@ import android.view.MenuItem;
 import com.google.android.material.tabs.TabLayout;
 import com.oounabaramusic.android.fragment.BaseFragment;
 import com.oounabaramusic.android.fragment.MyMessageCommentFragment;
-import com.oounabaramusic.android.fragment.NoticeFragment;
 import com.oounabaramusic.android.fragment.PrivateMessageFragment;
 import com.oounabaramusic.android.util.StatusBarUtil;
 
@@ -50,10 +49,8 @@ public class MyMessageActivity extends BaseActivity {
 
         fragments.add(new PrivateMessageFragment(this));
         fragments.add(new MyMessageCommentFragment(this));
-        fragments.add(new NoticeFragment(this));
 
         vp.setAdapter(new ViewPagerAdapter());
-
         tabLayout.setupWithViewPager(vp);
     }
 

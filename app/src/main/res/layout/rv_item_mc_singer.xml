@@ -7,13 +7,13 @@
     android:layout_height="wrap_content"
     android:background="@drawable/view_ripple_rectangle">
 
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:src="@mipmap/default_image"
+    <com.oounabaramusic.android.widget.customview.MyCircleImageView
+        android:id="@+id/singer_cover"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_marginStart="20dp"
-        android:layout_marginTop="5dp"
-        android:layout_marginBottom="5dp"/>
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"/>
 
     <LinearLayout
         android:orientation="vertical"
@@ -24,7 +24,7 @@
         android:gravity="center_vertical">
 
         <TextView
-            android:text="歌手名"
+            android:id="@+id/singer_name"
             android:textSize="@dimen/font_medium_size"
             android:textColor="@color/positive"
             android:layout_width="match_parent"
@@ -33,7 +33,7 @@
             tools:ignore="HardcodedText,NestedWeights" />
 
         <TextView
-            android:text="歌曲数目"
+            android:id="@+id/info"
             android:textSize="@dimen/font_small_size"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -43,7 +43,8 @@
     </LinearLayout>
 
     <ImageView
-        android:src="@mipmap/my_playlist_menu"
+        android:id="@+id/delete"
+        android:src="@mipmap/delete"
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:padding="20dp"

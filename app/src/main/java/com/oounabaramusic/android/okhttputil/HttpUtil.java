@@ -25,6 +25,7 @@ import com.oounabaramusic.android.widget.customview.MyCircleImageView;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -142,17 +143,7 @@ public class HttpUtil {
      * @param handler
      */
     public static void loadImage(Context context, String url, final Handler handler){
-        String filePath;
-
-        if(url.contains("?")){
-            String a=url.substring(url.lastIndexOf("?"));
-            String[] b=a.split("=");
-            filePath = MyEnvironment.cachePath+DigestUtils.md5HexOfString(b[0])+b[1];
-        }else{
-            String[] a=url.split("/");
-            String[] b=a[a.length-1].split("\\.");
-            filePath = MyEnvironment.cachePath+DigestUtils.md5HexOfString(a[a.length-2])+b[0];
-        }
+        String filePath = MyEnvironment.cachePath+DigestUtils.md5HexOfString(url);
 
         final File file=new File(filePath);
         if(file.exists()){
@@ -194,12 +185,13 @@ public class HttpUtil {
                 }
 
                 InputStream is=response.body().byteStream();
+                BufferedInputStream bis=new BufferedInputStream(is);
 
                 file.createNewFile();
                 BufferedOutputStream bos=new BufferedOutputStream(new FileOutputStream(file));
                 byte[] buff=new byte[1024];
                 int len;
-                while((len=is.read(buff))!=-1){
+                while((len=bis.read(buff))!=-1){
                     bos.write(buff,0,len);
                 }
                 bos.flush();
@@ -212,44 +204,6 @@ public class HttpUtil {
                 message.obj=bitmap;
 
                 handler.sendMessage(message);
-            }
-        });
-    }
-
-    /**
-     * 播放音乐时，如果是服务器音乐就记录这次听歌
-     * @param context
-     * @param userId
-     * @param musicId
-     */
-    public static void listenMusic(Context context,String userId,int musicId){
-
-        if(!InternetUtil.checkNet(context)){
-            Toast.makeText(context, "请检查网络连接", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        OkHttpClient client=new OkHttpClient();
-
-        RequestBody body=new FormBody.Builder()
-                .add("userId",userId)
-                .add("musicId",musicId+"")
-                .build();
-
-        Request request=new Request.Builder()
-                .url(MyEnvironment.serverBasePath+"music/listenMusic")
-                .post(body)
-                .build();
-
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(@NotNull Call call, @NotNull IOException e) {
-
-            }
-
-            @Override
-            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-
             }
         });
     }

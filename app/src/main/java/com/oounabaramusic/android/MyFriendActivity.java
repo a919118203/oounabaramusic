@@ -1,6 +1,7 @@
 package com.oounabaramusic.android;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -9,11 +10,13 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 
 import com.google.android.material.tabs.TabLayout;
+import com.oounabaramusic.android.fragment.BaseFragment;
 import com.oounabaramusic.android.fragment.FollowedFragment;
 import com.oounabaramusic.android.fragment.ToFollowFragment;
 import com.oounabaramusic.android.util.StatusBarUtil;
@@ -28,8 +31,17 @@ public class MyFriendActivity extends BaseActivity {
     public static final int TO_FOLLOW=0;       //关注
     public static final int FOLLOWED=1;        //粉丝
     private TabLayout tabLayout;
-    private List<Fragment> fragments;
+    private List<BaseFragment> fragments;
     private ViewPager viewPager;
+
+    private int userId;
+
+    public static void startActivity(Context context,int userId,int from){
+        Intent intent=new Intent(context,MyFriendActivity.class);
+        intent.putExtra("userId",userId);
+        intent.putExtra("from",from);
+        context.startActivity(intent);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,50 +66,19 @@ public class MyFriendActivity extends BaseActivity {
     }
 
     private void init() {
-        tabLayout=findViewById(R.id.my_friend_tab_layout);
-        tabLayout.addTab(tabLayout.newTab().setText("关注"));
-        tabLayout.addTab(tabLayout.newTab().setText("粉丝"));
-        tabLayout.addOnTabSelectedListener(new TabLayout.BaseOnTabSelectedListener() {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                viewPager.setCurrentItem(tab.getPosition());
-            }
-
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-
-            }
-
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-
-            }
-        });
+        Intent intent=getIntent();
+        userId=intent.getIntExtra("userId",0);
 
         fragments=new ArrayList<>();
-        fragments.add(new ToFollowFragment(this));
-        fragments.add(new FollowedFragment(this));
+        fragments.add(new ToFollowFragment(this,userId));
+        fragments.add(new FollowedFragment(this,userId));
 
+
+        tabLayout=findViewById(R.id.my_friend_tab_layout);
         viewPager=findViewById(R.id.my_friend_view_pager);
         viewPager.setAdapter(new ViewPagerAdapter());
-        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+        tabLayout.setupWithViewPager(viewPager);
 
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-                Objects.requireNonNull(tabLayout.getTabAt(position)).select();
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-
-            }
-        });
-
-        Intent intent=getIntent();
         int position=intent.getIntExtra("from",0);
         Objects.requireNonNull(tabLayout.getTabAt(position)).select();
     }
@@ -124,6 +105,12 @@ public class MyFriendActivity extends BaseActivity {
         @Override
         public int getCount() {
             return fragments.size();
+        }
+
+        @Nullable
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return fragments.get(position).getTitle();
         }
     }
 }

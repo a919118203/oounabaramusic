@@ -9,6 +9,7 @@ public class Singer implements Serializable {
 	private String country;
 	private String introduction;
 	private int fans;
+	private boolean followed;
 	public int getId() {
 		return id;
 	}
@@ -21,10 +22,10 @@ public class Singer implements Serializable {
 	public void setSingerName(String singerName) {
 		this.singerName = singerName;
 	}
-	public String getSex() {
+	public String getType() {
 		return type;
 	}
-	public void setSex(String type) {
+	public void setType(String type) {
 		this.type = type;
 	}
 	public String getCountry() {
@@ -44,5 +45,12 @@ public class Singer implements Serializable {
 	}
 	public void setFans(int fans) {
 		this.fans = fans;
+	}
+
+	public void setFollowed(boolean followed) {
+		this.followed = followed;
+	}
+	public boolean getFollowed(){
+		return followed;
 	}
 }

@@ -6,6 +6,9 @@ public class SqlSelectString {
     public static final String SELECT_ALL_LOCAL_MUSIC=
             String.format("select * from %s where download_status = 0 or download_status = 1",SqlTableString.LOCAL_MUSIC_TBL);
 
+    public static final String SELECT_ALL_MUSIC=
+            String.format("select * from %s",SqlTableString.LOCAL_MUSIC_TBL);
+
     public static final String SELECT_ALL_NEED_CHECK=
             String.format("select md5 from %s where is_server = 2",SqlTableString.LOCAL_MUSIC_TBL);
 

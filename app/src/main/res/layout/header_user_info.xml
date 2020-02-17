@@ -9,7 +9,7 @@
     android:layout_marginStart="22dp"
     android:theme="@style/AppTheme">
 
-    <de.hdodenhof.circleimageview.CircleImageView
+    <com.oounabaramusic.android.widget.customview.MyCircleImageView
         android:id="@+id/user_cover"
         android:src="@mipmap/default_image"
         android:layout_width="70dp"
@@ -28,29 +28,55 @@
         android:layout_marginTop="10dp"
         tools:ignore="HardcodedText" />
 
-    <TextView
+    <LinearLayout
         android:id="@+id/user_to_follow"
-        android:text="关注 11"
-        android:textSize="@dimen/font_small_size"
+        android:orientation="horizontal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/user_name"
         android:layout_marginTop="5dp"
-        android:layout_alignStart="@id/user_name"
-        tools:ignore="HardcodedText" />
+        android:layout_alignStart="@id/user_name">
 
-    <TextView
+        <TextView
+            android:text="关注 "
+            android:textSize="@dimen/font_small_size"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:ignore="HardcodedText" />
+
+        <TextView
+            android:id="@+id/to_follow_cnt"
+            android:textSize="@dimen/font_small_size"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+
+    <LinearLayout
         android:id="@+id/user_followed"
-        android:text="粉丝 4"
-        android:textSize="@dimen/font_small_size"
+        android:orientation="horizontal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_toEndOf="@id/user_to_follow"
-        android:layout_alignTop="@id/user_to_follow"
-        android:layout_marginStart="10dp"
-        tools:ignore="HardcodedText" />
+        android:layout_alignBottom="@id/user_to_follow"
+        android:layout_marginStart="10dp">
+
+        <TextView
+            android:text="粉丝 "
+            android:textSize="@dimen/font_small_size"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:ignore="HardcodedText" />
+
+        <TextView
+            android:id="@+id/followed_cnt"
+            android:textSize="@dimen/font_small_size"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:ignore="HardcodedText" />
+    </LinearLayout>
 
     <TextView
+        android:visibility="gone"
         android:id="@+id/user_change_background"
         android:text="更换背景"
         android:textSize="@dimen/font_small_size"
@@ -67,6 +93,7 @@
         tools:ignore="HardcodedText" />
 
     <TextView
+        android:visibility="gone"
         android:id="@+id/user_edit"
         android:text="编辑"
         android:textSize="@dimen/font_small_size"
@@ -83,6 +110,7 @@
         tools:ignore="HardcodedText" />
 
     <TextView
+        android:visibility="gone"
         android:id="@+id/user_send_message"
         android:text="发私信"
         android:textSize="@dimen/font_small_size"
@@ -99,9 +127,11 @@
         tools:ignore="HardcodedText" />
 
     <TextView
+        android:visibility="gone"
         android:id="@+id/user_follow"
         android:text="关注"
         android:textSize="@dimen/font_small_size"
+        android:textColor="@color/colorPrimary"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/user_name"
@@ -111,10 +141,11 @@
         android:paddingBottom="5dp"
         android:paddingStart="10dp"
         android:paddingEnd="10dp"
-        android:background="@drawable/btn_white_transparent"
+        android:background="@drawable/btn_blue_border"
         tools:ignore="HardcodedText" />
 
     <TextView
+        android:visibility="gone"
         android:id="@+id/user_cancel_follow"
         android:text="取消关注"
         android:textSize="@dimen/font_small_size"
@@ -128,6 +159,5 @@
         android:paddingStart="10dp"
         android:paddingEnd="10dp"
         android:background="@drawable/btn_white_transparent"
-        android:visibility="gone"
         tools:ignore="HardcodedText" />
 </RelativeLayout>

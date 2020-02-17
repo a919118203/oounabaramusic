@@ -9,6 +9,8 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.MenuItem;
 
@@ -17,7 +19,10 @@ import com.oounabaramusic.android.fragment.BaseFragment;
 import com.oounabaramusic.android.fragment.MCSingerFragment;
 import com.oounabaramusic.android.fragment.MCVideoFragment;
 import com.oounabaramusic.android.fragment.TestFragment;
+import com.oounabaramusic.android.util.LogUtil;
+import com.oounabaramusic.android.util.RealPathFromUriUtils;
 import com.oounabaramusic.android.util.StatusBarUtil;
+import com.oounabaramusic.android.util.VideoUtil;
 
 import java.util.ArrayList;
 import java.util.List;

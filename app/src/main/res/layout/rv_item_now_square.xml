@@ -11,18 +11,17 @@
 
     <LinearLayout
         android:orientation="vertical"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <ImageView
+        <com.oounabaramusic.android.widget.customview.MyImageView
             android:id="@+id/cover"
-            android:src="@mipmap/default_image"
             android:layout_width="200dp"
             android:layout_height="100dp"
             android:scaleType="centerCrop"/>
 
         <TextView
-            android:text="内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容"
+            android:id="@+id/content"
             android:textColor="@color/positive"
             android:textSize="@dimen/font_medium_size"
             android:maxLines="2"
@@ -40,14 +39,14 @@
             android:layout_height="wrap_content"
             android:padding="5dp">
 
-            <de.hdodenhof.circleimageview.CircleImageView
-                android:src="@mipmap/default_image"
+            <com.oounabaramusic.android.widget.customview.MyCircleImageView
+                android:id="@+id/header"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:layout_marginEnd="5dp"/>
 
             <TextView
-                android:text="用户名"
+                android:id="@+id/name"
                 android:textSize="@dimen/font_small_size"
                 android:maxLines="1"
                 android:ellipsize="end"
@@ -59,7 +58,7 @@
                 tools:ignore="HardcodedText" />
 
             <TextView
-                android:text="123"
+                android:id="@+id/good_cnt"
                 android:textSize="@dimen/font_small_size"
                 android:maxLines="1"
                 android:ellipsize="end"

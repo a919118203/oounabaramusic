@@ -42,7 +42,6 @@
             android:layout_height="30dp"
             android:layout_below="@id/playlist_name"
             android:layout_alignStart="@id/playlist_name"
-            android:background="@drawable/view_ripple_rectangle"
             android:layout_marginEnd="25dp"
             android:layout_marginTop="10dp">
 
@@ -100,8 +99,7 @@
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="match_parent"
-                android:gravity="center"
-                android:background="@drawable/view_ripple_rectangle">
+                android:gravity="center">
 
                 <ImageView
                     android:src="@mipmap/comment_light"
@@ -124,8 +122,7 @@
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="match_parent"
-                android:gravity="center"
-                android:background="@drawable/view_ripple_rectangle">
+                android:gravity="center">
 
                 <ImageView
                     android:src="@mipmap/download_light"
@@ -143,22 +140,22 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/multiple_choice"
+                android:id="@+id/collection"
                 android:orientation="vertical"
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="match_parent"
-                android:gravity="center"
-                android:background="@drawable/view_ripple_rectangle">
+                android:gravity="center">
 
                 <ImageView
-                    android:src="@mipmap/multiple_choice"
+                    android:id="@+id/collection_image"
+                    android:src="@mipmap/collection_before"
                     android:layout_width="match_parent"
                     android:layout_height="30dp"
                     android:gravity="center"/>
 
                 <TextView
-                    android:text="多选"
+                    android:text="收藏"
                     android:textSize="@dimen/font_small_size"
                     android:layout_width="match_parent"
                     android:layout_height="30dp"
