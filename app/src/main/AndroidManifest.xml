@@ -78,9 +78,6 @@
             android:name=".PostActivity"
             android:label="动态" />
         <activity
-            android:name=".UserCommentActivity"
-            android:label="评论" />
-        <activity
             android:name=".CommentActivity"
             android:label="评论" />
         <activity

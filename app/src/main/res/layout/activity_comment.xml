@@ -48,7 +48,6 @@
 
                         <com.oounabaramusic.android.widget.customview.MyImageView
                             android:id="@+id/cover"
-                            android:src="@mipmap/default_image"
                             android:layout_width="70dp"
                             android:layout_height="70dp"
                             android:layout_alignParentTop="true"
@@ -61,7 +60,6 @@
 
                         <TextView
                             android:id="@+id/name"
-                            android:text="名字"
                             android:textSize="@dimen/font_big_size"
                             android:maxLines="1"
                             android:ellipsize="end"
@@ -76,7 +74,6 @@
 
                         <TextView
                             android:id="@+id/author"
-                            android:text="作者"
                             android:textSize="@dimen/font_medium_size"
                             android:maxLines="1"
                             android:ellipsize="end"
@@ -107,27 +104,6 @@
                         android:layout_width="match_parent"
                         android:layout_height="10dp"
                         android:background="@color/negative"/>
-
-                    <LinearLayout
-                        android:visibility="gone"
-                        android:orientation="vertical"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
-
-                        <TextView
-                            android:text="当前评论"
-                            android:textSize="@dimen/font_medium_size"
-                            android:textColor="@color/positive"
-                            android:textStyle="bold"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="20dp"
-                            android:layout_marginTop="10dp"
-                            android:layout_marginBottom="10dp"
-                            tools:ignore="HardcodedText" />
-
-                        <include layout="@layout/rv_item_comment"/>
-                    </LinearLayout>
 
                     <LinearLayout
                         android:orientation="horizontal"

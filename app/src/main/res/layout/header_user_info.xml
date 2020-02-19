@@ -11,13 +11,11 @@
 
     <com.oounabaramusic.android.widget.customview.MyCircleImageView
         android:id="@+id/user_cover"
-        android:src="@mipmap/default_image"
         android:layout_width="70dp"
         android:layout_height="70dp"/>
 
     <TextView
         android:id="@+id/user_name"
-        android:text="取一个昵称让大家记住你"
         android:textSize="@dimen/font_medium_size"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

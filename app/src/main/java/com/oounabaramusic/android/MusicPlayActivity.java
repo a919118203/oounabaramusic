@@ -30,6 +30,7 @@ import com.oounabaramusic.android.adapter.LyricsAdapter;
 import com.oounabaramusic.android.bean.Comment;
 import com.oounabaramusic.android.bean.Lrc;
 import com.oounabaramusic.android.bean.Music;
+import com.oounabaramusic.android.bean.MyImage;
 import com.oounabaramusic.android.code.BasicCode;
 import com.oounabaramusic.android.okhttputil.LrcHttpUtil;
 import com.oounabaramusic.android.okhttputil.PlayListHttpUtil;
@@ -386,8 +387,9 @@ public class MusicPlayActivity extends BaseActivity implements View.OnClickListe
             controlPlay.setImageBitmap(start);
         }
 
-        serverMusicCover.setImageUrl(MyEnvironment.serverBasePath+
-                "music/loadMusicCover?singerId="+music.getSingerId().split("/")[0]);
+        serverMusicCover.setImage(new MyImage(
+                MyImage.TYPE_SINGER_COVER,
+                Integer.valueOf(music.getSingerId().split("/")[0])));
         serverMusicName.setText(music.getMusicName());
         serverMusicSinger.setText(music.getSingerName().replace("/"," "));
         serverMusicSinger2.setText(music.getSingerName().replace("/"," "));

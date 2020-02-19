@@ -14,6 +14,7 @@ import android.widget.Toast;
 import com.oounabaramusic.android.DownloadManagementActivity;
 import com.oounabaramusic.android.R;
 import com.oounabaramusic.android.bean.Music;
+import com.oounabaramusic.android.bean.MyImage;
 import com.oounabaramusic.android.util.MyEnvironment;
 import com.oounabaramusic.android.widget.customview.MyImageView;
 import com.oounabaramusic.android.widget.popupwindow.MyBottomSheetDialog;
@@ -189,8 +190,10 @@ public class DMMusicNormalAdapter extends RecyclerView.Adapter<DMMusicNormalAdap
                     popupPosition=getAdapterPosition();
 
                     Music item=dataList.get(popupPosition);
-                    musicCover.setImageUrl(MyEnvironment.serverBasePath+
-                            "music/loadMusicCover?singerId="+item.getSingerId().split("/")[0]);
+
+                    musicCover.setImage(new MyImage(
+                            MyImage.TYPE_SINGER_COVER,
+                            Integer.valueOf(item.getSingerId().split("/")[0])));
                     DMMusicNormalAdapter.this.titleMusicName.setText(item.getMusicName());
                     DMMusicNormalAdapter.this.titleSingerName.setText(item.getSingerName().
                             replace("/"," "));

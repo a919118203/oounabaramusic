@@ -44,7 +44,6 @@
 
     <com.oounabaramusic.android.widget.customview.MyCircleImageView
         android:id="@+id/user_cover"
-        android:src="@mipmap/default_image"
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_below="@id/a"

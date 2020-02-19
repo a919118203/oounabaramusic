@@ -27,7 +27,6 @@
 
                 <com.oounabaramusic.android.widget.customview.MyImageView
                     android:id="@+id/background"
-                    android:src="@mipmap/default_background"
                     android:layout_width="match_parent"
                     android:layout_height="350dp"
                     android:scaleType="centerCrop" />

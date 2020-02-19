@@ -9,6 +9,7 @@ import android.widget.TextView;
 import com.oounabaramusic.android.ChooseMusicActivity;
 import com.oounabaramusic.android.R;
 import com.oounabaramusic.android.bean.Music;
+import com.oounabaramusic.android.bean.MyImage;
 import com.oounabaramusic.android.util.MyEnvironment;
 import com.oounabaramusic.android.widget.customview.MyImageView;
 
@@ -44,8 +45,10 @@ public class ChooseMusicAdapter extends RecyclerView.Adapter<ChooseMusicAdapter.
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Music item = dataList.get(position);
-        holder.cover.setImageUrl(MyEnvironment.serverBasePath+
-                "music/loadMusicCover?singerId="+item.getSingerId().split("/")[0]);
+
+        holder.cover.setImage(new MyImage(
+                MyImage.TYPE_SINGER_COVER,
+                Integer.valueOf(item.getSingerId().split("/")[0])));
         holder.name.setText(item.getMusicName());
         holder.singer.setText(item.getSingerName().replace("/"," "));
     }

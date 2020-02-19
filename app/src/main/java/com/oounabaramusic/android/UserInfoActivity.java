@@ -31,6 +31,7 @@ import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.tabs.TabLayout;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.oounabaramusic.android.bean.MyImage;
 import com.oounabaramusic.android.bean.User;
 import com.oounabaramusic.android.code.BasicCode;
 import com.oounabaramusic.android.fragment.BaseFragment;
@@ -220,8 +221,8 @@ public class UserInfoActivity extends BaseActivity implements View.OnClickListen
         }
 
         background.setDefaultImage(BitmapFactory.decodeResource(getResources(),R.mipmap.default_background));
-        background.setImageUrl(MyEnvironment.serverBasePath+
-                "loadUserBackground?userId="+user.getId());
+        background.setImage(new MyImage(
+                MyImage.TYPE_USER_BACKGROUND,user.getId()));
         userHeader.setImageUrl(MyEnvironment.serverBasePath+
                 "loadUserHeader?userId="+user.getId());
         userName.setText(user.getUserName());

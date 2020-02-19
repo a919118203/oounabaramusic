@@ -132,6 +132,7 @@
             tools:ignore="HardcodedText" />
 
         <TextView
+            android:id="@+id/play_all"
             android:text="播放全部"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

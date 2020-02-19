@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.oounabaramusic.android.PostActivity;
 import com.oounabaramusic.android.R;
+import com.oounabaramusic.android.bean.MyImage;
 import com.oounabaramusic.android.bean.Post;
 import com.oounabaramusic.android.fragment.MainNowSquareFragment;
 import com.oounabaramusic.android.util.DensityUtil;
@@ -81,8 +82,7 @@ public class MainNowSquareAdapter extends RecyclerView.Adapter<MainNowSquareAdap
 
         if(item.getHasImage()){
             holder.iv.setVisibility(View.VISIBLE);
-            holder.iv.setImageUrl(MyEnvironment.serverBasePath+
-                    "loadPostImage?postId="+item.getId());
+            holder.iv.setImage(new MyImage(MyImage.TYPE_POST_IMAGE,item.getId()));
         }else{
             holder.iv.setVisibility(View.GONE);
         }

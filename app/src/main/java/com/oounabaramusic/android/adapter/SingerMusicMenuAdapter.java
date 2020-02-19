@@ -24,6 +24,7 @@ import com.oounabaramusic.android.R;
 import com.oounabaramusic.android.SingerActivity;
 import com.oounabaramusic.android.bean.Comment;
 import com.oounabaramusic.android.bean.Music;
+import com.oounabaramusic.android.bean.MyImage;
 import com.oounabaramusic.android.okhttputil.PlayListHttpUtil;
 import com.oounabaramusic.android.util.MyEnvironment;
 import com.oounabaramusic.android.widget.customview.MyCircleImageView;
@@ -117,7 +118,7 @@ public class SingerMusicMenuAdapter extends RecyclerView.Adapter<SingerMusicMenu
                     new SingerDialog(activity,
                             dataList.get(popupPosition).getSingerName(),
                             dataList.get(popupPosition).getSingerId(),
-                            activity.getSinger().getId());
+                            activity.getSingerId());
                 }else{
                     toSingerActivity(Integer.valueOf(dataList.get(popupPosition).getSingerId()));
                 }
@@ -132,7 +133,7 @@ public class SingerMusicMenuAdapter extends RecyclerView.Adapter<SingerMusicMenu
      * @param singerId
      */
     private void toSingerActivity(int singerId){
-        if(singerId==activity.getSinger().getId()){
+        if(singerId==activity.getSingerId()){
             return ;
         }
 
@@ -147,8 +148,9 @@ public class SingerMusicMenuAdapter extends RecyclerView.Adapter<SingerMusicMenu
     private void flushPopup(){
         Music item=dataList.get(popupPosition);
 
-        musicCover.setImageUrl(MyEnvironment.serverBasePath+"music/loadMusicCover?singerId="
-                +item.getSingerId().split("/")[0]);
+        musicCover.setImage(new MyImage(
+                MyImage.TYPE_SINGER_COVER,
+                Integer.valueOf(item.getSingerId().split("/")[0])));
         titleMusicName.setText(item.getMusicName());
         titleSingerName.setText(item.getSingerName());
         singerName.setText(item.getSingerName());

@@ -9,7 +9,6 @@
 
     <com.oounabaramusic.android.widget.customview.MyCircleImageView
         android:id="@+id/singer_cover"
-        android:src="@mipmap/default_image"
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:padding="10dp"
@@ -17,7 +16,6 @@
 
     <TextView
         android:id="@+id/singer_name"
-        android:text="歌手名"
         android:textSize="@dimen/font_medium_size"
         android:textColor="@color/positive"
         android:maxLines="1"

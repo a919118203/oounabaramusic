@@ -17,6 +17,7 @@ import com.oounabaramusic.android.CommentActivity;
 import com.oounabaramusic.android.R;
 import com.oounabaramusic.android.bean.Comment;
 import com.oounabaramusic.android.bean.Music;
+import com.oounabaramusic.android.bean.MyImage;
 import com.oounabaramusic.android.code.BasicCode;
 import com.oounabaramusic.android.okhttputil.S2SHttpUtil;
 import com.oounabaramusic.android.util.MyEnvironment;
@@ -182,9 +183,9 @@ public class RPMusicNormalAdapter extends RecyclerView.Adapter<RPMusicNormalAdap
                     popupPosition=getAdapterPosition();
                     Music item=dataList.get(popupPosition);
 
-                    musicCover.setImageUrl(MyEnvironment.serverBasePath
-                            +"music/loadMusicCover?singerId="
-                            +item.getSingerId().split("/")[0]);
+                    musicCover.setImage(new MyImage(
+                            MyImage.TYPE_SINGER_COVER,
+                            Integer.valueOf(item.getSingerId().split("/")[0])));
                     titleMusicName.setText(item.getMusicName());
                     titleSingerName.setText(item.getSingerName().replace("/"," "));
                     RPMusicNormalAdapter.this.singerName.setText(item.getSingerName().replace("/"," "));

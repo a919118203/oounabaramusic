@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.oounabaramusic.android.PlayListActivity;
 import com.oounabaramusic.android.R;
+import com.oounabaramusic.android.bean.MyImage;
 import com.oounabaramusic.android.bean.PlayList;
 import com.oounabaramusic.android.util.DensityUtil;
 import com.oounabaramusic.android.util.MyEnvironment;
@@ -72,8 +73,7 @@ public class NDPlayListAdapter extends RecyclerView.Adapter<NDPlayListAdapter.Vi
 
         PlayList item = dataList.get(position);
 
-        holder.cover.setImageUrl(MyEnvironment.serverBasePath+
-                "loadPlayListCover?playListId="+item.getId());
+        holder.cover.setImage(new MyImage(MyImage.TYPE_PLAY_LIST_COVER,item.getId()));
         holder.name.setText(item.getPlayListName());
     }
 
@@ -99,9 +99,8 @@ public class NDPlayListAdapter extends RecyclerView.Adapter<NDPlayListAdapter.Vi
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent=new Intent(activity, PlayListActivity.class);
-                    intent.putExtra("playList",dataList.get(getAdapterPosition()));
-                    activity.startActivity(intent);
+                    PlayListActivity.startActivity(activity,
+                            dataList.get(getAdapterPosition()).getId());
                 }
             });
         }

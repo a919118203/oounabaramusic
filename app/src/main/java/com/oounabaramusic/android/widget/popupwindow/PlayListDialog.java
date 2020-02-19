@@ -16,6 +16,7 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.oounabaramusic.android.R;
+import com.oounabaramusic.android.bean.MyImage;
 import com.oounabaramusic.android.bean.PlayList;
 import com.oounabaramusic.android.code.BasicCode;
 import com.oounabaramusic.android.okhttputil.PlayListHttpUtil;
@@ -108,8 +109,9 @@ public class PlayListDialog {
             public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
                 holder.playListCnt.setText(dataList.get(position).getCnt()+"");
                 holder.playListName.setText(dataList.get(position).getPlayListName());
-                holder.playListCover.setImageUrl(MyEnvironment.serverBasePath+
-                        "loadPlayListCover?playListId="+dataList.get(position).getId());
+                holder.playListCover.setImage(new MyImage(
+                        MyImage.TYPE_PLAY_LIST_COVER,
+                        dataList.get(position).getId()));
             }
 
             @Override

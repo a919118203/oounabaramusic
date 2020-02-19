@@ -115,7 +115,7 @@ public class MCVideoAdapter extends RecyclerView.Adapter<MCVideoAdapter.ViewHold
         holder.cover.setImageBitmap(
                 VideoUtil.getVideoCover(video.getFilePath()));
         holder.len.setText(FormatUtil.secondToString(
-                VideoUtil.getVideoLen(video.getFilePath())/1000));
+                video.getDuration()/1000));
         holder.title.setText(video.getTitle());
     }
 

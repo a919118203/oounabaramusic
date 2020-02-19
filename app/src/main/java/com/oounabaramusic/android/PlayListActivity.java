@@ -5,6 +5,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -28,6 +29,7 @@ import com.google.gson.reflect.TypeToken;
 import com.oounabaramusic.android.adapter.MusicAdapter;
 import com.oounabaramusic.android.bean.Comment;
 import com.oounabaramusic.android.bean.Music;
+import com.oounabaramusic.android.bean.MyImage;
 import com.oounabaramusic.android.bean.PlayList;
 import com.oounabaramusic.android.code.BasicCode;
 import com.oounabaramusic.android.okhttputil.PlayListHttpUtil;
@@ -50,6 +52,7 @@ public class PlayListActivity extends BaseActivity implements View.OnClickListen
     private ProgressBar loadMusic;
     private AppBarLayout appBar;
     private PlayList playList;
+    private int playListId;
 
     private TextView playListName,userName;
     private MyCircleImageView userHeader;
@@ -66,6 +69,12 @@ public class PlayListActivity extends BaseActivity implements View.OnClickListen
     private boolean isMyLove;     //是否是“我喜欢的音乐”歌单
 
     private Bitmap noCollect,collected;
+
+    public static void startActivity(Context context,int playListId){
+        Intent intent = new Intent(context,PlayListActivity.class);
+        intent.putExtra("playListId",playListId);
+        context.startActivity(intent);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,12 +94,15 @@ public class PlayListActivity extends BaseActivity implements View.OnClickListen
 
         sp= PreferenceManager.getDefaultSharedPreferences(this);
         Intent intent=getIntent();
-        playList= (PlayList) intent.getSerializableExtra("playList");
-        isMyLove = intent.getBooleanExtra("isMyLove",false);
+        playListId=intent.getIntExtra("playListId",0);
 
         init();
+    }
 
-        loadMusic();
+    @Override
+    protected void onResume() {
+        super.onResume();
+        initContent(true);
     }
 
     public PlayListHandler getHandler() {
@@ -107,20 +119,11 @@ public class PlayListActivity extends BaseActivity implements View.OnClickListen
                 playList.getId()+"",new PlayListHandler(this));
     }
 
-
-    @Override
-    protected void onRestart() {
-        super.onRestart();
-        PlayListHttpUtil.findPlayList(this,""+playList.getId(),new PlayListHandler(this));
-        loadMusic();
-    }
-
     private void init() {
         handler=new PlayListHandler(this);
 
         //初始化音乐列表
         musicRv=findViewById(R.id.music_recycler_view);
-        musicRv.setAdapter(adapter=new MusicAdapter(this));
         musicRv.setLayoutManager(new LinearLayoutManager(this));
 
         findViewById(R.id.play_all).setOnClickListener(this);
@@ -165,19 +168,25 @@ public class PlayListActivity extends BaseActivity implements View.OnClickListen
 
         noCollect= BitmapFactory.decodeResource(getResources(),R.mipmap.collection_before);
         collected= BitmapFactory.decodeResource(getResources(),R.mipmap.collection_after);
-
-        initContent();
     }
 
-    private void initContent(){
+    private void initContent(boolean f){
+
+        if(f){
+            new S2SHttpUtil(
+                    this,
+                    playListId+"",
+                    MyEnvironment.serverBasePath+"findPlayListById",
+                    handler)
+            .call(BasicCode.GET_CONTENT);
+            return;
+        }
 
         //设置歌单内容
         playListName.setText(playList.getPlayListName());
         userName.setText(playList.getCreateUserName());
         playListCover.setEventHandler(new PlayListHandler(this));
-        playListCover.setImageUrl(MyEnvironment.serverBasePath+
-                "loadPlayListCover?playListId="+
-                playList.getId());
+        playListCover.setImage(new MyImage(MyImage.TYPE_PLAY_LIST_COVER,playList.getId()));
         userHeader.setImageUrl(MyEnvironment.serverBasePath+
                 "loadUserHeader?userId="+
                 playList.getCreateUserId());
@@ -203,6 +212,13 @@ public class PlayListActivity extends BaseActivity implements View.OnClickListen
                         .call(BasicCode.PLAY_LIST_IS_COLLECT);
             }
         }
+
+        if(adapter==null){
+            musicRv.setAdapter(adapter=new MusicAdapter(this));
+        }
+
+        invalidateOptionsMenu();
+        loadMusic();
     }
 
     @Override
@@ -210,7 +226,7 @@ public class PlayListActivity extends BaseActivity implements View.OnClickListen
         getMenuInflater().inflate(R.menu.menu_play_list,menu);
 
         boolean f=false;
-        if(sp.getBoolean("login",false)){
+        if(playList!=null&&sp.getBoolean("login",false)){
             if(sp.getString("userId","-1").equals(playList.getCreateUserId()+"")){
                 if(isMyLove){
                     f=false;
@@ -305,10 +321,11 @@ public class PlayListActivity extends BaseActivity implements View.OnClickListen
                     Bitmap newBackground= ImageFilter.blurBitmap(activity,bm,25);
                     activity.background.setImageBitmap(newBackground);
                     break;
-                case PlayListHttpUtil.MESSAGE_FIND_PLAY_LIST_END:
+                case BasicCode.GET_CONTENT:
                     activity.playList=activity.gson.fromJson((String)msg.obj,
                             new TypeToken<PlayList>(){}.getType());
-                    activity.initContent();
+                    activity.isMyLove=activity.playList.getIsMyLove()==1;
+                    activity.initContent(false);
                     break;
                 case PlayListHttpUtil.MESSAGE_FIND_PLAY_LIST_MUSIC_END:
                     List<String> data=activity.gson.fromJson((String)msg.obj,

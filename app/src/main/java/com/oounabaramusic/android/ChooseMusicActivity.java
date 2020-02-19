@@ -71,7 +71,7 @@ public class ChooseMusicActivity extends AppCompatActivity {
     }
 
     private void search(String musicName){
-        SearchHttpUtil.searchMusic(this,musicName,new MyHandler(this));
+        //SearchHttpUtil.searchMusic(this,musicName,new MyHandler(this));  TODO
         InputMethodUtil.hideSoftKeyboard(this);
     }
 

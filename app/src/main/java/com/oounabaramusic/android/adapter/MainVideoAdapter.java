@@ -122,7 +122,7 @@ public class MainVideoAdapter extends RecyclerView.Adapter<MainVideoAdapter.View
         Video video = item.getVideo();
 
         holder.title.setText(video.getTitle());
-        holder.videoPlayer.setFilePath(video.getFilePath());
+        holder.videoPlayer.setVideo(video);
         holder.header.setImageUrl(MyEnvironment.serverBasePath+
                 "loadUserHeader?userId="+item.getUserId());
         holder.userName.setText(item.getUserName());

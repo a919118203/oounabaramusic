@@ -13,13 +13,8 @@
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/action_bar_size">
-
-
-        </androidx.appcompat.widget.Toolbar>
+            android:layout_height="@dimen/action_bar_size"/>
     </com.google.android.material.appbar.AppBarLayout>
-
-
 
     <LinearLayout
         android:orientation="vertical"

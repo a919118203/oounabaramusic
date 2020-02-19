@@ -81,15 +81,41 @@ public class SendVideoPostActivity extends BaseActivity implements View.OnClickL
                 break;
             case R.id.upload:
                 if(checkSend()){
-                    //先上传视频
-                    Video video = new Video();
-                    video.setTitle(title.getText().toString());
-                    video.setUserId(SharedPreferencesUtil.getUserId(sp));
-                    VideoHttpUtil.uploadVideo(this,video,filePath,new MyHandler(this));
+                    //先发动态
+                    sendPost();
                 }
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void sendPost(){
+        Post post = new Post();
+        post.setContentId(0);
+        post.setContentType(Post.VIDEO);
+        post.setContent(content.getText().toString());
+        post.setUserId(SharedPreferencesUtil.getUserId(sp));
+
+        new S2SHttpUtil(
+                this,
+                new Gson().toJson(post),
+                MyEnvironment.serverBasePath+"addPost",
+                new MyHandler(this))
+                .call(BasicCode.SEND_MESSAGE);
+    }
+
+    private void uploadVideo(int postId){
+        Video video = new Video();
+        video.setPostId(postId);
+        video.setTitle(title.getText().toString());
+        video.setUserId(SharedPreferencesUtil.getUserId(sp));
+        video.setDuration(VideoUtil.getVideoLen(filePath));
+
+        VideoHttpUtil.uploadVideo(this,video,filePath,new MyHandler(this));
+    }
+
+    private void uploadVideoCover(int videoId){
+        VideoHttpUtil.uploadVideoCover(this,videoId,filePath,new MyHandler(this));
     }
 
     private void init(){
@@ -197,24 +223,18 @@ public class SendVideoPostActivity extends BaseActivity implements View.OnClickL
         public void handleMessage(Message msg) {
             switch (msg.what){
                 case BasicCode.UPLOAD_VIDEO:
-                    int videoId = Integer.valueOf((String)msg.obj);
-
-                    //上传视频后发动态
-                    Post post = new Post();
-                    post.setContentId(videoId);
-                    post.setContentType(Post.VIDEO);
-                    post.setContent(activity.content.getText().toString());
-                    post.setUserId(SharedPreferencesUtil.getUserId(activity.sp));
-
-                    new S2SHttpUtil(
-                            activity,
-                            new Gson().toJson(post),
-                            MyEnvironment.serverBasePath+"addPost",
-                            this)
-                            .call(BasicCode.SEND_MESSAGE);
+                    //然后上传视频封面
+                    int videoId = Integer.valueOf((String) msg.obj);
+                    activity.uploadVideoCover(videoId);
                     break;
 
                 case BasicCode.SEND_MESSAGE:
+                    //然后上传视频
+                    int postId = Integer.valueOf((String) msg.obj);
+                    activity.uploadVideo(postId);
+                    break;
+
+                case BasicCode.UPLOAD_VIDEO_COVER:
                     Toast.makeText(activity, "发布成功", Toast.LENGTH_SHORT).show();
                     activity.finish();
                     break;

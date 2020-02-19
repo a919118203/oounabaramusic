@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -25,6 +26,7 @@ import android.widget.TextView;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.tabs.TabLayout;
 import com.google.gson.reflect.TypeToken;
+import com.oounabaramusic.android.bean.MyImage;
 import com.oounabaramusic.android.bean.Singer;
 import com.oounabaramusic.android.fragment.BaseFragment;
 import com.oounabaramusic.android.fragment.SingerMainFragment;
@@ -33,6 +35,7 @@ import com.oounabaramusic.android.okhttputil.SingerClassificationHttpUtil;
 import com.oounabaramusic.android.util.FormatUtil;
 import com.oounabaramusic.android.util.LogUtil;
 import com.oounabaramusic.android.util.MyEnvironment;
+import com.oounabaramusic.android.util.SharedPreferencesUtil;
 import com.oounabaramusic.android.util.StatusBarUtil;
 import com.oounabaramusic.android.widget.customview.MyImageView;
 
@@ -47,6 +50,7 @@ public class SingerActivity extends BaseActivity {
     private TabLayout tl;
     private ViewPager vp;
     private Singer singer;
+    private int singerId;
     private boolean followed;
 
     private RelativeLayout headerLayout;
@@ -61,8 +65,14 @@ public class SingerActivity extends BaseActivity {
     private MyImageView imageView;
     private View block;
 
-    private SharedPreferences sp;
     private SingerActivityHandler handler;
+    private boolean initOk;
+
+    public static void startActivity(Context context,int singerId){
+        Intent intent = new Intent(context,SingerActivity.class);
+        intent.putExtra("singerId",singerId);
+        context.startActivity(intent);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,31 +86,22 @@ public class SingerActivity extends BaseActivity {
         ActionBar actionBar=getSupportActionBar();
         Objects.requireNonNull(actionBar).setDisplayHomeAsUpEnabled(true);
 
-        sp= PreferenceManager.getDefaultSharedPreferences(this);
+
         handler=new SingerActivityHandler(this);
+        initOk=false;
 
         Intent intent=getIntent();
-        singer= (Singer) intent.getSerializableExtra("singer");
-        followed=intent.getBooleanExtra("followed",false);
+        singerId=intent.getIntExtra("singerId",1);
 
-        if(singer==null){
-            singer=new Singer();
-            singer.setId(intent.getIntExtra("singerId",1));
-
-            String userId;
-            boolean login=sp.getBoolean("login",false);
-            if(login){
-                userId=sp.getString("userId","-1");
-            }else{
-                userId="-1";
-            }
-            SingerClassificationHttpUtil.loadSingerBySingerId(
-                    this,
-                    singer.getId()+"",
-                    userId,handler);
-        }else{
-            initSinger();
+        String userId="0";
+        if(SharedPreferencesUtil.isLogin(sp)){
+            userId=SharedPreferencesUtil.getUserId(sp)+"";
         }
+
+        SingerClassificationHttpUtil.loadSingerBySingerId(
+                this,
+                singerId+"",
+                userId,handler);
 
         init();
     }
@@ -144,8 +145,8 @@ public class SingerActivity extends BaseActivity {
         toolBarSingerName.setText(singer.getSingerName());
         singerName.setText(singer.getSingerName());
         fans.setText(FormatUtil.numberToString(singer.getFans()));
-        imageView.setImageUrl(MyEnvironment.serverBasePath+
-                "music/loadSingerCover?singerId="+singer.getId());
+        imageView.setImage(new MyImage(
+                MyImage.TYPE_SINGER_COVER,singer.getId()));
 
         View.OnClickListener followListener = new View.OnClickListener() {
             @Override
@@ -194,6 +195,10 @@ public class SingerActivity extends BaseActivity {
         dialog.show();
     }
 
+    public int getSingerId() {
+        return singerId;
+    }
+
     public Singer getSinger() {
         return singer;
     }
@@ -234,6 +239,12 @@ public class SingerActivity extends BaseActivity {
                 }
             }
         });
+
+        //如果初始化完成才开始初始化歌手信息
+        initOk=true;
+        if(singer!=null){
+            initSinger();
+        }
     }
 
     @Override
@@ -280,7 +291,11 @@ public class SingerActivity extends BaseActivity {
                         activity.followed=activity.gson.fromJson(f,
                                 new TypeToken<Boolean>(){}.getType());
                     }
-                    activity.initSinger();
+
+                    //如果初始化完成才开始初始化歌手信息
+                    if(activity.initOk){
+                        activity.initSinger();
+                    }
                     break;
             }
         }

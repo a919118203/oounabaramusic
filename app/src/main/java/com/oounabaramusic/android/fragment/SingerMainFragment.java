@@ -16,6 +16,7 @@ import com.oounabaramusic.android.SingerActivity;
 import com.oounabaramusic.android.adapter.MusicAdapter;
 import com.oounabaramusic.android.adapter.SingerMusicMenuAdapter;
 import com.oounabaramusic.android.bean.Music;
+import com.oounabaramusic.android.bean.Singer;
 import com.oounabaramusic.android.okhttputil.SearchHttpUtil;
 
 import java.util.List;
@@ -48,7 +49,7 @@ public class SingerMainFragment extends BaseFragment {
         init(view);
 
         SearchHttpUtil.searchMusicBySingerId(activity,
-                activity.getSinger().getId()+"","0","10",handler);
+                activity.getSingerId()+"","0","10",handler);
         return view;
     }
 
@@ -74,7 +75,12 @@ public class SingerMainFragment extends BaseFragment {
     }
 
     public void refresh(){
-        singerIntroduction.setText(activity.getSinger().getIntroduction());
+        Singer singer = activity.getSinger();
+        if(singer==null){
+            return;
+        }
+
+        singerIntroduction.setText(singer.getIntroduction());
     }
 
     static class MusicHandler extends Handler{

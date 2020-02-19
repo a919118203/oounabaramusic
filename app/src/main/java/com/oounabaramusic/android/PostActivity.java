@@ -39,6 +39,7 @@ import com.oounabaramusic.android.adapter.CommentAdapter;
 import com.oounabaramusic.android.adapter.PostAdapter;
 import com.oounabaramusic.android.bean.Comment;
 import com.oounabaramusic.android.bean.Music;
+import com.oounabaramusic.android.bean.MyImage;
 import com.oounabaramusic.android.bean.Post;
 import com.oounabaramusic.android.bean.Reply;
 import com.oounabaramusic.android.bean.Video;
@@ -242,16 +243,15 @@ public class PostActivity extends BaseActivity implements View.OnClickListener{
         content.setText(post.getContent());
         if(post.getHasImage()){
             image.setVisibility(View.VISIBLE);
-            image.setImageUrl(MyEnvironment.serverBasePath+
-                    "loadPostImage?postId="+postId);
+            image.setImage(new MyImage(MyImage.TYPE_POST_IMAGE,postId));
         }
         switch (post.getContentType()){
             case Post.MUSIC:
                 Music item = new Music(post.getMusic());
                 music.setVisibility(View.VISIBLE);
-                musicCover.setImageUrl(MyEnvironment.serverBasePath+
-                        "music/loadMusicCover?singerId="+
-                        item.getSingerId().split("/")[0]);
+                musicCover.setImage(new MyImage(
+                        MyImage.TYPE_SINGER_COVER,
+                        Integer.valueOf(item.getSingerId().split("/")[0])));
                 musicName.setText(item.getMusicName());
                 singerName.setText(item.getSingerName().replace("/"," "));
                 break;
@@ -259,7 +259,7 @@ public class PostActivity extends BaseActivity implements View.OnClickListener{
             case Post.VIDEO:
                 video.setVisibility(View.VISIBLE);
                 Video video = post.getVideo();
-                this.video.setFilePath(video.getFilePath());
+                this.video.setVideo(video);
                 break;
 
             case Post.FORWARD:
@@ -297,15 +297,15 @@ public class PostActivity extends BaseActivity implements View.OnClickListener{
                 if(index!=null){
                     if(index.getHasImage()){
                         innerImage.setVisibility(View.VISIBLE);
-                        innerImage.setImageUrl(MyEnvironment.serverBasePath+
-                                "loadPostImage?postId="+index.getId());
+                        innerImage.setImage(new MyImage(MyImage.
+                                TYPE_POST_IMAGE,index.getId()));
                     }
                     if(index.getMusic()!=null){
                         Music m = new Music(index.getMusic());
                         innerMusic.setVisibility(View.VISIBLE);
-                        innerMusicCover.setImageUrl(MyEnvironment.serverBasePath+
-                                "music/loadMusicCover?singerId="+
-                                m.getSingerId().split("/")[0]);
+                        innerMusicCover.setImage(new MyImage(
+                                MyImage.TYPE_SINGER_COVER,
+                                Integer.valueOf(m.getSingerId().split("/")[0])));
                         innerMusicName.setText(m.getMusicName());
                         innerSingerName.setText(m.getSingerName().replace("/"," "));
                     }
@@ -313,7 +313,7 @@ public class PostActivity extends BaseActivity implements View.OnClickListener{
                     if(index.getVideo()!=null){
                         Video v = index.getVideo();
                         innerVideo.setVisibility(View.VISIBLE);
-                        innerVideo.setFilePath(v.getFilePath());
+                        innerVideo.setVideo(v);
                     }
                 }else{
                     innerContent.append("\n从这以后的动态已被转移到了虚空...");
@@ -432,13 +432,15 @@ public class PostActivity extends BaseActivity implements View.OnClickListener{
                 break;
 
             case R.id.post_image:
-                new ShowImageDialog(this,MyEnvironment.serverBasePath+
-                        "loadPostImage?postId="+this.post.getId()).show();
+                new ShowImageDialog(
+                        this,
+                        new MyImage(MyImage.TYPE_POST_IMAGE,this.post.getId()))
+                        .show();
                 break;
 
             case R.id.inner_image:
-                new ShowImageDialog(this,MyEnvironment.serverBasePath+
-                        "loadPostImage?postId="+this.post.getPost().getId()).show();
+                new ShowImageDialog(this,
+                        new MyImage(MyImage.TYPE_POST_IMAGE,this.post.getPost().getId())).show();
                 break;
 
             case R.id.post_music:

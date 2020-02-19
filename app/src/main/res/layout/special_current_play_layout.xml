@@ -19,7 +19,6 @@
 
     <com.oounabaramusic.android.widget.customview.MyCircleImageView
         android:id="@+id/music_cover"
-        android:src="@mipmap/default_image"
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_margin="10dp"
@@ -28,7 +27,6 @@
 
     <com.oounabaramusic.android.widget.textview.TextViewMarqueeTitle
         android:id="@+id/music_name"
-        android:text="歌名"
         android:textColor="@color/positive"
         android:textSize="@dimen/font_medium_size"
         android:layout_width="match_parent"
@@ -40,7 +38,6 @@
 
     <TextView
         android:id="@+id/singer_name"
-        android:text="歌手名和歌词"
         android:textSize="@dimen/font_small_size"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

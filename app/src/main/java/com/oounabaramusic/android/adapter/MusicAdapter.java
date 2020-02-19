@@ -20,6 +20,7 @@ import com.oounabaramusic.android.R;
 import com.oounabaramusic.android.SingerActivity;
 import com.oounabaramusic.android.bean.Comment;
 import com.oounabaramusic.android.bean.Music;
+import com.oounabaramusic.android.bean.MyImage;
 import com.oounabaramusic.android.okhttputil.PlayListHttpUtil;
 import com.oounabaramusic.android.util.MyEnvironment;
 import com.oounabaramusic.android.widget.customview.MyImageView;
@@ -200,12 +201,14 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.ViewHolder> 
                 @Override
                 public void onClick(View v) {
                     popupPosition=getAdapterPosition();
-                    musicCover.setImageUrl(MyEnvironment.serverBasePath+"music/loadMusicCover?singerId="+
-                            dataList.get(popupPosition).getSingerId().split("/")[0]);
-                    titleMusicName.setText(dataList.get(popupPosition).getMusicName());
-                    titleMusicSinger.setText(dataList.get(popupPosition).
+                    Music item = dataList.get(popupPosition);
+                    musicCover.setImage(new MyImage(
+                            MyImage.TYPE_SINGER_COVER,
+                            Integer.valueOf(item.getSingerId().split("/")[0])));
+                    titleMusicName.setText(item.getMusicName());
+                    titleMusicSinger.setText(item.
                             getSingerName().replace("/"," "));
-                    MusicAdapter.this.musicSinger.setText(dataList.get(popupPosition).
+                    MusicAdapter.this.musicSinger.setText(item.
                             getSingerName().replace("/"," "));
                     spw.show();
                 }

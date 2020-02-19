@@ -7,6 +7,7 @@
     <item
         android:id="@+id/edit_playlist_info"
         android:title="编辑歌单信息"
+        android:visible="false"
         app:showAsAction="never"
         tools:ignore="HardcodedText" />
 </menu>

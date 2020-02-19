@@ -26,6 +26,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.oounabaramusic.android.bean.Music;
+import com.oounabaramusic.android.bean.MyImage;
 import com.oounabaramusic.android.bean.Post;
 import com.oounabaramusic.android.code.BasicCode;
 import com.oounabaramusic.android.okhttputil.PostHttpUtil;
@@ -124,8 +125,9 @@ public class SendPostActivity extends BaseActivity implements View.OnClickListen
 
     private void setMusic(){
         displayMusic.setVisibility(View.VISIBLE);
-        cover.setImageUrl(MyEnvironment.serverBasePath+
-                "music/loadMusicCover?singerId="+music.getSingerId().split("/")[0]);
+        cover.setImage(new MyImage(
+                MyImage.TYPE_SINGER_COVER,
+                Integer.valueOf(music.getSingerId().split("/")[0])));
         name.setText(music.getMusicName());
         singer.setText(music.getSingerName().replace("/"," "));
     }

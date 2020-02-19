@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.android.material.navigation.NavigationView;
+import com.oounabaramusic.android.bean.MyImage;
 import com.oounabaramusic.android.fragment.MainMyFragment;
 import com.oounabaramusic.android.fragment.MainNewDiscoveryFragment;
 import com.oounabaramusic.android.fragment.MainNowFragment;
@@ -167,8 +168,12 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
         userId = sp.getString("userId","-1");
         userName = sp.getString("userName","null");
 
-        userHeader.setImageUrl(MyEnvironment.
-                serverBasePath+"/loadUserHeader?userId="+userId);
+        MyImage image = new MyImage();
+        image.setContentType(MyImage.TYPE_USER_HEADER);
+        image.setContentId(Integer.valueOf(userId));
+//        userHeader.setImageUrl(MyEnvironment.
+//                serverBasePath+"/loadUserHeader?userId="+userId);
+        userHeader.setImage(image);
         userNameTV.setText(userName);
     }
 

@@ -13,20 +13,21 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
 
+import com.oounabaramusic.android.bean.MyImage;
 import com.oounabaramusic.android.util.DensityUtil;
 import com.oounabaramusic.android.widget.customview.MyImageView;
 
 public class ShowImageDialog {
 
-    private String url;
+    private MyImage image;
     private Activity activity;
     private AlertDialog dialog;
 
     private MyImageView imageView;
 
-    public ShowImageDialog(Activity activity,String url){
+    public ShowImageDialog(Activity activity, MyImage image){
         this.activity=activity;
-        this.url=url;
+        this.image=image;
 
         init();
     }
@@ -62,6 +63,7 @@ public class ShowImageDialog {
         window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
         imageView.setSizeAdaptive(true,activity.getResources().getDisplayMetrics().widthPixels);
-        imageView.setImageUrl(url);
+        imageView.setImage(image);
+
     }
 }

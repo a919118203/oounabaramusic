@@ -10,6 +10,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.oounabaramusic.android.R;
+import com.oounabaramusic.android.bean.MyImage;
 import com.oounabaramusic.android.bean.PlayListBigTag;
 import com.oounabaramusic.android.bean.PlayListSmallTag;
 import com.oounabaramusic.android.util.DensityUtil;
@@ -146,8 +147,9 @@ public class TagAdapter extends RecyclerView.Adapter<TagAdapter.ViewHolder> impl
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         GridLayoutTagGrid grid=holder.grid;
 
-        holder.icon.setImageUrl(MyEnvironment.serverBasePath+
-                "playlisttagicon/"+dataList.get(position).getId()+".png");
+        holder.icon.setImage(new MyImage(
+                MyImage.TYPE_PLAY_LIST_TAG_ICON,
+                dataList.get(position).getId()));
         holder.name.setText(dataList.get(position).getName());
 
         List<PlayListSmallTag> smallTags=dataList.get(position).getTags();

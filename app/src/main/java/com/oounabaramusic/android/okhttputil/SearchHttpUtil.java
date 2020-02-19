@@ -29,52 +29,6 @@ import okhttp3.Response;
 
 public class SearchHttpUtil {
 
-    public static void searchMusic(Context context, String search, final Handler handler){
-
-        if(!InternetUtil.checkNet(context)){
-            Toast.makeText(context, "请检查网络连接", Toast.LENGTH_SHORT).show();
-            handler.sendEmptyMessage(HttpUtil.NO_NET);
-            return;
-        }
-
-        String url= MyEnvironment.serverBasePath+"music/searchMusic";
-
-        OkHttpClient client=new OkHttpClient();
-
-        RequestBody body=new FormBody.Builder()
-                .add("searchText",search)
-                .build();
-
-        Request request=new Request.Builder()
-                .url(url)
-                .post(body)
-                .build();
-
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                handler.sendEmptyMessage(HttpUtil.FAILURE);
-            }
-
-            @Override
-            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                Gson gson=new Gson();
-
-                List<String> json= gson.fromJson(response.body().string(),new TypeToken<List<String>>(){}.getType());
-                List<Music> dataList=new ArrayList<>();
-
-                for(String m:json){
-                    dataList.add(new Music(m));
-                }
-
-                Message message=new Message();
-                message.what= SearchActivity.MESSAGE_SEARCH_MUSIC;
-                message.obj=dataList;
-                handler.sendMessage(message);
-            }
-        });
-    }
-
     public static void searchMusicBySingerId(Context context, String singerId,
                                              String limit, String offset, final Handler handler){
 

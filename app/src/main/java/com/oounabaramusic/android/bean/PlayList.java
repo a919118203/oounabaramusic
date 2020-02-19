@@ -12,8 +12,9 @@ public class PlayList implements Serializable{
 	private int createUserId;
 	private String createUserName;
 	private Date createDate;
-	private int cnt;
+	private int cnt;           //歌单里有多少首歌
 	private int favorites;     //被收藏多少次
+	private int isMyLove;      //是否是“我喜爱的音乐”歌单
 	public int getId() {
 		return id;
 	}
@@ -67,5 +68,11 @@ public class PlayList implements Serializable{
 	}
 	public void setFavorites(int favorites) {
 		this.favorites = favorites;
+	}
+	public int getIsMyLove() {
+		return isMyLove;
+	}
+	public void setIsMyLove(int isMyLove) {
+		this.isMyLove = isMyLove;
 	}
 }

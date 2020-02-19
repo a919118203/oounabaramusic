@@ -9,13 +9,11 @@
     android:baselineAligned="false">
 
     <ImageView
-        android:src="@mipmap/default_image"
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:scaleType="centerCrop"/>
 
     <TextView
-        android:text="歌名"
         android:textSize="@dimen/font_medium_size"
         android:maxLines="2"
         android:ellipsize="end"
@@ -26,7 +24,6 @@
         tools:ignore="HardcodedText" />
 
     <TextView
-        android:text="歌手"
         android:textSize="@dimen/font_small_size"
         android:maxLines="1"
         android:ellipsize="end"

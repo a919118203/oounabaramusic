@@ -13,7 +13,6 @@
 
     <com.oounabaramusic.android.widget.customview.MyImageView
         android:id="@+id/playlist_cover"
-        android:src="@mipmap/default_image"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_alignParentTop="true"

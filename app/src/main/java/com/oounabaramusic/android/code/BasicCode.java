@@ -81,4 +81,10 @@ public class BasicCode {
     public static final int DELETE_POST=1038;
 
     public static final int UPLOAD_VIDEO=1039;
+
+    public static final int UPLOAD_VIDEO_COVER=1040;
+
+    public static final int GET_CONTENT_3=1041;
+
+    public static final int GET_CONTENT_4=1042;
 }

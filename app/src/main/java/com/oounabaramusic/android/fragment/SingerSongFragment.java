@@ -39,7 +39,7 @@ public class SingerSongFragment extends BaseFragment {
         init(view);
 
         SearchHttpUtil.searchMusicBySingerId(activity,
-                activity.getSinger().getId()+"","0","50",
+                activity.getSingerId()+"","0","50",
                 handler=new MusicHandler(this));
         return view;
     }

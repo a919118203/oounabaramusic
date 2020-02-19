@@ -13,6 +13,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.oounabaramusic.android.PlayListActivity;
 import com.oounabaramusic.android.R;
+import com.oounabaramusic.android.bean.MyImage;
 import com.oounabaramusic.android.bean.PlayList;
 import com.oounabaramusic.android.code.BasicCode;
 import com.oounabaramusic.android.okhttputil.S2SHttpUtil;
@@ -66,8 +67,8 @@ public class AllMyPlayListAdapter extends RecyclerView.Adapter<AllMyPlayListAdap
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         PlayList item = dataList.get(position);
-        holder.cover.setImageUrl(MyEnvironment.serverBasePath+
-                "loadPlayListCover?playListId="+item.getId());
+
+        holder.cover.setImage(new MyImage(MyImage.TYPE_PLAY_LIST_COVER,item.getId()));
         holder.name.setText(item.getPlayListName());
         holder.cnt.setText(String.valueOf(item.getCnt()));
     }
@@ -119,9 +120,8 @@ public class AllMyPlayListAdapter extends RecyclerView.Adapter<AllMyPlayListAdap
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(activity, PlayListActivity.class);
-                    intent.putExtra("playList",dataList.get(getAdapterPosition()));
-                    activity.startActivity(intent);
+                    PlayListActivity.startActivity(activity,
+                            dataList.get(getAdapterPosition()).getId());
                 }
             });
         }

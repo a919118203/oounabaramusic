@@ -6,7 +6,6 @@
 
     <com.oounabaramusic.android.widget.customview.MyImageView
         android:id="@+id/tag_icon"
-        android:src="@mipmap/delete"
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:layout_gravity="center_horizontal"/>

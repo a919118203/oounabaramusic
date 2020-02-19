@@ -34,7 +34,6 @@
 
         <TextView
             android:id="@+id/recycler_view_item_music_name"
-            android:text="名字名字名字"
             android:textColor="@color/positive"
             android:textSize="@dimen/font_medium_size"
             android:maxLines="1"
@@ -45,7 +44,6 @@
 
         <TextView
             android:id="@+id/music_singer"
-            android:text="歌手"
             android:textSize="@dimen/font_small_size"
             android:maxLines="1"
             android:ellipsize="end"

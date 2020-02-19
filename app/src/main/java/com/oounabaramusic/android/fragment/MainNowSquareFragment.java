@@ -69,6 +69,7 @@ public class MainNowSquareFragment extends BaseFragment {
     }
 
     private void init() {
+        getContent=false;
         srl = (SwipeRefreshLayout) rootView;
         srl.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override

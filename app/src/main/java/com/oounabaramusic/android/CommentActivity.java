@@ -23,6 +23,7 @@ import com.google.gson.reflect.TypeToken;
 import com.oounabaramusic.android.adapter.CommentAdapter;
 import com.oounabaramusic.android.bean.Comment;
 import com.oounabaramusic.android.bean.Music;
+import com.oounabaramusic.android.bean.MyImage;
 import com.oounabaramusic.android.bean.PlayList;
 import com.oounabaramusic.android.bean.Reply;
 import com.oounabaramusic.android.code.BasicCode;
@@ -95,8 +96,9 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
     }
 
     private void initMusicContent(){
-        contentCover.setImageUrl(MyEnvironment.serverBasePath+
-                "music/loadMusicCover?singerId="+music.getSingerId().split("/")[0]);
+        contentCover.setImage(new MyImage(
+                MyImage.TYPE_SINGER_COVER,
+                Integer.valueOf(music.getSingerId().split("/")[0])));
         contentName.setText(music.getMusicName());
         creatorName.setText(music.getSingerName().replace("/"," "));
 
@@ -118,17 +120,14 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
     }
 
     private void initPlayListContent(){
-        contentCover.setImageUrl(MyEnvironment.serverBasePath+
-                "loadPlayListCover?playListId="+playList.getId());
+        contentCover.setImage(new MyImage(MyImage.TYPE_PLAY_LIST_COVER,playList.getId()));
         contentName.setText(playList.getPlayListName());
         creatorName.setText(playList.getCreateUserName());
 
         content.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent=new Intent(CommentActivity.this,PlayListActivity.class);
-                intent.putExtra("playList",playList);
-                startActivity(intent);
+                PlayListActivity.startActivity(CommentActivity.this,playList.getId());
             }
         });
 

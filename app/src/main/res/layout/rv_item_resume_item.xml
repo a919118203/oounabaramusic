@@ -34,7 +34,6 @@
 
         <TextView
             android:id="@+id/item_name"
-            android:text="item_name"
             android:textSize="@dimen/font_medium_size"
             android:maxLines="1"
             android:ellipsize="end"
@@ -47,7 +46,6 @@
 
         <TextView
             android:id="@+id/item_content"
-            android:text="item_content"
             android:textSize="@dimen/font_small_size"
             android:maxLines="1"
             android:ellipsize="end"

@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.oounabaramusic.android.R;
+import com.oounabaramusic.android.bean.MyImage;
 import com.oounabaramusic.android.okhttputil.HttpUtil;
 import com.oounabaramusic.android.util.InternetUtil;
 import com.oounabaramusic.android.util.LogUtil;
@@ -37,6 +38,12 @@ public class MyCircleImageView extends CircleImageView {
     public static final int NO_COVER=3;
     public static final int LOAD_END=4;
 
+    private Handler handler=new ImageHandler(this);
+    private Bitmap defaultImage;
+    private Handler eventHandler;
+    private String url;
+    private MyImage image;
+
     public MyCircleImageView(Context context) {
         super(context);
     }
@@ -49,13 +56,19 @@ public class MyCircleImageView extends CircleImageView {
         super(context, attrs, defStyle);
     }
 
-    private Handler handler=new ImageHandler(this);
-    private Bitmap defaultImage;
-    private Handler eventHandler;
-    private String url;
-    public void setImageUrl(String url){
+    public void setImageUrl(final String url){
         this.url=url;
-        HttpUtil.loadImage(getContext(),url,new ImageHandler(this));
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                HttpUtil.loadImage(getContext(),url,handler);
+            }
+        }).start();
+    }
+
+    public void setImage(MyImage image){
+        this.image=image;
+        HttpUtil.newLoadImage(getContext(),image,handler);
     }
 
     public void refresh(){
@@ -82,7 +95,7 @@ public class MyCircleImageView extends CircleImageView {
         public void handleMessage(Message msg) {
             Bitmap bitmap=null;
             switch (msg.what){
-                case HttpUtil.NO_NET:
+                case NO_NET:
                     Toast.makeText(iv.getContext(), "请检查网络连接", Toast.LENGTH_SHORT).show();
                     if(iv.defaultImage==null){
                         bitmap=BitmapFactory.decodeResource(iv.getResources(), R.mipmap.default_image);

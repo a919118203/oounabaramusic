@@ -47,7 +47,6 @@
 
             <com.oounabaramusic.android.widget.customview.MyCircleImageView
                 android:id="@+id/user_header"
-                android:src="@mipmap/default_image"
                 android:layout_width="30dp"
                 android:layout_height="30dp"/>
 
@@ -203,7 +202,6 @@
 
         <TextView
             android:id="@+id/playList_cnt"
-            android:text="0"
             android:textSize="@dimen/font_medium_size"
             android:textColor="@color/positive"
             android:layout_width="wrap_content"

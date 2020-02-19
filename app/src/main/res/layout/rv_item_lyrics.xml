@@ -18,7 +18,6 @@
 
     <TextView
         android:id="@+id/lyrics"
-        android:text="这是一句外文歌词\n这是一句翻译，或者中文歌词"
         android:textSize="@dimen/font_medium_size"
         android:textColor="@color/negative"
         android:layout_width="match_parent"

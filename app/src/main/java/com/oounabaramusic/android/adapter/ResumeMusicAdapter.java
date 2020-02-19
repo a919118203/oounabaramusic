@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.oounabaramusic.android.R;
 import com.oounabaramusic.android.bean.Music;
+import com.oounabaramusic.android.bean.MyImage;
 import com.oounabaramusic.android.util.LogUtil;
 import com.oounabaramusic.android.util.MyEnvironment;
 import com.oounabaramusic.android.widget.customview.MyImageView;
@@ -66,8 +67,9 @@ public class ResumeMusicAdapter extends RecyclerView.Adapter<ResumeMusicAdapter.
         holder.cb.setChecked(selected[position]);
         holder.musicName.setText(item.getMusicName());
         holder.singerName.setText(item.getSingerName());
-        holder.musicCover.setImageUrl(MyEnvironment.serverBasePath+
-                "music/loadMusicCover?singerId="+item.getSingerId().split("/")[0]);
+        holder.musicCover.setImage(new MyImage(
+                MyImage.TYPE_SINGER_COVER,
+                Integer.valueOf(item.getSingerId().split("/")[0])));
     }
 
     @Override

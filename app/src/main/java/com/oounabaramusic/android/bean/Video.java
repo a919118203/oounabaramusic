@@ -9,8 +9,11 @@ public class Video {
     private String title;
     private Date date;
     private int userId;
+    private String userName;
     private String fileName;
     private String filePath;
+    private int postId;
+    private int duration;
     public int getId() {
         return id;
     }
@@ -46,5 +49,23 @@ public class Video {
     }
     public void setFilePath(String filePath) {
         this.filePath = filePath;
+    }
+    public int getPostId() {
+        return postId;
+    }
+    public void setPostId(int postId) {
+        this.postId = postId;
+    }
+    public int getDuration() {
+        return duration;
+    }
+    public void setDuration(int duration) {
+        this.duration = duration;
+    }
+    public String getUserName() {
+        return userName;
+    }
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 }

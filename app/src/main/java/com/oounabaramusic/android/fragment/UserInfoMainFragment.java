@@ -267,10 +267,7 @@ public class UserInfoMainFragment extends BaseFragment {
                     PlayList playList = new Gson()
                             .fromJson((String)msg.obj,PlayList.class);
 
-                    Intent intent=new Intent(fragment.activity, PlayListActivity.class);
-                    intent.putExtra("playList",playList);
-                    intent.putExtra("isMyLove",true);
-                    fragment.activity.startActivity(intent);
+                    PlayListActivity.startActivity(fragment.activity,playList.getId());
                     break;
             }
         }

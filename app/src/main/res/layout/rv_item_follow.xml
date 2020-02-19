@@ -34,7 +34,6 @@
 
     <ImageView
         android:id="@+id/friend_sex"
-        android:src="@mipmap/sex_m"
         android:layout_width="15dp"
         android:layout_height="15dp"
         android:layout_toEndOf="@id/friend_name"

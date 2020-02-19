@@ -6,8 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:src="@mipmap/default_image"
+    <com.oounabaramusic.android.widget.customview.MyCircleImageView
+        android:id="@+id/user_cover"
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:layout_marginStart="20dp"
@@ -24,22 +24,27 @@
         android:gravity="center_vertical">
 
         <TextView
-            android:text="用户名"
+            android:id="@+id/user_name"
             android:textSize="@dimen/font_medium_size"
+            android:maxLines="1"
+            android:ellipsize="end"
             android:textColor="@color/positive"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             tools:ignore="HardcodedText" />
 
         <TextView
-            android:text="用户个人简介"
+            android:id="@+id/introduction"
             android:textSize="@dimen/font_small_size"
+            android:maxLines="1"
+            android:ellipsize="end"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             tools:ignore="HardcodedText" />
     </LinearLayout>
 
     <TextView
+        android:id="@+id/to_follow"
         android:text="+ 关注"
         android:textSize="@dimen/font_small_size"
         android:textColor="@color/colorPrimary"
@@ -56,6 +61,7 @@
         tools:ignore="HardcodedText" />
 
     <TextView
+        android:id="@+id/followed"
         android:visibility="gone"
         android:text="已关注"
         android:textSize="@dimen/font_small_size"

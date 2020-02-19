@@ -60,6 +60,7 @@ public class SearchActivity extends BaseActivity {
 
     private LinearLayout search;
     private LinearLayout searchResult;
+    private String searchText;
 
     private HistoricalQueryDao historicalQueryDao;
     private Handler handler;
@@ -144,16 +145,21 @@ public class SearchActivity extends BaseActivity {
         });
     }
 
-    private void search(String searchText){
+    public String getSearchText(){
+        return searchText;
+    }
+
+    public void search(String searchText){
+        this.searchText=searchText;
         historicalQueryDao.insertHistoricalQuery(searchText);
         search.setVisibility(View.GONE);
         searchResult.setVisibility(View.VISIBLE);
 
-        fragments.get(vp.getCurrentItem()).notifyFragment();
-        SearchHttpUtil.searchMusic(this,searchText,handler);
+        for(BaseFragment fragment : fragments){
+            fragment.notifyFragment();
+        }
     }
 
-    private MenuItem deleteText;
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_search_singer,menu);
@@ -238,10 +244,6 @@ public class SearchActivity extends BaseActivity {
             switch (msg.what){
                 case MESSAGE_SEARCH:
                     activity.search((String) msg.obj);
-                    break;
-                case MESSAGE_SEARCH_MUSIC:
-                    List<Music> dataList= (List<Music>) msg.obj;
-                    ((SearchMusicFragment)activity.fragments.get(0)).setDataList(dataList);
                     break;
             }
         }

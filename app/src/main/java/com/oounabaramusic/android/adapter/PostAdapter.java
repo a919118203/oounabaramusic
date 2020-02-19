@@ -28,6 +28,7 @@ import com.oounabaramusic.android.PostActivity;
 import com.oounabaramusic.android.R;
 import com.oounabaramusic.android.UserInfoActivity;
 import com.oounabaramusic.android.bean.Music;
+import com.oounabaramusic.android.bean.MyImage;
 import com.oounabaramusic.android.bean.Post;
 import com.oounabaramusic.android.bean.Video;
 import com.oounabaramusic.android.code.BasicCode;
@@ -162,8 +163,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
         //有图片的话设置图片
         if(post.getHasImage()){
             holder.image.setVisibility(View.VISIBLE);
-            holder.image.setImageUrl(MyEnvironment.serverBasePath+
-                    "loadPostImage?postId="+post.getId());
+            holder.image.setImage(new MyImage(MyImage.TYPE_POST_IMAGE,post.getId()));
         }else{
             holder.image.setVisibility(View.GONE);
         }
@@ -180,9 +180,9 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
             case Post.MUSIC:
                 Music item = new Music(post.getMusic());
                 holder.music.setVisibility(View.VISIBLE);
-                holder.musicCover.setImageUrl(MyEnvironment.serverBasePath+
-                        "music/loadMusicCover?singerId="+
-                        item.getSingerId().split("/")[0]);
+                holder.musicCover.setImage(new MyImage(
+                        MyImage.TYPE_SINGER_COVER,
+                        Integer.valueOf(item.getSingerId().split("/")[0])));
                 holder.musicName.setText(item.getMusicName());
                 holder.singerName.setText(item.getSingerName().replace("/"," "));
                 break;
@@ -190,7 +190,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
             case Post.VIDEO:
                 holder.video.setVisibility(View.VISIBLE);
                 Video video = post.getVideo();
-                holder.video.setFilePath(video.getFilePath());
+                holder.video.setVideo(video);
                 break;
 
             case Post.FORWARD:
@@ -225,22 +225,22 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
                 if(index!=null){
                     if(index.getHasImage()){
                         holder.innerImage.setVisibility(View.VISIBLE);
-                        holder.innerImage.setImageUrl(MyEnvironment.serverBasePath+
-                                "loadPostImage?postId="+index.getId());
+                        holder.innerImage.setImage(
+                                new MyImage(MyImage.TYPE_POST_IMAGE,index.getId()));
                     }
                     if(index.getMusic()!=null){
                         Music m = new Music(index.getMusic());
                         holder.innerMusic.setVisibility(View.VISIBLE);
-                        holder.innerMusicCover.setImageUrl(MyEnvironment.serverBasePath+
-                                "music/loadMusicCover?singerId="+
-                                m.getSingerId().split("/")[0]);
+                        holder.innerMusicCover.setImage(new MyImage(
+                                MyImage.TYPE_SINGER_COVER,
+                                Integer.valueOf(m.getSingerId().split("/")[0])));
                         holder.innerMusicName.setText(m.getMusicName());
                         holder.innerSingerName.setText(m.getSingerName().replace("/"," "));
                     }
                     if(index.getVideo()!=null){
                         Video v = index.getVideo();
                         holder.innerVideo.setVisibility(View.VISIBLE);
-                        holder.innerVideo.setFilePath(v.getFilePath());
+                        holder.innerVideo.setVideo(v);
                     }
                 }else{
                     holder.innerContent.append("\n从这以后的动态已被转移到了虚空...");
@@ -500,8 +500,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
                 @Override
                 public void onClick(View v) {
                     Post post = dataList.get(getAdapterPosition());
-                    new ShowImageDialog(activity,MyEnvironment.
-                            serverBasePath+"loadPostImage?postId="+post.getId())
+                    new ShowImageDialog(activity,new MyImage(MyImage.TYPE_POST_IMAGE,post.getId()))
                             .show();
                 }
             });
@@ -515,8 +514,8 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
                     while (post.getPost()!=null){
                         post=post.getPost();
                     }
-                    new ShowImageDialog(activity,MyEnvironment.
-                            serverBasePath+"loadPostImage?postId="+post.getId())
+
+                    new ShowImageDialog(activity,new MyImage(MyImage.TYPE_POST_IMAGE,post.getId()))
                     .show();
                 }
             });

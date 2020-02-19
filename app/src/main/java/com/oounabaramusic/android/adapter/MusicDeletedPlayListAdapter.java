@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import com.oounabaramusic.android.R;
 import com.oounabaramusic.android.ResumePlayListActivity;
+import com.oounabaramusic.android.bean.MyImage;
 import com.oounabaramusic.android.bean.PlayList;
 import com.oounabaramusic.android.util.MyEnvironment;
 import com.oounabaramusic.android.widget.customview.MyImageView;
@@ -44,8 +45,7 @@ public class MusicDeletedPlayListAdapter extends RecyclerView.Adapter<MusicDelet
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         PlayList item=dataList.get(position);
 
-        holder.cover.setImageUrl(MyEnvironment.serverBasePath+
-                "loadPlayListCover?playListId="+item.getId());
+        holder.cover.setImage(new MyImage(MyImage.TYPE_PLAY_LIST_COVER,item.getId()));
         holder.name.setText(item.getPlayListName());
         holder.cnt.setText(String.valueOf(item.getCnt()));
     }

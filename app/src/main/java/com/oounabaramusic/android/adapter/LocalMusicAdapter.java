@@ -20,6 +20,7 @@ import com.oounabaramusic.android.LocalMusicActivity;
 import com.oounabaramusic.android.R;
 import com.oounabaramusic.android.bean.Comment;
 import com.oounabaramusic.android.bean.Music;
+import com.oounabaramusic.android.bean.MyImage;
 import com.oounabaramusic.android.code.BasicCode;
 import com.oounabaramusic.android.okhttputil.S2SHttpUtil;
 import com.oounabaramusic.android.service.MusicPlayService;
@@ -478,8 +479,9 @@ public class LocalMusicAdapter extends RecyclerView.Adapter<LocalMusicAdapter.Lo
                     Music item=musicList.get(popupPosition);
 
                     if(activity.getLocalMusicDao().isServer(item.getMd5())){
-                        serverMusicCover.setImageUrl(
-                                MyEnvironment.serverBasePath+"music/loadMusicCover?singerId="+item.getSingerId().split("/")[0]);
+                        serverMusicCover.setImage(new MyImage(
+                                MyImage.TYPE_SINGER_COVER,
+                                Integer.valueOf(item.getSingerId().split("/")[0])));
                         serverMusicName.setText(item.getMusicName());
                         serverMusicSinger.setText(item.getSingerName());
                         serverMusicSinger2.setText(item.getSingerName());

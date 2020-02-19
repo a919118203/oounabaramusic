@@ -8,6 +8,7 @@ import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -18,12 +19,14 @@ import com.oounabaramusic.android.R;
 import com.oounabaramusic.android.adapter.NDPlayListAdapter;
 import com.oounabaramusic.android.adapter.NDRankAdapter;
 import com.oounabaramusic.android.adapter.NDRecommendAdapter;
+import com.oounabaramusic.android.bean.Music;
 import com.oounabaramusic.android.bean.PlayList;
 import com.oounabaramusic.android.bean.PlayListSmallTag;
 import com.oounabaramusic.android.code.BasicCode;
 import com.oounabaramusic.android.okhttputil.S2SHttpUtil;
 import com.oounabaramusic.android.util.LogUtil;
 import com.oounabaramusic.android.util.MyEnvironment;
+import com.oounabaramusic.android.util.SharedPreferencesUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,13 +41,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
-public class MainNewDiscoveryFragment extends BaseFragment{
+public class MainNewDiscoveryFragment extends BaseFragment implements View.OnClickListener{
 
     private BaseActivity activity;
     private View rootView;
     private NDRecommendAdapter adapter1;         //每日推荐
     private NDPlayListAdapter adapter2;          //推荐歌单
     private NDRankAdapter adapter3;              //排行榜
+    private TextView playAllRank;
     private ViewPager imageVp;
     private List<Fragment> images;
     private boolean f;                 //标记是否开始滚动图片
@@ -53,16 +57,14 @@ public class MainNewDiscoveryFragment extends BaseFragment{
 
     public MainNewDiscoveryFragment(BaseActivity activity){
         this.activity=activity;
-        userId = Integer.valueOf(activity.sp.getString("userId","-1"));
+        userId = SharedPreferencesUtil.getUserId(activity.sp);
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        if(rootView==null){
-            rootView=inflater.inflate(R.layout.fragment_main_new_discovery,container,false);
-            init();
-        }
+        rootView=inflater.inflate(R.layout.fragment_main_new_discovery,container,false);
+        init();
         return rootView;
     }
 
@@ -93,6 +95,9 @@ public class MainNewDiscoveryFragment extends BaseFragment{
         });
 
 
+        playAllRank=rootView.findViewById(R.id.play_all);
+        playAllRank.setOnClickListener(this);
+
         initScrollImage();
     }
 
@@ -100,6 +105,7 @@ public class MainNewDiscoveryFragment extends BaseFragment{
     public void onResume() {
         super.onResume();
         initPlayListContent();
+        initListenRankContent();
     }
 
     private void initPlayListContent(){
@@ -109,6 +115,15 @@ public class MainNewDiscoveryFragment extends BaseFragment{
                 MyEnvironment.serverBasePath+"getPopularityPlayList",
                 new MyHandler(this))
         .call(BasicCode.GET_CONTENT);
+    }
+
+    private void initListenRankContent(){
+        new S2SHttpUtil(
+                activity,
+                "",
+                MyEnvironment.serverBasePath+"music/getListenerRank",
+                new MyHandler(this))
+                .call(BasicCode.GET_CONTENT_3);
     }
 
     private void initScrollImage(){
@@ -160,6 +175,15 @@ public class MainNewDiscoveryFragment extends BaseFragment{
         }
     }
 
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.play_all:
+                activity.getBinder().playMusics(adapter3.getDataList());
+                break;
+        }
+    }
+
     static class MyHandler extends Handler{
 
         MainNewDiscoveryFragment fragment;
@@ -186,6 +210,16 @@ public class MainNewDiscoveryFragment extends BaseFragment{
                             new TypeToken<ArrayList<PlayListSmallTag>>(){}.getType());
                     intent.putExtra("tags",tags);
                     fragment.activity.startActivity(intent);
+                    break;
+
+                case BasicCode.GET_CONTENT_3:
+                    List<String> data = new Gson().fromJson((String) msg.obj,
+                            new TypeToken<List<String>>(){}.getType());
+                    List<Music> musicList = new ArrayList<>();
+                    for(String str:data){
+                        musicList.add(new Music(str));
+                    }
+                    fragment.adapter3.setDataList(musicList);
                     break;
             }
         }

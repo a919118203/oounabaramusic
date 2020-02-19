@@ -22,6 +22,7 @@ import com.oounabaramusic.android.EditPlayListInfoActivity;
 import com.oounabaramusic.android.PlayListActivity;
 import com.oounabaramusic.android.R;
 import com.oounabaramusic.android.bean.Music;
+import com.oounabaramusic.android.bean.MyImage;
 import com.oounabaramusic.android.bean.PlayList;
 import com.oounabaramusic.android.code.BasicCode;
 import com.oounabaramusic.android.fragment.MainMyFragment;
@@ -161,9 +162,7 @@ public class MyPlayListAdapter extends RecyclerView.Adapter<MyPlayListAdapter.Vi
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         PlayList item=dataList.get(position);
 
-        holder.playListCover.setImageUrl(MyEnvironment.serverBasePath+
-                "loadPlayListCover?playListId="+
-                item.getId());
+        holder.playListCover.setImage(new MyImage(MyImage.TYPE_PLAY_LIST_COVER,item.getId()));
         holder.playListName.setText(item.getPlayListName());
         holder.playListCnt.setText(String.valueOf(item.getCnt()));
 
@@ -204,14 +203,8 @@ public class MyPlayListAdapter extends RecyclerView.Adapter<MyPlayListAdapter.Vi
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent=new Intent(activity, PlayListActivity.class);
-                    intent.putExtra("playList",dataList.get(getAdapterPosition()));
-
-                    if(getAdapterPosition()==0){
-                        intent.putExtra("isMyLove",true);
-                    }
-
-                    activity.startActivity(intent);
+                    PlayListActivity.startActivity(activity,
+                            dataList.get(getAdapterPosition()).getId());
                 }
             });
         }

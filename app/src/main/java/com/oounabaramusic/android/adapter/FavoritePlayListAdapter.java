@@ -18,6 +18,7 @@ import com.oounabaramusic.android.BaseActivity;
 import com.oounabaramusic.android.PlayListActivity;
 import com.oounabaramusic.android.R;
 import com.oounabaramusic.android.bean.Music;
+import com.oounabaramusic.android.bean.MyImage;
 import com.oounabaramusic.android.bean.PlayList;
 import com.oounabaramusic.android.code.BasicCode;
 import com.oounabaramusic.android.fragment.MainMyFragment;
@@ -137,8 +138,7 @@ public class FavoritePlayListAdapter extends RecyclerView.Adapter<FavoritePlayLi
         PlayList item = dataList.get(position);
 
         holder.playListCnt.setText(String.valueOf(item.getCnt()));
-        holder.playListCover.setImageUrl(MyEnvironment.serverBasePath+
-                "loadPlayListCover?playListId="+item.getId());
+        holder.playListCover.setImage(new MyImage(MyImage.TYPE_PLAY_LIST_COVER,item.getId()));
         holder.playListName.setText(item.getPlayListName());
     }
 
@@ -171,9 +171,8 @@ public class FavoritePlayListAdapter extends RecyclerView.Adapter<FavoritePlayLi
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent=new Intent(activity, PlayListActivity.class);
-                    intent.putExtra("playList",dataList.get(getAdapterPosition()));
-                    activity.startActivity(intent);
+                    PlayListActivity.startActivity(activity,
+                            dataList.get(getAdapterPosition()).getId());
                 }
             });
         }

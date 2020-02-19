@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.oounabaramusic.android.PlayListManagementActivity;
 import com.oounabaramusic.android.R;
+import com.oounabaramusic.android.bean.MyImage;
 import com.oounabaramusic.android.bean.PlayList;
 import com.oounabaramusic.android.util.MyEnvironment;
 import com.oounabaramusic.android.widget.customview.MyImageView;
@@ -63,9 +64,7 @@ public class ManagementPlayListAdapter extends RecyclerView.Adapter<ManagementPl
         PlayList item=dataList.get(position);
 
         holder.cb.setChecked(selected[position]);
-        holder.playListCover.setImageUrl(MyEnvironment.serverBasePath+
-                "loadPlayListCover?playListId="+
-                item.getId());
+        holder.playListCover.setImage(new MyImage(MyImage.TYPE_PLAY_LIST_COVER,item.getId()));
         holder.playListName.setText(item.getPlayListName());
         holder.musicCnt.setText(String.valueOf(item.getCnt()));
     }

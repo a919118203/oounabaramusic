@@ -11,21 +11,32 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.oounabaramusic.android.R;
+import com.oounabaramusic.android.bean.MyImage;
 import com.oounabaramusic.android.okhttputil.HttpUtil;
+import com.oounabaramusic.android.okhttputil.S2SHttpUtil;
 import com.oounabaramusic.android.util.DensityUtil;
+import com.oounabaramusic.android.util.InternetUtil;
 import com.oounabaramusic.android.util.LogUtil;
+import com.oounabaramusic.android.util.MyEnvironment;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Objects;
 
 import androidx.annotation.Nullable;
 import okhttp3.Call;
 import okhttp3.Callback;
+import okhttp3.FormBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.RequestBody;
 import okhttp3.Response;
 
 
@@ -36,6 +47,7 @@ public class MyImageView extends ImageView {
     private Bitmap defaultImage;
     private Handler eventHandler;
     private String url;
+    private MyImage image;
     private boolean sizeAdaptive;
     private int datumWidth;
 
@@ -55,9 +67,9 @@ public class MyImageView extends ImageView {
         super(context, attrs, defStyleAttr, defStyleRes);
     }
 
-    public void setImageUrl(String url){
-        this.url=url;
-        HttpUtil.loadImage(getContext(),url,new ImageHandler(this));
+    public void setImage(final MyImage image){
+        this.image=image;
+        HttpUtil.newLoadImage(getContext(),image,handler);
     }
 
     /**
@@ -120,6 +132,7 @@ public class MyImageView extends ImageView {
                     }
                     break;
             }
+
             if(bitmap!=null&&iv.sizeAdaptive&&iv.datumWidth!=0){
                 int height=bitmap.getHeight();
                 int width=bitmap.getWidth();

@@ -25,7 +25,6 @@
 
         <TextView
             android:id="@+id/music_name"
-            android:text="歌名歌名歌名歌名歌名歌名歌名歌名歌歌名"
             android:textSize="@dimen/font_medium_size"
             android:textColor="@color/positive"
             android:maxLines="1"
@@ -48,7 +47,6 @@
 
         <TextView
             android:id="@+id/singer_name"
-            android:text="歌手"
             android:textSize="@dimen/font_medium_size"
             android:maxLines="1"
             android:ellipsize="end"

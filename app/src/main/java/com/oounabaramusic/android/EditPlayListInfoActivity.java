@@ -32,6 +32,7 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.oounabaramusic.android.adapter.TagAdapter;
+import com.oounabaramusic.android.bean.MyImage;
 import com.oounabaramusic.android.bean.PlayList;
 import com.oounabaramusic.android.bean.PlayListBigTag;
 import com.oounabaramusic.android.bean.PlayListSmallTag;
@@ -112,8 +113,7 @@ public class EditPlayListInfoActivity extends BaseActivity implements View.OnCli
         playListTag=findViewById(R.id.playlist_tag);
         playListIntroduction=findViewById(R.id.playlist_introduction);
 
-        playListCover.setImageUrl(MyEnvironment.serverBasePath+
-                "loadPlayListCover?playListId="+playList.getId());
+        playListCover.setImage(new MyImage(MyImage.TYPE_PLAY_LIST_COVER,playList.getId()));
         playListName.setText(playList.getPlayListName());
 
         StringBuilder tag=new StringBuilder();
