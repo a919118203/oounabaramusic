@@ -19,16 +19,13 @@ import com.oounabaramusic.android.R;
 import com.oounabaramusic.android.bean.MyImage;
 import com.oounabaramusic.android.bean.PlayList;
 import com.oounabaramusic.android.code.BasicCode;
-import com.oounabaramusic.android.okhttputil.PlayListHttpUtil;
 import com.oounabaramusic.android.okhttputil.S2SHttpUtil;
 import com.oounabaramusic.android.util.DensityUtil;
-import com.oounabaramusic.android.util.LogUtil;
 import com.oounabaramusic.android.util.MyEnvironment;
 import com.oounabaramusic.android.widget.customview.MyImageView;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -75,13 +72,10 @@ public class PlayListDialog {
     }
 
     private void getPlayList(int userId){
-        Map<String,Integer> data = new HashMap<>();
-        data.put("userId",userId);
-        data.put("start",-1);
 
         new S2SHttpUtil(
                 context,
-                new Gson().toJson(data),
+                userId+"",
                 MyEnvironment.serverBasePath+"findPlayListByUser",
                 new MHandler(this))
                 .call(BasicCode.GET_CONTENT);
@@ -173,9 +167,12 @@ public class PlayListDialog {
                         data.addAll(Arrays.asList(musicMd5));
                     }
 
-                    LogUtil.printLog("json:  "+new Gson().toJson(data));
-
-                    PlayListHttpUtil.addToPlayList(context,new Gson().toJson(data),new Handler());//可以加 添加失败的代码
+                    new S2SHttpUtil(
+                            context,
+                            new Gson().toJson(data),
+                            MyEnvironment.serverBasePath+"addToPlayList",
+                            new Handler())
+                    .call(BasicCode.GET_CONTENT);
                     dialog.dismiss();
                 }
             });

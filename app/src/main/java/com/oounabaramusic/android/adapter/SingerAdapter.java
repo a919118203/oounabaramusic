@@ -3,7 +3,6 @@ package com.oounabaramusic.android.adapter;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
@@ -11,11 +10,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
 import com.oounabaramusic.android.R;
 import com.oounabaramusic.android.SingerActivity;
+import com.oounabaramusic.android.bean.MyImage;
 import com.oounabaramusic.android.bean.Singer;
-import com.oounabaramusic.android.okhttputil.SingerClassificationHttpUtil;
+import com.oounabaramusic.android.code.BasicCode;
+import com.oounabaramusic.android.okhttputil.S2SHttpUtil;
 import com.oounabaramusic.android.util.MyEnvironment;
+import com.oounabaramusic.android.util.SharedPreferencesUtil;
 import com.oounabaramusic.android.widget.customview.MyCircleImageView;
 
 import java.util.ArrayList;
@@ -62,8 +65,9 @@ public class SingerAdapter extends RecyclerView.Adapter<SingerAdapter.ViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.singerCover.setImageUrl(MyEnvironment.serverBasePath+
-                "music/loadSingerCover?singerId="+dataList.get(position).getId());
+        holder.singerCover.setImage(new MyImage(
+                MyImage.TYPE_SINGER_COVER,
+                dataList.get(position).getId()));
         holder.singerName.setText(dataList.get(position).getSingerName());
 
         boolean login=sp.getBoolean("login",false);;
@@ -118,10 +122,16 @@ public class SingerAdapter extends RecyclerView.Adapter<SingerAdapter.ViewHolder
             toFollow.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    SingerClassificationHttpUtil.toFollowSinger(activity,
-                            sp.getString("userId","-1"),
-                            dataList.get(getAdapterPosition()).getId(),
-                            handler);
+
+                    Singer data = new Singer();
+                    data.setId(dataList.get(getAdapterPosition()).getId());
+                    data.setMainUserId(SharedPreferencesUtil.getUserId(sp));
+                    new S2SHttpUtil(
+                            activity,
+                            new Gson().toJson(data),
+                            MyEnvironment.serverBasePath+"toFollowSinger",
+                            handler)
+                    .call(BasicCode.TO_FOLLOW_SINGER);
                 }
             });
         }

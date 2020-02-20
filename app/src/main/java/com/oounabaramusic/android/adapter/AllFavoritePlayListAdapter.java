@@ -45,13 +45,9 @@ public class AllFavoritePlayListAdapter extends RecyclerView.Adapter<AllFavorite
     }
 
     public void initContent(){
-        Map<String,Integer> data = new HashMap<>();
-        data.put("userId",userId);
-        data.put("start",-1);
-
         new S2SHttpUtil(
                 activity,
-                new Gson().toJson(data),
+                userId+"",
                 MyEnvironment.serverBasePath+"getCollectPlayList",
                 new MyHandler(this))
                 .call(BasicCode.GET_CONTENT);

@@ -91,7 +91,7 @@ public class MCSingerFragment extends BaseFragment {
                     fragment.adapter.setDataList(singers);
                     break;
 
-                case SingerClassificationActivity.MESSAGE_CANCEL_FOLLOW_END:
+                case BasicCode.CANCEL_FOLLOW:
                     fragment.initContent();
                     break;
             }

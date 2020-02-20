@@ -19,6 +19,7 @@ import android.widget.TextView;
 import com.oounabaramusic.android.AllReplyActivity;
 import com.oounabaramusic.android.R;
 import com.oounabaramusic.android.UserInfoActivity;
+import com.oounabaramusic.android.bean.MyImage;
 import com.oounabaramusic.android.bean.Reply;
 import com.oounabaramusic.android.code.BasicCode;
 import com.oounabaramusic.android.okhttputil.S2SHttpUtil;
@@ -81,8 +82,7 @@ public class AllReplyAdapter extends RecyclerView.Adapter<AllReplyAdapter.ViewHo
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         final Reply item=dataList.get(position);
 
-        holder.userHeader.setImageUrl(MyEnvironment.serverBasePath
-                +"loadUserHeader?userId="+item.getUserId());
+        holder.userHeader.setImage(new MyImage(MyImage.TYPE_USER_HEADER,item.getId()));
         holder.userName.setText(item.getUserName());
         holder.commentDate.setText(FormatUtil.DateTimeToString(item.getDate()));
         if(item.getGooded()==0){

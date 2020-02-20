@@ -23,9 +23,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.oounabaramusic.android.bean.MyImage;
 import com.oounabaramusic.android.bean.Post;
 import com.oounabaramusic.android.bean.Video;
 import com.oounabaramusic.android.code.BasicCode;
+import com.oounabaramusic.android.okhttputil.HttpUtil;
 import com.oounabaramusic.android.okhttputil.S2SHttpUtil;
 import com.oounabaramusic.android.okhttputil.VideoHttpUtil;
 import com.oounabaramusic.android.util.MyEnvironment;
@@ -115,7 +117,11 @@ public class SendVideoPostActivity extends BaseActivity implements View.OnClickL
     }
 
     private void uploadVideoCover(int videoId){
-        VideoHttpUtil.uploadVideoCover(this,videoId,filePath,new MyHandler(this));
+        HttpUtil.uploadVideoCover(
+                this,
+                new MyImage(MyImage.TYPE_VIDEO_COVER,videoId),
+                filePath,
+                new MyHandler(this));
     }
 
     private void init(){
@@ -234,7 +240,7 @@ public class SendVideoPostActivity extends BaseActivity implements View.OnClickL
                     activity.uploadVideo(postId);
                     break;
 
-                case BasicCode.UPLOAD_VIDEO_COVER:
+                case BasicCode.UPLOAD_IMAGE:
                     Toast.makeText(activity, "发布成功", Toast.LENGTH_SHORT).show();
                     activity.finish();
                     break;

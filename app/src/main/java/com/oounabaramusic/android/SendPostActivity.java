@@ -2,7 +2,6 @@ package com.oounabaramusic.android;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.content.Intent;
@@ -29,7 +28,7 @@ import com.oounabaramusic.android.bean.Music;
 import com.oounabaramusic.android.bean.MyImage;
 import com.oounabaramusic.android.bean.Post;
 import com.oounabaramusic.android.code.BasicCode;
-import com.oounabaramusic.android.okhttputil.PostHttpUtil;
+import com.oounabaramusic.android.okhttputil.HttpUtil;
 import com.oounabaramusic.android.okhttputil.S2SHttpUtil;
 import com.oounabaramusic.android.util.MyEnvironment;
 import com.oounabaramusic.android.util.RealPathFromUriUtils;
@@ -239,15 +238,21 @@ public class SendPostActivity extends BaseActivity implements View.OnClickListen
             switch (msg.what){
                 case BasicCode.SEND_MESSAGE:
                     if(activity.imagePath!=null){
-                        String postId = (String) msg.obj;
-                        PostHttpUtil.uploadPostImage(activity,activity.imagePath,postId,this);
+                        int postId = Integer.valueOf((String) msg.obj);
+
+                        HttpUtil.uploadImage(
+                                activity,
+                                new MyImage(MyImage.TYPE_POST_IMAGE,postId),
+                                activity.imagePath,
+                                this);
+
                     }else{
                         Toast.makeText(activity, "发表成功", Toast.LENGTH_SHORT).show();
                         activity.finish();
                     }
                     break;
 
-                case BasicCode.UPLOAD_POST_IMAGE:
+                case BasicCode.UPLOAD_IMAGE:
                     Toast.makeText(activity, "发表成功", Toast.LENGTH_SHORT).show();
                     activity.finish();
                     break;

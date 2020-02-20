@@ -10,7 +10,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -19,17 +18,14 @@ import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.android.material.tabs.TabLayout;
 import com.oounabaramusic.android.adapter.HistoryRecordAdapter;
-import com.oounabaramusic.android.bean.Music;
 import com.oounabaramusic.android.dao.HistoricalQueryDao;
 import com.oounabaramusic.android.fragment.BaseFragment;
 import com.oounabaramusic.android.fragment.SearchMusicFragment;
@@ -37,10 +33,7 @@ import com.oounabaramusic.android.fragment.SearchPlayListFragment;
 import com.oounabaramusic.android.fragment.SearchSingerFragment;
 import com.oounabaramusic.android.fragment.SearchUserFragment;
 import com.oounabaramusic.android.fragment.SearchVideoFragment;
-import com.oounabaramusic.android.okhttputil.SearchHttpUtil;
-import com.oounabaramusic.android.util.DensityUtil;
 import com.oounabaramusic.android.util.InputMethodUtil;
-import com.oounabaramusic.android.util.LogUtil;
 import com.oounabaramusic.android.util.StatusBarUtil;
 
 import java.util.ArrayList;

@@ -1,11 +1,9 @@
 package com.oounabaramusic.android.adapter;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.Message;
 import android.view.LayoutInflater;
@@ -13,7 +11,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -26,7 +23,6 @@ import com.oounabaramusic.android.bean.MyImage;
 import com.oounabaramusic.android.bean.PlayList;
 import com.oounabaramusic.android.code.BasicCode;
 import com.oounabaramusic.android.fragment.MainMyFragment;
-import com.oounabaramusic.android.okhttputil.PlayListHttpUtil;
 import com.oounabaramusic.android.okhttputil.S2SHttpUtil;
 import com.oounabaramusic.android.util.MyEnvironment;
 import com.oounabaramusic.android.util.SharedPreferencesUtil;
@@ -69,9 +65,13 @@ public class MyPlayListAdapter extends RecyclerView.Adapter<MyPlayListAdapter.Vi
 
     public void addData(PlayList item){
 
+        if(dataList.isEmpty()){
+            return;
+        }
+
         //第一个为“我喜欢的音乐”，所以新的插在第二个
         dataList.add(1,item);
-        notifyDataSetChanged();
+        notifyItemInserted(1);
     }
 
     private View createContentView() {
@@ -117,9 +117,16 @@ public class MyPlayListAdapter extends RecyclerView.Adapter<MyPlayListAdapter.Vi
                 .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        PlayListHttpUtil.findMusicByPlayList(activity,
-                                dataList.get(popupPosition).getId()+"",
-                                new MyHandler(MyPlayListAdapter.this));
+
+                        PlayList data = new PlayList();
+                        data.setId(dataList.get(popupPosition).getId());
+
+                        new S2SHttpUtil(
+                                activity,
+                                new Gson().toJson(data),
+                                MyEnvironment.serverBasePath+"findMusicByPlayList",
+                                new MyHandler(MyPlayListAdapter.this))
+                                .call(BasicCode.GET_CONTENT);
                     }
                 })
                 .create();
@@ -219,7 +226,7 @@ public class MyPlayListAdapter extends RecyclerView.Adapter<MyPlayListAdapter.Vi
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what){
-                case PlayListHttpUtil.MESSAGE_FIND_PLAY_LIST_MUSIC_END:
+                case BasicCode.GET_CONTENT:
                     List<String> data=new Gson().fromJson((String)msg.obj,
                             new TypeToken<List<String>>(){}.getType());
                     for(String item:data){

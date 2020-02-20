@@ -45,13 +45,10 @@ public class AllMyPlayListAdapter extends RecyclerView.Adapter<AllMyPlayListAdap
     }
 
     public void initContent(){
-        Map<String,Integer> data = new HashMap<>();
-        data.put("userId",userId);
-        data.put("start",-1);
 
         new S2SHttpUtil(
                 activity,
-                new Gson().toJson(data),
+                userId+"",
                 MyEnvironment.serverBasePath+"findPlayListByUser",
                 new MyHandler(this))
                 .call(BasicCode.GET_CONTENT);

@@ -6,10 +6,17 @@ public class Singer implements Serializable {
 	private int id;
 	private String singerName;
 	private String type;
+	private int typeId;
 	private String country;
+	private int countryId;
 	private String introduction;
 	private int fans;
 	private boolean followed;
+
+	//检索用
+	private int mainUserId;
+	private int start;
+
 	public int getId() {
 		return id;
 	}
@@ -46,11 +53,36 @@ public class Singer implements Serializable {
 	public void setFans(int fans) {
 		this.fans = fans;
 	}
-
 	public void setFollowed(boolean followed) {
 		this.followed = followed;
 	}
 	public boolean getFollowed(){
 		return followed;
+	}
+	public int getMainUserId() {
+		return mainUserId;
+	}
+	public void setMainUserId(int mainUserId) {
+		this.mainUserId = mainUserId;
+	}
+	public int getTypeId() {
+		return typeId;
+	}
+	public void setTypeId(int typeId) {
+		this.typeId = typeId;
+	}
+	public int getCountryId() {
+		return countryId;
+	}
+	public void setCountryId(int countryId) {
+		this.countryId = countryId;
+	}
+
+	public int getStart() {
+		return start;
+	}
+
+	public void setStart(int start) {
+		this.start = start;
 	}
 }

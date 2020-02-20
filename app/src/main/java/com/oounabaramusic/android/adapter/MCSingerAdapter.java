@@ -1,7 +1,6 @@
 package com.oounabaramusic.android.adapter;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -11,15 +10,18 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
 import com.oounabaramusic.android.BaseActivity;
 import com.oounabaramusic.android.R;
 import com.oounabaramusic.android.SingerActivity;
+import com.oounabaramusic.android.bean.MyImage;
 import com.oounabaramusic.android.bean.Singer;
+import com.oounabaramusic.android.code.BasicCode;
 import com.oounabaramusic.android.fragment.MCSingerFragment;
-import com.oounabaramusic.android.okhttputil.SingerClassificationHttpUtil;
+import com.oounabaramusic.android.okhttputil.S2SHttpUtil;
 import com.oounabaramusic.android.util.MyEnvironment;
+import com.oounabaramusic.android.util.SharedPreferencesUtil;
 import com.oounabaramusic.android.widget.customview.MyCircleImageView;
-import com.oounabaramusic.android.widget.popupwindow.MyBottomSheetDialog;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -61,8 +63,7 @@ public class MCSingerAdapter extends RecyclerView.Adapter<MCSingerAdapter.ViewHo
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Singer item = dataList.get(position);
 
-        holder.singerCover.setImageUrl(MyEnvironment.serverBasePath+
-                "music/loadSingerCover?singerId="+item.getId());
+        holder.singerCover.setImage(new MyImage(MyImage.TYPE_SINGER_COVER,item.getId()));
         holder.singerName.setText(item.getSingerName());
         holder.info.setText(item.getCountry()+","+item.getType());
     }
@@ -105,11 +106,17 @@ public class MCSingerAdapter extends RecyclerView.Adapter<MCSingerAdapter.ViewHo
                             .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    SingerClassificationHttpUtil.cancelFollowSinger(
+
+                                    Singer data = new Singer();
+                                    data.setMainUserId(SharedPreferencesUtil.getUserId(activity.sp));
+                                    data.setId(dataList.get(getAdapterPosition()).getId());
+
+                                    new S2SHttpUtil(
                                             activity,
-                                            activity.sp.getString("userId","-1"),
-                                            dataList.get(getAdapterPosition()).getId(),
-                                            fragment.getHandler());
+                                            new Gson().toJson(data),
+                                            MyEnvironment.serverBasePath+"cancelFollowSinger",
+                                            fragment.getHandler())
+                                    .call(BasicCode.CANCEL_FOLLOW);
                                 }
                             })
                             .create();

@@ -128,8 +128,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Post post = dataList.get(position);
 
-        holder.userHeader.setImageUrl(MyEnvironment.serverBasePath+
-                "loadUserHeader?userId="+post.getUserId());
+        holder.userHeader.setImage(new MyImage(MyImage.TYPE_USER_HEADER,post.getUserId()));
         holder.userName.setText(post.getUserName());
         holder.theme.setText(Post.getTheme(post.getContentType()));
         holder.date.setText(FormatUtil.DateTimeToString(post.getDate()));

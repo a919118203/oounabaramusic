@@ -1,7 +1,6 @@
 package com.oounabaramusic.android;
 
 import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -21,15 +20,11 @@ import com.google.gson.reflect.TypeToken;
 import com.oounabaramusic.android.adapter.ManagementPlayListAdapter;
 import com.oounabaramusic.android.bean.PlayList;
 import com.oounabaramusic.android.code.BasicCode;
-import com.oounabaramusic.android.okhttputil.PlayListHttpUtil;
 import com.oounabaramusic.android.okhttputil.S2SHttpUtil;
 import com.oounabaramusic.android.util.MyEnvironment;
 import com.oounabaramusic.android.util.SharedPreferencesUtil;
 import com.oounabaramusic.android.util.StatusBarUtil;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -87,24 +82,16 @@ public class PlayListManagementActivity extends BaseActivity {
         }
 
         if(isMy){
-            Map<String,Integer> data = new HashMap<>();
-            data.put("userId",userId);
-            data.put("start",-1);
-
             new S2SHttpUtil(
                     this,
-                    gson.toJson(data),
+                    userId+"",
                     MyEnvironment.serverBasePath+"findPlayListByUser",
                     new MyHandler(this))
                     .call(BasicCode.GET_CONTENT);
         }else{
-            Map<String,Integer> data = new HashMap<>();
-            data.put("userId",userId);
-            data.put("start",-1);
-
             new S2SHttpUtil(
                     this,
-                    gson.toJson(data),
+                    userId+"",
                     MyEnvironment.serverBasePath+"getCollectPlayList",
                     new MyHandler(this))
                     .call(BasicCode.GET_CONTENT);

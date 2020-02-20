@@ -6,7 +6,6 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.os.Parcelable;
 import android.preference.PreferenceManager;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -33,15 +32,11 @@ import com.oounabaramusic.android.adapter.MyPlayListAdapter;
 import com.oounabaramusic.android.anim.OpenListAnimation;
 import com.oounabaramusic.android.bean.PlayList;
 import com.oounabaramusic.android.code.BasicCode;
-import com.oounabaramusic.android.okhttputil.PlayListHttpUtil;
 import com.oounabaramusic.android.okhttputil.S2SHttpUtil;
 import com.oounabaramusic.android.util.MyEnvironment;
 import com.oounabaramusic.android.util.SharedPreferencesUtil;
 import com.oounabaramusic.android.widget.popupwindow.MyBottomSheetDialog;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -294,16 +289,12 @@ public class MainMyFragment extends Fragment implements View.OnClickListener{
                 pbMy.setVisibility(View.VISIBLE);
             }
 
-            Map<String,Integer> data = new HashMap<>();
-            data.put("userId",Integer.valueOf(userId));
-            data.put("start",-1);
-
             new S2SHttpUtil(
                     activity,
-                    new Gson().toJson(data),
+                    userId,
                     MyEnvironment.serverBasePath+"findPlayListByUser",
                     handler)
-                    .call(PlayListHttpUtil.MESSAGE_FIND_MY_PLAY_LIST_END);
+                    .call(BasicCode.GET_CONTENT_2);
         }else{
             myPlayListRv.setVisibility(View.GONE);
         }
@@ -317,13 +308,9 @@ public class MainMyFragment extends Fragment implements View.OnClickListener{
                 pbFa.setVisibility(View.VISIBLE);
             }
 
-            Map<String,Integer> data = new HashMap<>();
-            data.put("userId",userId);
-            data.put("start",-1);
-
             new S2SHttpUtil(
                     activity,
-                    new Gson().toJson(data),
+                    userId+"",
                     MyEnvironment.serverBasePath+"getCollectPlayList",
                     handler)
             .call(BasicCode.GET_CONTENT);
@@ -353,11 +340,17 @@ public class MainMyFragment extends Fragment implements View.OnClickListener{
                             return;
                         }
 
-                        PlayListHttpUtil.createPlayList(
+                        PlayList playList = new PlayList();
+                        playList.setCreateUserId(SharedPreferencesUtil.getUserId(sp));
+                        playList.setPlayListName(ct.getText().toString());
+
+                        new S2SHttpUtil(
                                 activity,
-                                sp.getString("userId","-1"),
-                                ct.getText().toString(),
-                                handler);
+                                new Gson().toJson(playList),
+                                MyEnvironment.serverBasePath+"createPlayList",
+                                handler)
+                        .call(BasicCode.CREATE);
+
                     }
                 })
                 .setNegativeButton("取消",null)
@@ -400,7 +393,7 @@ public class MainMyFragment extends Fragment implements View.OnClickListener{
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what){
-                case PlayListHttpUtil.MESSAGE_FIND_MY_PLAY_LIST_END:
+                case BasicCode.GET_CONTENT_2:
                     fragment.pbMy.setVisibility(View.GONE);
                     fragment.myPlayListRv.setVisibility(View.VISIBLE);
                     Map<String,String> data =new Gson().fromJson((String)msg.obj,
@@ -414,7 +407,7 @@ public class MainMyFragment extends Fragment implements View.OnClickListener{
                     fragment.myPlayListAdapter.setDataList(
                             new LinkedList<PlayList>(dataList));
                     break;
-                case PlayListHttpUtil.MESSAGE_CREATE_END:
+                case BasicCode.CREATE:
 
                     PlayList item=new Gson().fromJson(
                             (String)msg.obj,

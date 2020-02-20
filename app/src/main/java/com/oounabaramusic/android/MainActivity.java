@@ -12,6 +12,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.material.navigation.NavigationView;
 import com.oounabaramusic.android.bean.MyImage;
@@ -83,6 +84,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
         view.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+                if(!SharedPreferencesUtil.isLogin(sp)){
+                    Toast.makeText(MainActivity.this, "请先登录", Toast.LENGTH_SHORT).show();
+                    return true;
+                }
+
                 Intent intent;
                 int userId =  SharedPreferencesUtil.getUserId(sp);
                 switch (menuItem.getItemId()){
@@ -168,13 +174,15 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
         userId = sp.getString("userId","-1");
         userName = sp.getString("userName","null");
 
-        MyImage image = new MyImage();
-        image.setContentType(MyImage.TYPE_USER_HEADER);
-        image.setContentId(Integer.valueOf(userId));
-//        userHeader.setImageUrl(MyEnvironment.
-//                serverBasePath+"/loadUserHeader?userId="+userId);
-        userHeader.setImage(image);
-        userNameTV.setText(userName);
+        if(SharedPreferencesUtil.isLogin(sp)){
+            userHeader.setImage(new MyImage(
+                    MyImage.TYPE_USER_HEADER,
+                    Integer.valueOf(userId)));
+            userNameTV.setText(userName);
+        }else{
+            userHeader.setImageBitmap(null);
+            userNameTV.setText("请先登录");
+        }
     }
 
     @Override
@@ -198,9 +206,15 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
                 startActivity(intent);
                 break;
             case R.id.to_user_info:                     //点击NavigationView的header部分时
-                intent=new Intent(this,UserInfoActivity.class);
-                intent.putExtra("userId",Integer.valueOf(userId));
-                startActivity(intent);
+                if(SharedPreferencesUtil.isLogin(sp)){
+                    intent=new Intent(this,UserInfoActivity.class);
+                    intent.putExtra("userId",Integer.valueOf(userId));
+                    startActivity(intent);
+                }else{
+                    intent = new Intent(this,ChooseLoginActivity.class);
+                    startActivity(intent);
+                    finish();
+                }
                 dl.closeDrawer(GravityCompat.START);
                 break;
         }

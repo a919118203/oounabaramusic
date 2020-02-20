@@ -19,6 +19,7 @@ import com.oounabaramusic.android.CommentActivity;
 import com.oounabaramusic.android.R;
 import com.oounabaramusic.android.UserInfoActivity;
 import com.oounabaramusic.android.bean.Comment;
+import com.oounabaramusic.android.bean.MyImage;
 import com.oounabaramusic.android.code.BasicCode;
 import com.oounabaramusic.android.okhttputil.S2SHttpUtil;
 import com.oounabaramusic.android.util.FormatUtil;
@@ -80,8 +81,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
         holder.commentContent.setText(item.getContent());
         holder.commentDate.setText(FormatUtil.DateTimeToString(item.getDate()));
         holder.userName.setText(item.getUserName());
-        holder.userHeader.setImageUrl(MyEnvironment.serverBasePath+
-                "loadUserHeader?userId="+item.getUserId());
+        holder.userHeader.setImage(new MyImage(MyImage.TYPE_USER_HEADER, item.getUserId()));
         if(item.getGooded()==0){
             holder.good.setImageBitmap(noGood);
         }else{

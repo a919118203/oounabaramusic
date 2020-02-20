@@ -14,6 +14,7 @@ import com.google.gson.reflect.TypeToken;
 import com.oounabaramusic.android.R;
 import com.oounabaramusic.android.SearchActivity;
 import com.oounabaramusic.android.UserInfoActivity;
+import com.oounabaramusic.android.bean.MyImage;
 import com.oounabaramusic.android.bean.User;
 import com.oounabaramusic.android.code.BasicCode;
 import com.oounabaramusic.android.okhttputil.S2SHttpUtil;
@@ -109,8 +110,7 @@ public class SearchUserAdapter extends RecyclerView.Adapter<SearchUserAdapter.Vi
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         User item = dataList.get(position);
 
-        holder.cover.setImageUrl(MyEnvironment.serverBasePath+
-                "loadUserHeader?userId="+item.getId());
+        holder.cover.setImage(new MyImage(MyImage.TYPE_USER_HEADER,item.getId()));
         holder.introduction.setText(item.getIntroduction());
         holder.name.setText(item.getUserName());
         if(item.getFollowed()){

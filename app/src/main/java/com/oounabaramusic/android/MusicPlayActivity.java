@@ -4,7 +4,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.widget.AppCompatSeekBar;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.view.GravityCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -33,7 +32,6 @@ import com.oounabaramusic.android.bean.Music;
 import com.oounabaramusic.android.bean.MyImage;
 import com.oounabaramusic.android.code.BasicCode;
 import com.oounabaramusic.android.okhttputil.LrcHttpUtil;
-import com.oounabaramusic.android.okhttputil.PlayListHttpUtil;
 import com.oounabaramusic.android.okhttputil.S2SHttpUtil;
 import com.oounabaramusic.android.service.MusicPlayService;
 import com.oounabaramusic.android.util.DensityUtil;
@@ -357,8 +355,9 @@ public class MusicPlayActivity extends BaseActivity implements View.OnClickListe
         musicCover.getLayoutParams().width= (int) (DensityUtil.getDisplayWidth(this)*0.8);
         musicCover.getLayoutParams().height= (int) (DensityUtil.getDisplayWidth(this)*0.8);
         musicCover.setEventHandler(mHandler);
-        musicCover.setImageUrl(MyEnvironment.serverBasePath+
-                "music/loadMusicCover?singerId="+music.getSingerId().split("/")[0]);
+        musicCover.setImage(new MyImage(
+                MyImage.TYPE_SINGER_COVER,
+                Integer.valueOf(music.getSingerId().split("/")[0])));
 
         seekBar.setMax(music.getDuration());
         seekBar.setProgress(binder.getCurrentProgress()/1000);
@@ -524,7 +523,12 @@ public class MusicPlayActivity extends BaseActivity implements View.OnClickListe
                             new S2SHttpUtil(this,gson.toJson(data),url,mHandler)
                                     .call(BasicCode.CANCEL_COLLECTION_MUSIC_END);
                         }else{
-                            PlayListHttpUtil.collectionMusic(this,gson.toJson(data),mHandler);
+                            new S2SHttpUtil(
+                                    this,
+                                    gson.toJson(data),
+                                    MyEnvironment.serverBasePath+"collectionMusic",
+                                    mHandler)
+                            .call(BasicCode.COLLECTION_MUSIC_END);
                         }
 
                     }else{
@@ -666,7 +670,7 @@ public class MusicPlayActivity extends BaseActivity implements View.OnClickListe
                     }
                     break;
 
-                case PlayListHttpUtil.MESSAGE_COLLECTION_MUSIC_EDN:
+                case BasicCode.COLLECTION_MUSIC_END:
                     activity.isCollection=true;
                     activity.collection.setImageBitmap(activity.collectioned);
                     activity.collection.setEnabled(true);

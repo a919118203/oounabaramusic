@@ -56,7 +56,7 @@ public class NDRankAdapter extends RecyclerView.Adapter<NDRankAdapter.ViewHolder
                     DensityUtil.dip2px(activity,10),
                     DensityUtil.dip2px(activity,10)
             );
-        }else if(position==9){
+        }else if(position==dataList.size()-1){
             mlp.setMargins(
                     DensityUtil.dip2px(activity,10),
                     DensityUtil.dip2px(activity,10),

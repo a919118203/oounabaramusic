@@ -18,22 +18,27 @@ import com.oounabaramusic.android.MainActivity;
 import com.oounabaramusic.android.R;
 import com.oounabaramusic.android.bean.MyImage;
 import com.oounabaramusic.android.bean.User;
+import com.oounabaramusic.android.code.BasicCode;
 import com.oounabaramusic.android.util.DigestUtils;
+import com.oounabaramusic.android.util.FormatUtil;
 import com.oounabaramusic.android.util.InternetUtil;
 import com.oounabaramusic.android.util.LogUtil;
 import com.oounabaramusic.android.util.MyEnvironment;
+import com.oounabaramusic.android.util.VideoUtil;
 import com.oounabaramusic.android.widget.customview.MyCircleImageView;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -43,6 +48,8 @@ import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.FormBody;
 import okhttp3.Headers;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
@@ -138,80 +145,8 @@ public class HttpUtil {
         });
     }
 
-    /**
-     * 加载图片
-     * @param context
-     * @param url
-     * @param handler
-     */
-    public static void loadImage(Context context, String url, final Handler handler){
-        String filePath = MyEnvironment.cachePath+DigestUtils.md5HexOfString(url);
 
-        final File file=new File(filePath);
-        if(file.exists()){
-            Message msg=new Message();
-            msg.what=MyCircleImageView.LOAD_SUCCESS;
-            msg.obj= BitmapFactory.decodeFile(file.getPath());
-            handler.sendMessage(msg);
-        }
-
-        //如果没网，就加载默认图片,或者缓存
-        if(!InternetUtil.checkNet(context)){
-            if(!file.exists()){
-                handler.sendEmptyMessage(NO_NET);
-            }
-            return;
-        }
-
-        OkHttpClient client=new OkHttpClient();
-
-        Request request=new Request.Builder()
-                .url(url)
-                .build();
-
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                e.printStackTrace();
-                handler.sendEmptyMessage(MyCircleImageView.LOAD_FAILURE);
-            }
-
-            @Override
-            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                String fileExists=response.header("exists");
-
-                //没封面
-                if(fileExists!=null&&fileExists.equals("0")){
-                    handler.sendEmptyMessage(MyCircleImageView.NO_COVER);
-                    return;
-                }
-
-                InputStream is=response.body().byteStream();
-                BufferedInputStream bis=new BufferedInputStream(is);
-
-                file.createNewFile();
-                BufferedOutputStream bos=new BufferedOutputStream(new FileOutputStream(file));
-                byte[] buff=new byte[1024];
-                int len;
-                while((len=bis.read(buff))!=-1){
-                    bos.write(buff,0,len);
-                }
-                bos.flush();
-                bos.close();
-
-                Bitmap bitmap= BitmapFactory.decodeFile(file.getPath());
-
-                Message message=new Message();
-                message.what=MyCircleImageView.LOAD_SUCCESS;
-                message.obj=bitmap;
-
-                handler.sendMessage(message);
-            }
-        });
-    }
-
-
-    synchronized public static void newLoadImage(final Context context, final MyImage image, final Handler handler){
+    synchronized public static void loadImage(final Context context, final MyImage image, final Handler handler){
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -253,16 +188,27 @@ public class HttpUtil {
                         try {
                             File file = new File(MyEnvironment.cachePath+md5);
                             if(file.exists()){
-                                is.skip(file.length());
-                            }
-                            fos = new FileOutputStream(file,true);
+                                String thisMd5 = DigestUtils.md5HexOfFile(file);
+                                if(!thisMd5.equals(md5)){
+                                    fos = new FileOutputStream(file);
 
-                            byte[] buff = new byte[1024];
-                            int len;
-                            while((len=is.read(buff))!=-1){
-                                fos.write(buff,0,len);
+                                    byte[] buff = new byte[1024];
+                                    int len;
+                                    while((len=is.read(buff))!=-1){
+                                        fos.write(buff,0,len);
+                                    }
+                                    fos.flush();
+                                }
+                            }else{
+                                fos = new FileOutputStream(file);
+
+                                byte[] buff = new byte[1024];
+                                int len;
+                                while((len=is.read(buff))!=-1){
+                                    fos.write(buff,0,len);
+                                }
+                                fos.flush();
                             }
-                            fos.flush();
 
                             Bitmap bitmap = BitmapFactory.decodeFile(file.getPath());
                             Message msg = new Message();
@@ -284,6 +230,103 @@ public class HttpUtil {
                         }
                     }
                 });
+            }
+        }).start();
+    }
+
+    /**
+     * 上传图片
+     * @param context    上下文
+     * @param image      包含contentType,contentId
+     * @param filePath   图片文件路径
+     * @param handler    handler
+     */
+    public static void uploadImage(final Context context, final MyImage image, final String filePath, final Handler handler){
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                //如果没网，就加载默认图片,或者缓存
+                if(!InternetUtil.checkNet(context)){
+                    Toast.makeText(context, "请检查网络连接", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                OkHttpClient client=new OkHttpClient();
+
+                File file = new File(filePath);
+
+                image.setMd5(DigestUtils.md5HexOfFile(file));
+
+                RequestBody body=new MultipartBody.Builder()
+                        .setType(MultipartBody.FORM)
+                        .addFormDataPart("file",file.getName(),
+                                RequestBody.create(file, MediaType.parse("multipart/form-data")))
+                        .build();
+
+                Request request = new Request.Builder()
+                        .url(MyEnvironment.serverBasePath+"uploadImage")
+                        .header("json", new Gson().toJson(image))
+                        .post(body)
+                        .build();
+
+                client.newCall(request).enqueue(new Callback() {
+                    @Override
+                    public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                        handler.sendEmptyMessage(BasicCode.UPLOAD_FAILURE);
+                    }
+
+                    @Override
+                    public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                        handler.sendEmptyMessage(BasicCode.UPLOAD_IMAGE);
+                    }
+                });
+            }
+        }).start();
+
+    }
+
+    /**
+     * 上传视频封面，使用第一帧作为视频封面
+     * @param context            上下文
+     * @param image              包含contentType,contentId
+     * @param videoFilePath      视频文件路径
+     * @param handler            handler
+     */
+    public static void uploadVideoCover(final Context context, final MyImage image, final String videoFilePath, final Handler handler){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                if(!InternetUtil.checkNet(context)){
+                    Toast.makeText(context, "请检查网络连接", Toast.LENGTH_SHORT).show();
+                    handler.sendEmptyMessage(HttpUtil.NO_NET);
+                    return;
+                }
+
+                //如果视频文件不存在就退出
+                File videoFile=new File(videoFilePath);
+                if(!videoFile.exists())
+                    return;
+
+                Bitmap bitmap = VideoUtil.getVideoCover(videoFilePath);
+                ByteArrayOutputStream baos=new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.JPEG,100,baos);
+                //将第一帧作为视频封面，将当前时间作为文件名，暂时创建文件
+                final File file = new File(MyEnvironment.cachePath+
+                        DigestUtils.md5HexOfString(FormatUtil.DateTimeToString(new Date())));
+                try {
+                    BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(file));
+                    bos.write(baos.toByteArray());
+                    bos.flush();
+                    bos.close();
+                    baos.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                bitmap.recycle();
+
+                uploadImage(context,image,file.getPath(),handler);
             }
         }).start();
     }

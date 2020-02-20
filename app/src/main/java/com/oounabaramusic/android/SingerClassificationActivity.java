@@ -1,13 +1,10 @@
 package com.oounabaramusic.android;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.animation.Animator;
-import android.animation.ValueAnimator;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
@@ -15,38 +12,29 @@ import android.os.Message;
 import android.preference.PreferenceManager;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewTreeObserver;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.widget.GridLayout;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.google.android.material.tabs.TabLayout;
-import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.oounabaramusic.android.adapter.SingerAdapter;
 import com.oounabaramusic.android.anim.HeightChangeAnimation;
 import com.oounabaramusic.android.bean.Singer;
 import com.oounabaramusic.android.bean.SingerCountry;
 import com.oounabaramusic.android.bean.SingerType;
-import com.oounabaramusic.android.okhttputil.SingerClassificationHttpUtil;
-import com.oounabaramusic.android.util.DensityUtil;
-import com.oounabaramusic.android.util.LogUtil;
+import com.oounabaramusic.android.code.BasicCode;
+import com.oounabaramusic.android.okhttputil.S2SHttpUtil;
+import com.oounabaramusic.android.util.MyEnvironment;
+import com.oounabaramusic.android.util.SharedPreferencesUtil;
 import com.oounabaramusic.android.util.StatusBarUtil;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
 public class SingerClassificationActivity extends BaseActivity {
 
-    public static final int MESSAGE_TYPE_LOAD_END=0;
-    public static final int MESSAGE_LOAD_SINGER_END=1;
-    public static final int MESSAGE_FOLLOW_SINGER_END=2;
-    public static final int MESSAGE_CANCEL_FOLLOW_END=3;
     private SingerAdapter adapter;
     private LinearLayout tab;
     private LinearLayout filter;
@@ -75,7 +63,12 @@ public class SingerClassificationActivity extends BaseActivity {
 
         init();
 
-        SingerClassificationHttpUtil.loadSingerType(this,handler);
+        new S2SHttpUtil(
+                this,
+                "",
+                MyEnvironment.serverBasePath+"music/loadSingerType",
+                handler)
+        .call(BasicCode.GET_CONTENT);
     }
 
     //返回时，刷新
@@ -116,22 +109,25 @@ public class SingerClassificationActivity extends BaseActivity {
     }
 
     private void loadSinger(){
-        String userId;
+        int userId=0;
 
-        if(!sp.getBoolean("login",false)){
-            userId="-1";
-        }else{
-            userId=sp.getString("userId","-1");
+        if(SharedPreferencesUtil.isLogin(sp)){
+            userId=SharedPreferencesUtil.getUserId(sp);
         }
 
         rv.setVisibility(View.GONE);
         recycler.setVisibility(View.VISIBLE);
 
-        SingerClassificationHttpUtil.loadSinger(SingerClassificationActivity.this,
-                countries.get(country.getSelectedTabPosition()).getId(),
-                types.get(type.getSelectedTabPosition()).getId(),
-                userId,
-                handler);
+        Singer singer = new Singer();
+        singer.setCountryId(countries.get(country.getSelectedTabPosition()).getId());
+        singer.setTypeId(types.get(type.getSelectedTabPosition()).getId());
+        singer.setMainUserId(userId);
+        new S2SHttpUtil(
+                this,
+                gson.toJson(singer),
+                MyEnvironment.serverBasePath+"music/loadSinger",
+                handler)
+        .call(BasicCode.GET_CONTENT_2);
     }
 
     private void init() {
@@ -208,13 +204,13 @@ public class SingerClassificationActivity extends BaseActivity {
             Map<String, String> data;
 
             switch (msg.what){
-                case MESSAGE_TYPE_LOAD_END:
+                case BasicCode.GET_CONTENT:
                     json= (String) msg.obj;
                     data=activity.gson.fromJson(json,
                             new TypeToken<Map<String, String>>(){}.getType());
                     activity.initSingerTag(data);
                     break;
-                case MESSAGE_LOAD_SINGER_END:
+                case BasicCode.GET_CONTENT_2:
                     activity.rv.setVisibility(View.VISIBLE);
                     activity.recycler.setVisibility(View.GONE);
                     json= (String) msg.obj;
@@ -231,7 +227,7 @@ public class SingerClassificationActivity extends BaseActivity {
                     activity.adapter.setFollowed(followed);
                     activity.adapter.setDataList(singers);
                     break;
-                case MESSAGE_FOLLOW_SINGER_END:
+                case BasicCode.TO_FOLLOW_SINGER:
                     activity.adapter.followSingerEnd((String) msg.obj);
             }
         }

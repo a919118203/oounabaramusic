@@ -1,9 +1,7 @@
 package com.oounabaramusic.android.adapter;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
 import android.view.LayoutInflater;
@@ -22,7 +20,6 @@ import com.oounabaramusic.android.bean.MyImage;
 import com.oounabaramusic.android.bean.PlayList;
 import com.oounabaramusic.android.code.BasicCode;
 import com.oounabaramusic.android.fragment.MainMyFragment;
-import com.oounabaramusic.android.okhttputil.PlayListHttpUtil;
 import com.oounabaramusic.android.okhttputil.S2SHttpUtil;
 import com.oounabaramusic.android.util.MyEnvironment;
 import com.oounabaramusic.android.util.SharedPreferencesUtil;
@@ -115,9 +112,16 @@ public class FavoritePlayListAdapter extends RecyclerView.Adapter<FavoritePlayLi
                 .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        PlayListHttpUtil.findMusicByPlayList(activity,
-                                dataList.get(popupPosition).getId()+"",
-                                new MyHandler(FavoritePlayListAdapter.this));
+
+                        PlayList data = new PlayList();
+                        data.setId(dataList.get(popupPosition).getId());
+
+                        new S2SHttpUtil(
+                                activity,
+                                new Gson().toJson(data),
+                                MyEnvironment.serverBasePath+"findMusicByPlayList",
+                                new MyHandler(FavoritePlayListAdapter.this))
+                        .call(BasicCode.GET_CONTENT);
                     }
                 })
                 .create();
@@ -189,7 +193,7 @@ public class FavoritePlayListAdapter extends RecyclerView.Adapter<FavoritePlayLi
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what){
-                case PlayListHttpUtil.MESSAGE_FIND_PLAY_LIST_MUSIC_END:
+                case BasicCode.GET_CONTENT:
                     List<String> data=new Gson().fromJson((String)msg.obj,
                             new TypeToken<List<String>>(){}.getType());
                     for(String item:data){

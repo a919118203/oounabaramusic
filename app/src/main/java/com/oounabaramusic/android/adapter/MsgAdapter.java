@@ -13,6 +13,7 @@ import com.oounabaramusic.android.MessageActivity;
 import com.oounabaramusic.android.R;
 import com.oounabaramusic.android.UserInfoActivity;
 import com.oounabaramusic.android.bean.Message;
+import com.oounabaramusic.android.bean.MyImage;
 import com.oounabaramusic.android.util.MyEnvironment;
 import com.oounabaramusic.android.widget.customview.MyCircleImageView;
 
@@ -66,14 +67,14 @@ public class MsgAdapter extends RecyclerView.Adapter<MsgAdapter.ViewHolder>{
 
             holder.rightLayout.setVisibility(View.VISIBLE);
             holder.rightMsg.setText(item.getContent());
-            holder.rightHeader.setImageUrl(MyEnvironment.serverBasePath+"loadUserHeader?userId="+item.getFromId());
+            holder.rightHeader.setImage(new MyImage(MyImage.TYPE_USER_HEADER,item.getFromId()));
 
         }else{
             holder.rightLayout.setVisibility(View.GONE);
 
             holder.leftLayout.setVisibility(View.VISIBLE);
             holder.leftMsg.setText(item.getContent());
-            holder.leftHeader.setImageUrl(MyEnvironment.serverBasePath+"loadUserHeader?userId="+item.getFromId());
+            holder.leftHeader.setImage(new MyImage(MyImage.TYPE_USER_HEADER,item.getFromId()));
         }
     }
 

@@ -1,7 +1,5 @@
 package com.oounabaramusic.android.adapter;
 
-import android.app.Activity;
-import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
 import android.view.LayoutInflater;
@@ -18,14 +16,11 @@ import com.oounabaramusic.android.bean.MyImage;
 import com.oounabaramusic.android.bean.PlayList;
 import com.oounabaramusic.android.code.BasicCode;
 import com.oounabaramusic.android.fragment.UserInfoMainFragment;
-import com.oounabaramusic.android.okhttputil.PlayListHttpUtil;
 import com.oounabaramusic.android.okhttputil.S2SHttpUtil;
 import com.oounabaramusic.android.util.MyEnvironment;
-import com.oounabaramusic.android.util.SharedPreferencesUtil;
 import com.oounabaramusic.android.widget.customview.MyImageView;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -47,14 +42,10 @@ public class UserInfoMyPlayListAdapter extends RecyclerView.Adapter<UserInfoMyPl
 
     public void setUserId(int userId) {
         this.userId = userId;
-        Map<String,Integer>data = new HashMap<>();
-        data.put("userId",userId);
-        data.put("start",0);
-        data.put("len",10);
 
         new S2SHttpUtil(
                 activity,
-                new Gson().toJson(data),
+                userId+"",
                 MyEnvironment.serverBasePath+"findPlayListByUser",
                 new MyHandler(this))
                 .call(BasicCode.GET_CONTENT);
@@ -123,7 +114,7 @@ public class UserInfoMyPlayListAdapter extends RecyclerView.Adapter<UserInfoMyPl
 
                     int size = Integer.valueOf(data.get("size"));
                     adapter.fragment.setMyPlayListCnt(size);
-                    adapter.dataList=dataList;
+                    adapter.dataList=dataList.subList(0,size>10?10:size);
                     adapter.notifyDataSetChanged();
                     break;
             }

@@ -10,6 +10,7 @@ import com.oounabaramusic.android.BaseActivity;
 import com.oounabaramusic.android.MessageActivity;
 import com.oounabaramusic.android.R;
 import com.oounabaramusic.android.bean.Message;
+import com.oounabaramusic.android.bean.MyImage;
 import com.oounabaramusic.android.util.FormatUtil;
 import com.oounabaramusic.android.util.MyEnvironment;
 import com.oounabaramusic.android.util.SharedPreferencesUtil;
@@ -58,12 +59,10 @@ public class PrivateMessageAdapter extends RecyclerView.Adapter<PrivateMessageAd
         Message item = dataList.get(position);
 
         if(item.getFromId()==selfId){
-            holder.header.setImageUrl(MyEnvironment.serverBasePath+
-                    "loadUserHeader?userId="+item.getToId());
+            holder.header.setImage(new MyImage(MyImage.TYPE_USER_HEADER,item.getToId()));
             holder.name.setText(item.getToUserName());
         }else{
-            holder.header.setImageUrl(MyEnvironment.serverBasePath+
-                    "loadUserHeader?userId="+item.getFromId());
+            holder.header.setImage(new MyImage(MyImage.TYPE_USER_HEADER,item.getFromId()));
             holder.name.setText(item.getFromUserName());
         }
 

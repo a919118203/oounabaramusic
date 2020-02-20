@@ -139,7 +139,7 @@ public class ResumePlayListActivity extends BaseActivity implements View.OnClick
     public void setPlayList(PlayList playList) {
         this.playList = playList;
         new S2SHttpUtil(this,
-                gson.toJson(playList.getId()),
+                gson.toJson(playList),
                 MyEnvironment.serverBasePath+"findDelMusicByPlayList",
                 new MyHandler(this))
         .call(BasicCode.GET_DELETE_MUSIC);

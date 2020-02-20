@@ -28,10 +28,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.oounabaramusic.android.bean.MyImage;
 import com.oounabaramusic.android.bean.User;
 import com.oounabaramusic.android.code.BasicCode;
+import com.oounabaramusic.android.okhttputil.HttpUtil;
 import com.oounabaramusic.android.okhttputil.S2SHttpUtil;
-import com.oounabaramusic.android.okhttputil.UserHttpUtil;
 import com.oounabaramusic.android.util.FormatUtil;
 import com.oounabaramusic.android.util.InputMethodUtil;
 import com.oounabaramusic.android.util.MyEnvironment;
@@ -152,9 +153,7 @@ public class UserInfoEditActivity extends BaseActivity implements View.OnClickLi
     }
 
     private void initContent(){
-        userHeader.setImageUrl(MyEnvironment.serverBasePath+
-                "loadUserHeader?userId="+user.getId());
-
+        userHeader.setImage(new MyImage(MyImage.TYPE_USER_HEADER,user.getId()));
         userName.setText(user.getUserName());
         userSex.setText(user.getSex());
         userBirthday.setText(FormatUtil.DateToString(user.getBirthday()));
@@ -354,8 +353,13 @@ public class UserInfoEditActivity extends BaseActivity implements View.OnClickLi
                 if(data!=null&&data.getData()!=null) {
                     Uri uri = data.getData();
                     String imagePath = new RealPathFromUriUtils(this).getPath(uri);
-                    UserHttpUtil.uploadUserHeader(this,imagePath,
-                            user.getId()+"",new MyHandler(this));
+
+                    HttpUtil.uploadImage(
+                            this,
+                            new MyImage(MyImage.TYPE_USER_HEADER,user.getId()),
+                            imagePath,
+                            new MyHandler(this));
+
                     Bitmap bit=BitmapFactory.decodeFile(imagePath);
                     userHeader.setImageBitmap(bit);
                 }
@@ -372,7 +376,7 @@ public class UserInfoEditActivity extends BaseActivity implements View.OnClickLi
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what){
-                case BasicCode.UPLOAD_USER_HEADER_END:
+                case BasicCode.UPLOAD_IMAGE:
                     Toast.makeText(activity, "头像上传成功", Toast.LENGTH_SHORT).show();
                     break;
                 case BasicCode.UPDATE_USER_USERNAME_END:

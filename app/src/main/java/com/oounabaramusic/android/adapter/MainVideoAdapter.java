@@ -17,6 +17,7 @@ import com.oounabaramusic.android.BaseActivity;
 import com.oounabaramusic.android.PostActivity;
 import com.oounabaramusic.android.R;
 import com.oounabaramusic.android.UserInfoActivity;
+import com.oounabaramusic.android.bean.MyImage;
 import com.oounabaramusic.android.bean.Post;
 import com.oounabaramusic.android.bean.Video;
 import com.oounabaramusic.android.code.BasicCode;
@@ -123,8 +124,7 @@ public class MainVideoAdapter extends RecyclerView.Adapter<MainVideoAdapter.View
 
         holder.title.setText(video.getTitle());
         holder.videoPlayer.setVideo(video);
-        holder.header.setImageUrl(MyEnvironment.serverBasePath+
-                "loadUserHeader?userId="+item.getUserId());
+        holder.header.setImage(new MyImage(MyImage.TYPE_USER_HEADER,item.getUserId()));
         holder.userName.setText(item.getUserName());
         if(item.getGooded()>0){
             holder.toGood.setImageBitmap(good);

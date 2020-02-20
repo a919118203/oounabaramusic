@@ -6,30 +6,13 @@ import android.graphics.BitmapFactory;
 import android.os.Handler;
 import android.os.Message;
 import android.util.AttributeSet;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.oounabaramusic.android.R;
 import com.oounabaramusic.android.bean.MyImage;
 import com.oounabaramusic.android.okhttputil.HttpUtil;
-import com.oounabaramusic.android.util.InternetUtil;
-import com.oounabaramusic.android.util.LogUtil;
-import com.oounabaramusic.android.util.MyEnvironment;
-
-import org.jetbrains.annotations.NotNull;
-
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 
 import de.hdodenhof.circleimageview.CircleImageView;
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
 
 public class MyCircleImageView extends CircleImageView {
     public static final int NO_NET=0;
@@ -56,23 +39,13 @@ public class MyCircleImageView extends CircleImageView {
         super(context, attrs, defStyle);
     }
 
-    public void setImageUrl(final String url){
-        this.url=url;
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                HttpUtil.loadImage(getContext(),url,handler);
-            }
-        }).start();
-    }
-
     public void setImage(MyImage image){
         this.image=image;
-        HttpUtil.newLoadImage(getContext(),image,handler);
+        HttpUtil.loadImage(getContext(),image,handler);
     }
 
     public void refresh(){
-        HttpUtil.loadImage(getContext(),url,new ImageHandler(this));
+        HttpUtil.loadImage(getContext(),image,handler);
     }
 
     public void setDefaultImage(Bitmap defaultImage) {

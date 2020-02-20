@@ -7,8 +7,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -23,7 +21,6 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -36,16 +33,14 @@ import com.oounabaramusic.android.bean.MyImage;
 import com.oounabaramusic.android.bean.PlayList;
 import com.oounabaramusic.android.bean.PlayListBigTag;
 import com.oounabaramusic.android.bean.PlayListSmallTag;
-import com.oounabaramusic.android.okhttputil.PlayListHttpUtil;
-import com.oounabaramusic.android.okhttputil.TagHttpUtil;
+import com.oounabaramusic.android.code.BasicCode;
+import com.oounabaramusic.android.okhttputil.HttpUtil;
+import com.oounabaramusic.android.okhttputil.S2SHttpUtil;
 import com.oounabaramusic.android.util.InputMethodUtil;
-import com.oounabaramusic.android.util.LogUtil;
 import com.oounabaramusic.android.util.MyEnvironment;
 import com.oounabaramusic.android.util.RealPathFromUriUtils;
-import com.oounabaramusic.android.util.StatusBarUtil;
 import com.oounabaramusic.android.widget.customview.MyImageView;
 
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -194,24 +189,38 @@ public class EditPlayListInfoActivity extends BaseActivity implements View.OnCli
                 Map<String,String> dataD=new HashMap<>();
                 dataD.put("playListId",playList.getId()+"");
                 dataD.put("playListIntroduction",newPlaylistDescription.getText().toString());
-                PlayListHttpUtil.savePlayListIntroduction(this,
-                        gson.toJson(dataD),new EditPLHandler(this));
+
+                new S2SHttpUtil(
+                        this,
+                        gson.toJson(dataD),
+                        MyEnvironment.serverBasePath+"savePlayListIntroduction",
+                        new EditPLHandler(this))
+                .call(BasicCode.SAVE_PLAY_LIST_INTRODUCTION);
                 break;
             case R.id.edit_info_save_tag:
                 saveTag.setEnabled(false);
                 List<Integer> data=new ArrayList<>();
                 data.add(playList.getId());
                 data.addAll(tagAdapter.getSelected());
-                TagHttpUtil.savePlayListTag(this,
-                        gson.toJson(data),new EditPLHandler(this));
+                new S2SHttpUtil(
+                        this,
+                        gson.toJson(data),
+                        MyEnvironment.serverBasePath+"savePlayListTag",
+                        new EditPLHandler(this))
+                .call(BasicCode.SAVE_TO_SERVER);
                 break;
             case R.id.edit_info_save_name:
                 saveName.setEnabled(false);
                 Map<String,String> map=new HashMap<>();
                 map.put("playListId",playList.getId()+"");
                 map.put("playListName",newPlaylistName.getText().toString());
-                PlayListHttpUtil.savePlayListName(this,
-                        gson.toJson(map),new EditPLHandler(this));
+
+                new S2SHttpUtil(
+                        this,
+                        gson.toJson(map),
+                        MyEnvironment.serverBasePath+"savePlayListName",
+                        new EditPLHandler(this))
+                .call(BasicCode.SAVE_PLAY_LIST_NAME);
                 break;
         }
         return true;
@@ -255,7 +264,12 @@ public class EditPlayListInfoActivity extends BaseActivity implements View.OnCli
                 pbTag.setVisibility(View.VISIBLE);
                 description.setVisibility(View.GONE);
                 mainContent.setVisibility(View.GONE);
-                TagHttpUtil.getPlayListTag(this,new EditPLHandler(this));
+                new S2SHttpUtil(
+                        this,
+                        "",
+                        MyEnvironment.serverBasePath+"loadPlayListTag",
+                        new EditPLHandler(this))
+                        .call(BasicCode.GET_CONTENT);
                 break;
             case TOOLBAR_MODE_EDIT_DESCRIPTION:
                 title="歌单介绍";
@@ -320,8 +334,12 @@ public class EditPlayListInfoActivity extends BaseActivity implements View.OnCli
                 if(data!=null&&data.getData()!=null){
                     Uri uri=data.getData();
                     String imagePath= new RealPathFromUriUtils(this).getPath(uri);
-                    PlayListHttpUtil.uploadPlayListCover(this,imagePath,
-                            playList.getId()+"",new EditPLHandler(this));
+
+                    HttpUtil.uploadImage(
+                            this,
+                            new MyImage(MyImage.TYPE_PLAY_LIST_COVER, playList.getId()),
+                            imagePath,
+                            new EditPLHandler(this));
                 }
                 break;
         }
@@ -337,7 +355,7 @@ public class EditPlayListInfoActivity extends BaseActivity implements View.OnCli
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what){
-                case TagHttpUtil.MESSAGE_GET_PLAY_LIST_TAG_END:
+                case BasicCode.GET_CONTENT:
                     List<PlayListBigTag> dataList = new Gson().fromJson((String)msg.obj,
                             new TypeToken<List<PlayListBigTag>>(){}.getType());
                     activity.tagAdapter.setDataList(dataList);
@@ -351,7 +369,7 @@ public class EditPlayListInfoActivity extends BaseActivity implements View.OnCli
                     activity.pbTag.setVisibility(View.GONE);
                     activity.tagRv.setVisibility(View.VISIBLE);
                     break;
-                case TagHttpUtil.MESSAGE_SAVE_PLAY_LIST_TAG_END:
+                case BasicCode.SAVE_TO_SERVER:
                     List<PlayListSmallTag> data=activity.gson.fromJson((String)msg.obj,
                             new TypeToken<List<PlayListSmallTag>>(){}.getType());
 
@@ -368,20 +386,20 @@ public class EditPlayListInfoActivity extends BaseActivity implements View.OnCli
                     activity.saveTag.setEnabled(true);
                     Toast.makeText(activity, "保存成功", Toast.LENGTH_SHORT).show();
                     break;
-                case PlayListHttpUtil.MESSAGE_SAVE_NAME_END:
+                case BasicCode.SAVE_PLAY_LIST_NAME:
                     String playListName= (String) msg.obj;
                     activity.playList.setPlayListName(playListName);
                     activity.playListName.setText(playListName);
                     activity.saveName.setEnabled(true);
                     Toast.makeText(activity, "保存成功", Toast.LENGTH_SHORT).show();
                     break;
-                case PlayListHttpUtil.MESSAGE_SAVE_INTRODUCTION_END:
+                case BasicCode.SAVE_PLAY_LIST_INTRODUCTION:
                     activity.playList.setIntroduction(activity.newPlaylistDescription.getText().toString());
                     activity.playListIntroduction.setText(activity.playList.getIntroduction());
                     activity.saveDescription.setEnabled(true);
                     Toast.makeText(activity, "保存成功", Toast.LENGTH_SHORT).show();
                     break;
-                case PlayListHttpUtil.MESSAGE_UPLOAD_PL_COVER_END:
+                case BasicCode.UPLOAD_IMAGE:
                     activity.playListCover.refresh();
                     Toast.makeText(activity, "封面上传成功", Toast.LENGTH_SHORT).show();
                     break;

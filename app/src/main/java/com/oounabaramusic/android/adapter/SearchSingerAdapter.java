@@ -13,6 +13,7 @@ import com.google.gson.reflect.TypeToken;
 import com.oounabaramusic.android.R;
 import com.oounabaramusic.android.SearchActivity;
 import com.oounabaramusic.android.SingerActivity;
+import com.oounabaramusic.android.bean.MyImage;
 import com.oounabaramusic.android.bean.Singer;
 import com.oounabaramusic.android.code.BasicCode;
 import com.oounabaramusic.android.okhttputil.S2SHttpUtil;
@@ -103,8 +104,7 @@ public class SearchSingerAdapter extends RecyclerView.Adapter<SearchSingerAdapte
         Singer singer = dataList.get(position);
 
         holder.name.setText(singer.getSingerName());
-        holder.cover.setImageUrl(MyEnvironment.serverBasePath+
-                "music/loadSingerCover?singerId="+singer.getId());
+        holder.cover.setImage(new MyImage(MyImage.TYPE_SINGER_COVER,singer.getId()));
     }
 
     @Override

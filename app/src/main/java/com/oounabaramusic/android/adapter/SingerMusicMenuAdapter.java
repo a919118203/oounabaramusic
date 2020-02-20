@@ -1,33 +1,22 @@
 package com.oounabaramusic.android.adapter;
 
 
-import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
-import android.widget.ListView;
-import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.oounabaramusic.android.BaseActivity;
 import com.oounabaramusic.android.CommentActivity;
-import com.oounabaramusic.android.MusicPlayActivity;
 import com.oounabaramusic.android.R;
 import com.oounabaramusic.android.SingerActivity;
 import com.oounabaramusic.android.bean.Comment;
 import com.oounabaramusic.android.bean.Music;
 import com.oounabaramusic.android.bean.MyImage;
-import com.oounabaramusic.android.okhttputil.PlayListHttpUtil;
-import com.oounabaramusic.android.util.MyEnvironment;
-import com.oounabaramusic.android.widget.customview.MyCircleImageView;
 import com.oounabaramusic.android.widget.customview.MyImageView;
 import com.oounabaramusic.android.widget.popupwindow.MyBottomSheetDialog;
 import com.oounabaramusic.android.widget.popupwindow.PlayListDialog;
@@ -37,7 +26,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class SingerMusicMenuAdapter extends RecyclerView.Adapter<SingerMusicMenuAdapter.ViewHolder> {
@@ -59,6 +47,17 @@ public class SingerMusicMenuAdapter extends RecyclerView.Adapter<SingerMusicMenu
     public void setDataList(List<Music> dataList) {
         this.dataList = dataList;
         notifyDataSetChanged();
+    }
+
+    public void addDataList(List<Music> dataList){
+        if(dataList==null||dataList.isEmpty()){
+            return;
+        }
+
+        int start = this.dataList.size();
+        int len = dataList.size();
+        this.dataList.addAll(dataList);
+        notifyItemRangeInserted(start,len);
     }
 
     private View createContentView() {

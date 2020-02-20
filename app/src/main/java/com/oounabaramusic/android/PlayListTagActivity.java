@@ -1,7 +1,6 @@
 package com.oounabaramusic.android;
 
 import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -12,7 +11,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -21,22 +19,17 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.oounabaramusic.android.adapter.MyPlayListAdapter;
 import com.oounabaramusic.android.adapter.MyPlayListTagAdapter;
 import com.oounabaramusic.android.adapter.OtherPlayListTagAdapter;
 import com.oounabaramusic.android.bean.PlayListBigTag;
 import com.oounabaramusic.android.bean.PlayListSmallTag;
 import com.oounabaramusic.android.code.BasicCode;
 import com.oounabaramusic.android.okhttputil.S2SHttpUtil;
-import com.oounabaramusic.android.okhttputil.TagHttpUtil;
-import com.oounabaramusic.android.util.LogUtil;
 import com.oounabaramusic.android.util.MyEnvironment;
 import com.oounabaramusic.android.util.StatusBarUtil;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 public class PlayListTagActivity extends BaseActivity {
@@ -141,7 +134,12 @@ public class PlayListTagActivity extends BaseActivity {
 
     private void initTag() {
         if(bigTags==null){
-            TagHttpUtil.getPlayListTag(this,new MyHandler(this));
+            new S2SHttpUtil(
+                    this,
+                    "",
+                    MyEnvironment.serverBasePath+"loadPlayListTag",
+                    new MyHandler(this))
+            .call(BasicCode.GET_CONTENT);
             return;
         }
 
@@ -189,7 +187,7 @@ public class PlayListTagActivity extends BaseActivity {
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what){
-                case TagHttpUtil.MESSAGE_GET_PLAY_LIST_TAG_END:
+                case BasicCode.GET_CONTENT:
                     activity.bigTags = new Gson().fromJson((String)msg.obj,
                             new TypeToken<List<PlayListBigTag>>(){}.getType());
                     activity.initTag();

@@ -2,6 +2,8 @@ package com.oounabaramusic.android.code;
 
 public class BasicCode {
 
+    public static final int COLLECTION_MUSIC_END = 999;
+
     public static final int CANCEL_COLLECTION_MUSIC_END = 1000;
 
     public static final int GET_IS_COLLECT_MUSIC_END = 1001;
@@ -87,4 +89,18 @@ public class BasicCode {
     public static final int GET_CONTENT_3=1041;
 
     public static final int GET_CONTENT_4=1042;
+
+    public static final int UPLOAD_IMAGE=1043;
+
+    public static final int UPLOAD_FAILURE=1044;
+
+    public static final int TO_FOLLOW_SINGER=1045;
+
+    public static final int CANCEL_FOLLOW=1046;
+
+    public static final int CREATE=1047;
+
+    public static final int SAVE_PLAY_LIST_NAME=1048;
+
+    public static final int SAVE_PLAY_LIST_INTRODUCTION=1049;
 }

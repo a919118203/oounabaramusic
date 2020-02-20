@@ -47,13 +47,10 @@ public class UserInfoFavoritePlayListAdapter extends RecyclerView.Adapter<UserIn
     public void setUserId(int userId) {
         this.userId = userId;
         Map<String,Integer> data = new HashMap<>();
-        data.put("userId",userId);
-        data.put("start",0);
-        data.put("len",10);
 
         new S2SHttpUtil(
                 activity,
-                new Gson().toJson(data),
+                userId+"",
                 MyEnvironment.serverBasePath+"getCollectPlayList",
                 new MyHandler(this))
                 .call(BasicCode.GET_CONTENT);
@@ -122,7 +119,7 @@ public class UserInfoFavoritePlayListAdapter extends RecyclerView.Adapter<UserIn
 
                     int size = Integer.valueOf(data.get("size"));
                     adapter.fragment.setFavoritePlayListCnt(size);
-                    adapter.dataList=dataList;
+                    adapter.dataList=dataList.subList(0,size>10?10:size);
                     adapter.notifyDataSetChanged();
                     break;
             }

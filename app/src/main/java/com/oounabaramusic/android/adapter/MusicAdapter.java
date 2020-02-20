@@ -1,9 +1,7 @@
 package com.oounabaramusic.android.adapter;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,15 +11,16 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.oounabaramusic.android.CommentActivity;
-import com.oounabaramusic.android.MusicPlayActivity;
 import com.oounabaramusic.android.PlayListActivity;
 import com.oounabaramusic.android.R;
 import com.oounabaramusic.android.SingerActivity;
 import com.oounabaramusic.android.bean.Comment;
 import com.oounabaramusic.android.bean.Music;
 import com.oounabaramusic.android.bean.MyImage;
-import com.oounabaramusic.android.okhttputil.PlayListHttpUtil;
+import com.oounabaramusic.android.code.BasicCode;
+import com.oounabaramusic.android.okhttputil.S2SHttpUtil;
 import com.oounabaramusic.android.util.MyEnvironment;
 import com.oounabaramusic.android.widget.customview.MyImageView;
 import com.oounabaramusic.android.widget.popupwindow.MyBottomSheetDialog;
@@ -29,7 +28,9 @@ import com.oounabaramusic.android.widget.popupwindow.PlayListDialog;
 import com.oounabaramusic.android.widget.popupwindow.SingerDialog;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -148,10 +149,16 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.ViewHolder> 
         delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                PlayListHttpUtil.deletePlayListMusic(activity,
-                        activity.getPlayList().getId(),
-                        dataList.get(popupPosition).getId(),
-                        activity.getHandler());
+                Map<String,Integer> data = new HashMap<>();
+                data.put("playListId",activity.getPlayList().getId());
+                data.put("musicId",dataList.get(popupPosition).getId());
+
+                new S2SHttpUtil(
+                        activity,
+                        new Gson().toJson(data),
+                        MyEnvironment.serverBasePath+"deletePlayListMusic",
+                        activity.getHandler())
+                .call(BasicCode.DELETE_MUSIC_END);
                 spw.dismiss();
             }
         });

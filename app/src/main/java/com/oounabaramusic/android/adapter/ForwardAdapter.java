@@ -13,6 +13,7 @@ import com.google.gson.reflect.TypeToken;
 import com.oounabaramusic.android.PostActivity;
 import com.oounabaramusic.android.R;
 import com.oounabaramusic.android.UserInfoActivity;
+import com.oounabaramusic.android.bean.MyImage;
 import com.oounabaramusic.android.bean.Post;
 import com.oounabaramusic.android.code.BasicCode;
 import com.oounabaramusic.android.okhttputil.S2SHttpUtil;
@@ -102,8 +103,7 @@ public class ForwardAdapter extends RecyclerView.Adapter<ForwardAdapter.ViewHold
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Post item = dataList.get(position);
 
-        holder.header.setImageUrl(MyEnvironment.serverBasePath+
-                "loadUserHeader?userId="+item.getUserId());
+        holder.header.setImage(new MyImage(MyImage.TYPE_USER_HEADER,item.getUserId()));
         holder.name.setText(item.getUserName());
         holder.content.setText(item.getContent());
         holder.date.setText(FormatUtil.DateTimeToString(item.getDate()));

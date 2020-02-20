@@ -25,6 +25,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.oounabaramusic.android.adapter.AllReplyAdapter;
 import com.oounabaramusic.android.bean.Comment;
+import com.oounabaramusic.android.bean.MyImage;
 import com.oounabaramusic.android.bean.Reply;
 import com.oounabaramusic.android.code.BasicCode;
 import com.oounabaramusic.android.okhttputil.S2SHttpUtil;
@@ -148,8 +149,7 @@ public class AllReplyActivity extends BaseActivity implements View.OnClickListen
     private void initContent(){
 
         replyCnt.setText(String.valueOf(comment.getReplyCnt()));
-        userHeader.setImageUrl(MyEnvironment.serverBasePath
-                +"loadUserHeader?userId="+comment.getUserId());
+        userHeader.setImage(new MyImage(MyImage.TYPE_USER_HEADER,comment.getUserId()));
         userName.setText(comment.getUserName());
         commentDate.setText(FormatUtil.DateTimeToString(comment.getDate()));
         commentContent.setText(comment.getContent());

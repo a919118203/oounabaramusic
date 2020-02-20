@@ -12,6 +12,7 @@ import com.oounabaramusic.android.CommentActivity;
 import com.oounabaramusic.android.PostActivity;
 import com.oounabaramusic.android.R;
 import com.oounabaramusic.android.bean.Comment;
+import com.oounabaramusic.android.bean.MyImage;
 import com.oounabaramusic.android.bean.Reply;
 import com.oounabaramusic.android.util.FormatUtil;
 import com.oounabaramusic.android.util.LogUtil;
@@ -51,8 +52,7 @@ public class MyMessageCommentAdapter extends RecyclerView.Adapter<MyMessageComme
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Reply item = dataList.get(position);
 
-        holder.header.setImageUrl(MyEnvironment.serverBasePath+
-                "loadUserHeader?userId="+item.getUserId());
+        holder.header.setImage(new MyImage(MyImage.TYPE_USER_HEADER,item.getUserId()));
         holder.replyContent.setText("回复我："+item.getContent());
         holder.name.setText(item.getUserName());
         holder.date.setText(FormatUtil.DateToString(item.getDate()));

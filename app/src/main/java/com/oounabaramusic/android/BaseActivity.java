@@ -24,6 +24,7 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.oounabaramusic.android.adapter.MusicPlayListAdapter;
 import com.oounabaramusic.android.bean.Music;
+import com.oounabaramusic.android.bean.MyImage;
 import com.oounabaramusic.android.dao.LocalMusicDao;
 import com.oounabaramusic.android.service.DownloadService;
 import com.oounabaramusic.android.service.MusicPlayService;
@@ -225,7 +226,9 @@ public class BaseActivity extends AppCompatActivity {
         int isServer=item.getIsServer();
 
         if(isServer==1){
-            cover.setImageUrl(MyEnvironment.serverBasePath+"music/loadMusicCover?singerId="+item.getSingerId().split("/")[0]);
+            cover.setImage(new MyImage(
+                    MyImage.TYPE_SINGER_COVER,
+                    Integer.valueOf(item.getSingerId().split("/")[0])));
         }else{
             LogUtil.printLog("加载图片：本地音乐图片，无封面，设置为默认图片");
             Bitmap bitmap=BitmapFactory.decodeResource(getResources(),R.mipmap.default_image);
@@ -392,7 +395,9 @@ public class BaseActivity extends AppCompatActivity {
                     int isServer=item.getIsServer();
 
                     if(isServer==1){
-                        activity.cover.setImageUrl(MyEnvironment.serverBasePath+"music/loadMusicCover?singerId="+item.getSingerId().split("/")[0]);
+                        activity.cover.setImage(new MyImage(
+                                MyImage.TYPE_SINGER_COVER,
+                                Integer.valueOf(item.getSingerId().split("/")[0])));
                     }else{
                         LogUtil.printLog("加载图片：本地音乐图片，无封面，设置为默认图片");
                         Bitmap bitmap=BitmapFactory.decodeResource(activity.getResources(),R.mipmap.default_image);

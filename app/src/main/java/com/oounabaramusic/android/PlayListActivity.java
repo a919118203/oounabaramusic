@@ -25,6 +25,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.appbar.AppBarLayout;
+import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.oounabaramusic.android.adapter.MusicAdapter;
 import com.oounabaramusic.android.bean.Comment;
@@ -32,7 +33,6 @@ import com.oounabaramusic.android.bean.Music;
 import com.oounabaramusic.android.bean.MyImage;
 import com.oounabaramusic.android.bean.PlayList;
 import com.oounabaramusic.android.code.BasicCode;
-import com.oounabaramusic.android.okhttputil.PlayListHttpUtil;
 import com.oounabaramusic.android.okhttputil.S2SHttpUtil;
 import com.oounabaramusic.android.util.ImageFilter;
 import com.oounabaramusic.android.util.MyEnvironment;
@@ -114,9 +114,15 @@ public class PlayListActivity extends BaseActivity implements View.OnClickListen
     }
 
     private void loadMusic(){
-        loadMusic.setVisibility(View.VISIBLE);
-        PlayListHttpUtil.findMusicByPlayList(this,
-                playList.getId()+"",new PlayListHandler(this));
+        PlayList data = new PlayList();
+        data.setId(playList.getId());
+
+        new S2SHttpUtil(
+                this,
+                new Gson().toJson(data),
+                MyEnvironment.serverBasePath+"findMusicByPlayList",
+                new PlayListHandler(this))
+                .call(BasicCode.GET_CONTENT_2);
     }
 
     private void init() {
@@ -187,9 +193,7 @@ public class PlayListActivity extends BaseActivity implements View.OnClickListen
         userName.setText(playList.getCreateUserName());
         playListCover.setEventHandler(new PlayListHandler(this));
         playListCover.setImage(new MyImage(MyImage.TYPE_PLAY_LIST_COVER,playList.getId()));
-        userHeader.setImageUrl(MyEnvironment.serverBasePath+
-                "loadUserHeader?userId="+
-                playList.getCreateUserId());
+        userHeader.setImage(new MyImage(MyImage.TYPE_USER_HEADER,playList.getCreateUserId()));
         playListIntroduction.setText(playList.getIntroduction());
 
         //获取用户是否已收藏该歌单
@@ -327,7 +331,7 @@ public class PlayListActivity extends BaseActivity implements View.OnClickListen
                     activity.isMyLove=activity.playList.getIsMyLove()==1;
                     activity.initContent(false);
                     break;
-                case PlayListHttpUtil.MESSAGE_FIND_PLAY_LIST_MUSIC_END:
+                case BasicCode.GET_CONTENT_2:
                     List<String> data=activity.gson.fromJson((String)msg.obj,
                             new TypeToken<List<String>>(){}.getType());
 
@@ -341,7 +345,7 @@ public class PlayListActivity extends BaseActivity implements View.OnClickListen
                     activity.loadMusic.setVisibility(View.GONE);
                     activity.musicRv.setVisibility(View.VISIBLE);
                     break;
-                case PlayListHttpUtil.MESSAGE_DELETE_MUSIC_END:
+                case BasicCode.DELETE_MUSIC_END:
                     activity.loadMusic();
                     break;
 

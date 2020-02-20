@@ -37,8 +37,8 @@ import com.oounabaramusic.android.code.BasicCode;
 import com.oounabaramusic.android.fragment.BaseFragment;
 import com.oounabaramusic.android.fragment.UserInfoMainFragment;
 import com.oounabaramusic.android.fragment.UserInfoPostFragment;
+import com.oounabaramusic.android.okhttputil.HttpUtil;
 import com.oounabaramusic.android.okhttputil.S2SHttpUtil;
-import com.oounabaramusic.android.okhttputil.UserHttpUtil;
 import com.oounabaramusic.android.util.DensityUtil;
 import com.oounabaramusic.android.util.MyEnvironment;
 import com.oounabaramusic.android.util.RealPathFromUriUtils;
@@ -47,7 +47,6 @@ import com.oounabaramusic.android.util.StatusBarUtil;
 import com.oounabaramusic.android.util.UserInfoActivityManager;
 import com.oounabaramusic.android.widget.customview.MyCircleImageView;
 import com.oounabaramusic.android.widget.customview.MyImageView;
-import com.oounabaramusic.android.widget.popupwindow.MyBottomSheetDialog;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -223,8 +222,7 @@ public class UserInfoActivity extends BaseActivity implements View.OnClickListen
         background.setDefaultImage(BitmapFactory.decodeResource(getResources(),R.mipmap.default_background));
         background.setImage(new MyImage(
                 MyImage.TYPE_USER_BACKGROUND,user.getId()));
-        userHeader.setImageUrl(MyEnvironment.serverBasePath+
-                "loadUserHeader?userId="+user.getId());
+        userHeader.setImage(new MyImage(MyImage.TYPE_USER_HEADER,user.getId()));
         userName.setText(user.getUserName());
         followedCnt.setText(String.valueOf(user.getFollowedCnt()));
         toFollowCnt.setText(String.valueOf(user.getToFollowCnt()));
@@ -338,6 +336,10 @@ public class UserInfoActivity extends BaseActivity implements View.OnClickListen
             }
         };
 
+        if(user.getId()!=SharedPreferencesUtil.getUserId(sp)){
+            contentView.findViewById(R.id.user_change_header).setVisibility(View.GONE);
+        }
+
         contentView.findViewById(R.id.user_change_header).setOnClickListener(listener);
         contentView.findViewById(R.id.user_header).setOnClickListener(listener);
         contentView.findViewById(R.id.rootLayout).setOnClickListener(listener);
@@ -355,16 +357,23 @@ public class UserInfoActivity extends BaseActivity implements View.OnClickListen
 
             switch (requestCode){
                 case CHOOSE_PHOTO:     //更改背景
-                    UserHttpUtil.uploadUserBackground(this,imagePath,
-                            mainUserId+"",new MyHandler(this));
+                    HttpUtil.uploadImage(
+                            this,
+                            new MyImage(MyImage.TYPE_USER_BACKGROUND,mainUserId),
+                            imagePath,
+                            new MyHandler(this));
 
                     Bitmap bit=BitmapFactory.decodeFile(imagePath);
                     background.setImageBitmap(bit);
                     break;
 
                 case CHOOSE_USER_HEADER_PHOTO:  //更换头像
-                    UserHttpUtil.uploadUserHeader(this,imagePath,
-                            mainUserId+"",new MyHandler(this));
+                    HttpUtil.uploadImage(
+                            this,
+                            new MyImage(MyImage.TYPE_USER_HEADER,mainUserId),
+                            imagePath,
+                            new MyHandler(this));
+
                     bit=BitmapFactory.decodeFile(imagePath);
                     userHeader.setImageBitmap(bit);
                     break;
@@ -418,12 +427,9 @@ public class UserInfoActivity extends BaseActivity implements View.OnClickListen
                     activity.initContent(false);
                     break;
 
-                case BasicCode.UPLOAD_USER_BACKGROUND_END:
-                    Toast.makeText(activity, "背景上传成功", Toast.LENGTH_SHORT).show();
-                    break;
-
-                case BasicCode.UPLOAD_USER_HEADER_END:
-                    Toast.makeText(activity, "头像上传成功", Toast.LENGTH_SHORT).show();
+                case BasicCode.UPLOAD_IMAGE:
+                    Toast.makeText(activity, "上传成功", Toast.LENGTH_SHORT).show();
+                    activity.initContent(true);
                     break;
 
                 case BasicCode.TO_FOLLOW_USER:

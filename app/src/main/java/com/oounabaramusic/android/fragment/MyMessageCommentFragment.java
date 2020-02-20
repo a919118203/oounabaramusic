@@ -37,7 +37,7 @@ public class MyMessageCommentFragment extends BaseFragment {
 
     public MyMessageCommentFragment(BaseActivity activity){
         this.activity=activity;
-        setTitle("评论");
+        setTitle("回复我的");
     }
 
     @Nullable

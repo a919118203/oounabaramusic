@@ -12,11 +12,9 @@ import androidx.viewpager.widget.ViewPager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.preference.PreferenceManager;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -28,12 +26,12 @@ import com.google.android.material.tabs.TabLayout;
 import com.google.gson.reflect.TypeToken;
 import com.oounabaramusic.android.bean.MyImage;
 import com.oounabaramusic.android.bean.Singer;
+import com.oounabaramusic.android.code.BasicCode;
 import com.oounabaramusic.android.fragment.BaseFragment;
 import com.oounabaramusic.android.fragment.SingerMainFragment;
 import com.oounabaramusic.android.fragment.SingerSongFragment;
-import com.oounabaramusic.android.okhttputil.SingerClassificationHttpUtil;
+import com.oounabaramusic.android.okhttputil.S2SHttpUtil;
 import com.oounabaramusic.android.util.FormatUtil;
-import com.oounabaramusic.android.util.LogUtil;
 import com.oounabaramusic.android.util.MyEnvironment;
 import com.oounabaramusic.android.util.SharedPreferencesUtil;
 import com.oounabaramusic.android.util.StatusBarUtil;
@@ -93,17 +91,13 @@ public class SingerActivity extends BaseActivity {
         Intent intent=getIntent();
         singerId=intent.getIntExtra("singerId",1);
 
-        String userId="0";
-        if(SharedPreferencesUtil.isLogin(sp)){
-            userId=SharedPreferencesUtil.getUserId(sp)+"";
-        }
-
-        SingerClassificationHttpUtil.loadSingerBySingerId(
-                this,
-                singerId+"",
-                userId,handler);
-
         init();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        initContent();
     }
 
     public void moreTo(int position){
@@ -154,11 +148,18 @@ public class SingerActivity extends BaseActivity {
                 switch (v.getId()){
                     case R.id.toolbar_to_follow:
                     case R.id.to_follow:
-                        SingerClassificationHttpUtil.toFollowSinger(
+
+                        Singer data = new Singer();
+                        data.setMainUserId(SharedPreferencesUtil.getUserId(sp));
+                        data.setId(SingerActivity.this.singer.getId());
+
+                        new S2SHttpUtil(
                                 SingerActivity.this,
-                                sp.getString("userId","-1"),
-                                singer.getId(),
-                                handler);
+                                gson.toJson(data),
+                                MyEnvironment.serverBasePath+"toFollowSinger",
+                                handler)
+                        .call(BasicCode.TO_FOLLOW_SINGER);
+
                         break;
                     case R.id.toolbar_followed:
                     case R.id.followed:
@@ -175,6 +176,24 @@ public class SingerActivity extends BaseActivity {
 
     }
 
+    private void initContent(){
+        int userId=0;
+        if(SharedPreferencesUtil.isLogin(sp)){
+            userId=SharedPreferencesUtil.getUserId(sp);
+        }
+
+        Singer singer = new Singer();
+        singer.setMainUserId(userId);
+        singer.setId(singerId);
+
+        new S2SHttpUtil(
+                this,
+                gson.toJson(singer),
+                MyEnvironment.serverBasePath+"music/loadSingerBySingerId",
+                handler)
+        .call(BasicCode.GET_CONTENT);
+    }
+
     private void showCancelFollowDialog(){
         AlertDialog dialog=new AlertDialog.Builder(this)
                 .setTitle("确定要取消关注吗？")
@@ -182,11 +201,16 @@ public class SingerActivity extends BaseActivity {
                 .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        SingerClassificationHttpUtil.cancelFollowSinger(
+                        Singer data = new Singer();
+                        data.setId(singer.getId());
+                        data.setMainUserId(SharedPreferencesUtil.getUserId(sp));
+
+                        new S2SHttpUtil(
                                 SingerActivity.this,
-                                sp.getString("userId","-1"),
-                                singer.getId(),
-                                handler);
+                                gson.toJson(data),
+                                MyEnvironment.serverBasePath+"cancelFollowSinger",
+                                handler)
+                        .call(BasicCode.CANCEL_FOLLOW);
                     }
                 })
                 .create();
@@ -262,21 +286,21 @@ public class SingerActivity extends BaseActivity {
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what){
-                case SingerClassificationActivity.MESSAGE_FOLLOW_SINGER_END:
+                case BasicCode.TO_FOLLOW_SINGER:
                     activity.toolBarToFollow.setVisibility(View.GONE);
                     activity.toolBarFollowed.setVisibility(View.VISIBLE);
                     activity.tvToFollow.setVisibility(View.GONE);
                     activity.tvFollowed.setVisibility(View.VISIBLE);
                     activity.followed=true;
                     break;
-                case SingerClassificationActivity.MESSAGE_CANCEL_FOLLOW_END:
+                case BasicCode.CANCEL_FOLLOW:
                     activity.toolBarToFollow.setVisibility(View.VISIBLE);
                     activity.toolBarFollowed.setVisibility(View.GONE);
                     activity.tvToFollow.setVisibility(View.VISIBLE);
                     activity.tvFollowed.setVisibility(View.GONE);
                     activity.followed=false;
                     break;
-                case SingerClassificationActivity.MESSAGE_LOAD_SINGER_END:
+                case BasicCode.GET_CONTENT:
                     Map<String,String> json=activity.gson.fromJson(
                             (String)msg.obj,
                             new TypeToken<Map<String,String>>(){}.getType());

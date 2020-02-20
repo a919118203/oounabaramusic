@@ -1,9 +1,6 @@
 package com.oounabaramusic.android.bean;
 
 public class MyImage {
-	public static final int STATUS_NO_IMAGE=0;
-	public static final int STATUS_NO_CHANGE=1;
-	public static final int STATUS_HAS_IMAGE=2;
 	public static final int TYPE_PLAY_LIST_COVER=0;
 	public static final int TYPE_PLAY_LIST_TAG_ICON=1;
 	public static final int TYPE_POST_IMAGE=2;

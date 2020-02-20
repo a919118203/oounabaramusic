@@ -97,6 +97,7 @@ public class MainNewDiscoveryFragment extends BaseFragment implements View.OnCli
 
         playAllRank=rootView.findViewById(R.id.play_all);
         playAllRank.setOnClickListener(this);
+        rootView.findViewById(R.id.play_all_2).setOnClickListener(this);
 
         initScrollImage();
     }
@@ -106,6 +107,16 @@ public class MainNewDiscoveryFragment extends BaseFragment implements View.OnCli
         super.onResume();
         initPlayListContent();
         initListenRankContent();
+        initSusume();
+    }
+
+    private void initSusume(){
+        new S2SHttpUtil(
+                activity,
+                "",
+                MyEnvironment.serverBasePath+"getSusume",
+                new MyHandler(this))
+        .call(BasicCode.GET_CONTENT_4);
     }
 
     private void initPlayListContent(){
@@ -181,6 +192,9 @@ public class MainNewDiscoveryFragment extends BaseFragment implements View.OnCli
             case R.id.play_all:
                 activity.getBinder().playMusics(adapter3.getDataList());
                 break;
+            case R.id.play_all_2:
+                activity.getBinder().playMusics(adapter1.getDataList());
+                break;
         }
     }
 
@@ -196,8 +210,6 @@ public class MainNewDiscoveryFragment extends BaseFragment implements View.OnCli
         public void handleMessage(Message msg) {
             switch (msg.what){
                 case BasicCode.GET_CONTENT:
-                    LogUtil.printLog("json:  "+(String)msg.obj);
-
                     List<PlayList> dataList = new Gson().fromJson((String) msg.obj,
                             new TypeToken<List<PlayList>>(){}.getType());
 
@@ -220,6 +232,17 @@ public class MainNewDiscoveryFragment extends BaseFragment implements View.OnCli
                         musicList.add(new Music(str));
                     }
                     fragment.adapter3.setDataList(musicList);
+                    break;
+
+                case BasicCode.GET_CONTENT_4:
+                    LogUtil.printLog("json:  "+(String)msg.obj);
+                    data = new Gson().fromJson((String) msg.obj,
+                            new TypeToken<List<String>>(){}.getType());
+                    musicList = new ArrayList<>();
+                    for(String str:data){
+                        musicList.add(new Music(str));
+                    }
+                    fragment.adapter1.setDataList(musicList);
                     break;
             }
         }

@@ -235,8 +235,7 @@ public class PostActivity extends BaseActivity implements View.OnClickListener{
         }else{
             toGood.setImageBitmap(noGood);
         }
-        userHeader.setImageUrl(MyEnvironment.serverBasePath+
-                "loadUserHeader?userId="+post.getUserId());
+        userHeader.setImage(new MyImage(MyImage.TYPE_USER_HEADER,post.getUserId()));
         userName.setText(post.getUserName());
         theme.setText(Post.getTheme(post.getContentType()));
         date.setText(FormatUtil.DateTimeToString(post.getDate()));

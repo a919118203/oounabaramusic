@@ -17,6 +17,7 @@ import com.google.gson.reflect.TypeToken;
 import com.oounabaramusic.android.BaseActivity;
 import com.oounabaramusic.android.R;
 import com.oounabaramusic.android.UserInfoActivity;
+import com.oounabaramusic.android.bean.MyImage;
 import com.oounabaramusic.android.bean.User;
 import com.oounabaramusic.android.fragment.FollowedFragment;
 import com.oounabaramusic.android.okhttputil.S2SHttpUtil;
@@ -72,8 +73,7 @@ public class FollowedAdapter extends RecyclerView.Adapter<FollowedAdapter.ViewHo
         }else{
             holder.sex.setImageBitmap(f);
         }
-        holder.header.setImageUrl(MyEnvironment.serverBasePath+
-                "loadUserHeader?userId="+item.getId());
+        holder.header.setImage(new MyImage(MyImage.TYPE_USER_HEADER,item.getId()));
         if(item.getFollowed()){
             holder.cancelFollow.setVisibility(View.VISIBLE);
             holder.toFollow.setVisibility(View.GONE);

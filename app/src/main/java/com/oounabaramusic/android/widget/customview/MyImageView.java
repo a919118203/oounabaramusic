@@ -11,33 +11,11 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.google.gson.Gson;
 import com.oounabaramusic.android.R;
 import com.oounabaramusic.android.bean.MyImage;
 import com.oounabaramusic.android.okhttputil.HttpUtil;
-import com.oounabaramusic.android.okhttputil.S2SHttpUtil;
-import com.oounabaramusic.android.util.DensityUtil;
-import com.oounabaramusic.android.util.InternetUtil;
-import com.oounabaramusic.android.util.LogUtil;
-import com.oounabaramusic.android.util.MyEnvironment;
-
-import org.jetbrains.annotations.NotNull;
-
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Objects;
 
 import androidx.annotation.Nullable;
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.FormBody;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
 
 
 @SuppressLint("AppCompatCustomView")
@@ -69,7 +47,7 @@ public class MyImageView extends ImageView {
 
     public void setImage(final MyImage image){
         this.image=image;
-        HttpUtil.newLoadImage(getContext(),image,handler);
+        HttpUtil.loadImage(getContext(),image,handler);
     }
 
     /**
@@ -82,7 +60,7 @@ public class MyImageView extends ImageView {
     }
 
     public void refresh(){
-        HttpUtil.loadImage(getContext(),url,new ImageHandler(this));
+        HttpUtil.loadImage(getContext(),image,handler);
     }
 
     public void setDefaultImage(Bitmap defaultImage) {

@@ -75,8 +75,7 @@ public class MainNowSquareAdapter extends RecyclerView.Adapter<MainNowSquareAdap
         Post item = dataList.get(position);
 
         holder.goodCnt.setText(String.valueOf(item.getGoodCnt()));
-        holder.header.setImageUrl(MyEnvironment.serverBasePath+
-                "loadUserHeader?userId="+item.getUserId());
+        holder.header.setImage(new MyImage(MyImage.TYPE_USER_HEADER,item.getUserId()));
         holder.content.setText(item.getContent());
         holder.name.setText(item.getUserName());
 

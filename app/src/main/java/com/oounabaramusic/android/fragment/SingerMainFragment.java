@@ -1,24 +1,26 @@
 package com.oounabaramusic.android.fragment;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.oounabaramusic.android.R;
 import com.oounabaramusic.android.SingerActivity;
-import com.oounabaramusic.android.adapter.MusicAdapter;
 import com.oounabaramusic.android.adapter.SingerMusicMenuAdapter;
 import com.oounabaramusic.android.bean.Music;
 import com.oounabaramusic.android.bean.Singer;
-import com.oounabaramusic.android.okhttputil.SearchHttpUtil;
+import com.oounabaramusic.android.code.BasicCode;
+import com.oounabaramusic.android.okhttputil.S2SHttpUtil;
+import com.oounabaramusic.android.util.MyEnvironment;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import androidx.annotation.NonNull;
@@ -27,8 +29,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class SingerMainFragment extends BaseFragment {
-
-    public static final int MESSAGE_SEARCH_END=0;
 
     private SingerActivity activity;
     private ProgressBar loading;
@@ -48,8 +48,16 @@ public class SingerMainFragment extends BaseFragment {
         View view=inflater.inflate(R.layout.fragment_singer_main,container,false);
         init(view);
 
-        SearchHttpUtil.searchMusicBySingerId(activity,
-                activity.getSingerId()+"","0","10",handler);
+        Singer data = new Singer();
+        data.setId(activity.getSingerId());
+        data.setStart(0);
+
+        new S2SHttpUtil(
+                activity,
+                new Gson().toJson(data),
+                MyEnvironment.serverBasePath+"music/searchMusicBySinger",
+                handler)
+        .call(BasicCode.GET_CONTENT);
         return view;
     }
 
@@ -94,8 +102,18 @@ public class SingerMainFragment extends BaseFragment {
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what){
-                case MESSAGE_SEARCH_END:
-                    List<Music> dataList= (List<Music>) msg.obj;
+                case BasicCode.GET_CONTENT:
+                    List<String> data = new Gson().fromJson((String) msg.obj,
+                            new TypeToken<List<String>>(){}.getType());
+
+                    List<Music> dataList= new ArrayList<>();
+                    for(String str : data){
+                        dataList.add(new Music(str));
+                        if(dataList.size()==5){
+                            break;
+                        }
+                    }
+
                     fragment.loading.setVisibility(View.GONE);
                     fragment.rv.setVisibility(View.VISIBLE);
                     fragment.adapter.setDataList(dataList);
