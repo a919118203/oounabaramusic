@@ -1,37 +1,60 @@
 package com.oounabaramusic.android.service;
 
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.media.MediaPlayer;
 import android.os.Binder;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.preference.PreferenceManager;
+import android.widget.RemoteViews;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.oounabaramusic.android.MusicPlayActivity;
+import com.oounabaramusic.android.R;
 import com.oounabaramusic.android.bean.Music;
+import com.oounabaramusic.android.bean.MyImage;
+import com.oounabaramusic.android.code.BasicCode;
 import com.oounabaramusic.android.dao.LocalMusicDao;
+import com.oounabaramusic.android.okhttputil.HttpUtil;
 import com.oounabaramusic.android.okhttputil.S2SHttpUtil;
+import com.oounabaramusic.android.util.FormatUtil;
 import com.oounabaramusic.android.util.LogUtil;
 import com.oounabaramusic.android.util.MyEnvironment;
+import com.oounabaramusic.android.util.SharedPreferencesUtil;
+import com.oounabaramusic.android.widget.customview.MyCircleImageView;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Random;
 
 import androidx.annotation.Nullable;
+import androidx.core.app.NotificationCompat;
 
 public class MusicPlayService extends Service {
+
+    private static final String PUSH_CHANNEL_ID="1";
+    private static final String PUSH_CHANNEL_NAME="Mogeko";
+    private int notiId = 19971005;
 
     public static final int NOT_PREPARE=0;
     public static final int PREPAREING=5;
@@ -61,16 +84,49 @@ public class MusicPlayService extends Service {
     public static final int LOOP_TYPE_LIST=13;
     private int currentLoopType=LOOP_TYPE_LIST;
 
-    private Handler handler=new Handler();
+    private MyHandler handler;
 
     private int saveComment = -1;
+
+    private Notification notification;
+    private boolean showing;
+    private RemoteViews remoteViews;
+    private NotificationManager notificationManager;
+    private MusicPlayReceiver receiver;
+    private IntentFilter intentFilter;
+
+    private Bitmap start,stop;
+    private Bitmap collected,noCollect;
+    private boolean isCollection;
+    private Bitmap defaultImage;
+
     @Override
     public void onCreate() {
+        super.onCreate();
         LogUtil.printLog("onCreate ");
+
+        initParam();
+
+        initReceiver();
+
+        initContentView();
+
+        initNotification();
+    }
+
+    private void initParam(){
+        showing=false;
         mBinder=new MusicPlayBinder();
         mp=new MediaPlayer();
+        handler=new MyHandler(this);
         playlist=new LinkedList<>();
         handlers=new ArrayList<>();
+        receiver=new MusicPlayReceiver();
+        start=BitmapFactory.decodeResource(getResources(),R.mipmap.play_button);
+        stop=BitmapFactory.decodeResource(getResources(),R.mipmap.stop_button);
+        defaultImage=BitmapFactory.decodeResource(getResources(),R.mipmap.default_image);
+        collected=BitmapFactory.decodeResource(getResources(),R.mipmap.collection_after);
+        noCollect=BitmapFactory.decodeResource(getResources(),R.mipmap.collection_before);
 
         mp.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
             @Override
@@ -78,7 +134,63 @@ public class MusicPlayService extends Service {
                 prepared();
             }
         });
-        super.onCreate();
+
+        handlers.add(handler);
+    }
+
+    private void initReceiver(){
+        intentFilter = new IntentFilter();
+        intentFilter.addAction(MusicPlayReceiver.CHANGE_PLAY_STATUS);
+        intentFilter.addAction(MusicPlayReceiver.NEXT_MUSIC);
+        intentFilter.addAction(MusicPlayReceiver.PREVIOUS_MUSIC);
+        intentFilter.addAction(MusicPlayReceiver.TO_COLLECTION);
+        intentFilter.addAction(MusicPlayReceiver.QUIT_NOTIFICATION);
+
+        receiver = new MusicPlayReceiver();
+
+        registerReceiver(receiver,intentFilter);
+    }
+
+    private void initContentView(){
+        remoteViews = new RemoteViews(getPackageName(), R.layout.special_play_notification);
+
+        remoteViews.setOnClickPendingIntent(R.id.collect,
+                newPendingIntent(MusicPlayReceiver.TO_COLLECTION));
+        remoteViews.setOnClickPendingIntent(R.id.previous,
+                newPendingIntent(MusicPlayReceiver.PREVIOUS_MUSIC));
+        remoteViews.setOnClickPendingIntent(R.id.next,
+                newPendingIntent(MusicPlayReceiver.NEXT_MUSIC));
+        remoteViews.setOnClickPendingIntent(R.id.play_controller,
+                newPendingIntent(MusicPlayReceiver.CHANGE_PLAY_STATUS));
+        remoteViews.setOnClickPendingIntent(R.id.quit,
+                newPendingIntent(MusicPlayReceiver.QUIT_NOTIFICATION));
+    }
+
+    private PendingIntent newPendingIntent(String action){
+        Intent intent = new Intent();
+        intent.setAction(action);
+        return PendingIntent.getBroadcast(this,0,intent,0);
+    }
+
+    private void initNotification(){
+        notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            NotificationChannel channel = new NotificationChannel(PUSH_CHANNEL_ID, PUSH_CHANNEL_NAME, NotificationManager.IMPORTANCE_NONE);
+            notificationManager.createNotificationChannel(channel);
+        }
+
+        Intent intent = new Intent(this, MusicPlayActivity.class);
+        PendingIntent pi = PendingIntent.getActivity(this,0,intent,0);
+
+        notification = new Notification();
+        notification=new NotificationCompat.Builder(this,PUSH_CHANNEL_ID)
+                .setCustomContentView(remoteViews)
+                .setSmallIcon(R.mipmap.default_image)
+                .setTicker("Mogeko")
+                .setPriority(NotificationCompat.PRIORITY_MIN)
+                .setWhen(System.currentTimeMillis())
+                .setContentIntent(pi)
+                .build();
     }
 
     private void prepared(){
@@ -101,6 +213,66 @@ public class MusicPlayService extends Service {
 
         //新建一个线程更新UI
         new Thread(currentRunnable=new PlayRunnable()).start();
+    }
+
+    private void start(){
+        status=IS_START;
+        mp.start();
+        sendEmptyMessage(IS_START);
+    }
+
+    private void stop(){
+        status=IS_PAUSE;
+        mp.pause();
+        sendEmptyMessage(IS_PAUSE);
+    }
+
+    private void setNotificationImage(Bitmap bitmap){
+        remoteViews.setImageViewBitmap(R.id.cover,bitmap);
+        notification.contentView=remoteViews;
+        notificationManager.notify(notiId,notification);
+    }
+
+    private void setPlayButton(Bitmap bitmap){
+        remoteViews.setImageViewBitmap(R.id.play_controller,bitmap);
+        notification.contentView=remoteViews;
+        notificationManager.notify(notiId,notification);
+    }
+
+    private void setPlayInfo(Music item){
+        //封面
+        if(item.getIsServer()==1){
+            HttpUtil.loadImage(this, new MyImage(MyImage.TYPE_SINGER_COVER,
+                    Integer.valueOf(item.getSingerId().split("/")[0])),handler);
+        }else{
+            remoteViews.setImageViewBitmap(R.id.cover,defaultImage);
+        }
+
+        //文本内容
+        remoteViews.setTextViewText(R.id.content,
+                item.getMusicName()+" - "+ item.getSingerName()
+                        .replace("/"," "));
+
+        //是否已收藏
+        if(item.getIsServer()==1){
+            if(SharedPreferencesUtil.isLogin(sp)){
+                List<String> data=new ArrayList<>();
+                data.add(sp.getString("userId","-1"));
+                data.add(item.getMd5());
+                String url=MyEnvironment.serverBasePath+"musicIsCollection";
+
+                new S2SHttpUtil(this,new Gson().toJson(data),url,handler)
+                        .call(BasicCode.GET_IS_COLLECT_MUSIC_END);
+            }
+        }
+        notification.contentView=remoteViews;
+        notificationManager.notify(notiId,notification);
+    }
+
+    private void setMusicCollection(Bitmap bitmap){
+        remoteViews.setImageViewBitmap(R.id.collect,bitmap);
+        notification.contentView=remoteViews;
+        notificationManager.notify(notiId,notification);
     }
 
     @Nullable
@@ -281,6 +453,7 @@ public class MusicPlayService extends Service {
     public void onDestroy() {
         LogUtil.printLog("MusicPlayService:   onDestroy ");
         mp.stop();
+        unregisterReceiver(receiver);
         super.onDestroy();
     }
 
@@ -288,18 +461,12 @@ public class MusicPlayService extends Service {
 
         //开始播放
         public void startMusic(){
-            if(mp!=null){
-                status=IS_START;
-                mp.start();
-            }
+            start();
         }
 
         //暂停播放
         public void pauseMusic(){
-            if(mp!=null){
-                status=IS_PAUSE;
-                mp.pause();
-            }
+            stop();
         }
 
         //播放歌曲
@@ -397,17 +564,13 @@ public class MusicPlayService extends Service {
 
             //设置状态
             status=NOT_PREPARE;
+            sendEmptyMessage(status);
 
             currentMusic=null;
 
             //重置位置
             currentPlayPosition=-1;
             sendEmptyMessage(EVENT_DELETE_MUSIC);
-        }
-
-        //刷新
-        public void refresh(){
-
         }
 
         public void seekTo(int t){
@@ -464,7 +627,6 @@ public class MusicPlayService extends Service {
 
         public void setCurrentLoopType(int loopType){
             MusicPlayService.this.currentLoopType=loopType;
-
             sendEmptyMessage(EVENT_CHANGE_LOOP_TYPE);
         }
     }
@@ -531,6 +693,157 @@ public class MusicPlayService extends Service {
 
             //自然结束时，根据循环类型选择下一首
             playNextMusic();
+        }
+    }
+
+    static class MyHandler extends BaseHandler{
+        MusicPlayService service;
+        MyHandler(MusicPlayService service){
+            this.service=service;
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            Bitmap bitmap;
+            switch (msg.what){
+                case MyCircleImageView.NO_NET:
+                    Toast.makeText(service, "请检查网络连接", Toast.LENGTH_SHORT).show();
+                    bitmap=BitmapFactory.decodeResource(
+                            service.getResources(),R.mipmap.default_image);
+                    service.setNotificationImage(bitmap);
+                    break;
+
+                case MyCircleImageView.LOAD_SUCCESS:
+                    bitmap= (Bitmap) msg.obj;
+                    service.setNotificationImage(bitmap);
+                    break;
+
+                case MyCircleImageView.LOAD_FAILURE:
+                    Toast.makeText(service, "图片加载失败", Toast.LENGTH_SHORT).show();
+                    bitmap=BitmapFactory.decodeResource(
+                            service.getResources(),R.mipmap.default_image);
+                    service.setNotificationImage(bitmap);
+                    break;
+
+                case IS_PAUSE:
+                    if(service.showing){
+                        service.setPlayButton(service.start);
+                    }
+                    break;
+
+                case IS_START:
+                case IS_PREPARE:
+                    if(!service.showing){
+                        service.showing=true;
+                        service.startForeground(service.notiId,service.notification);
+                        service.setPlayInfo(service.currentMusic);
+                    }
+                    service.setPlayButton(service.stop);
+
+                    break;
+
+                case NOT_PREPARE:
+                    service.showing=false;
+                    service.stopForeground(true);
+                    break;
+
+                case EVENT_START_NEW_MUSIC:
+                    if(service.showing){
+                        service.setPlayInfo(service.currentMusic);
+                    }
+                    break;
+
+                case BasicCode.GET_IS_COLLECT_MUSIC_END:
+                    String isCollect= (String) msg.obj;
+                    if(isCollect.equals("1")){
+                        service.isCollection=true;
+                        service.setMusicCollection(service.collected);
+                    }else{
+                        service.isCollection=false;
+                        service.setMusicCollection(service.noCollect);
+                    }
+                    break;
+
+                case BasicCode.CANCEL_COLLECTION_MUSIC_END:
+                    service.isCollection=false;
+                    service.setMusicCollection(service.noCollect);
+                    break;
+
+                case BasicCode.COLLECTION_MUSIC_END:
+                    service.isCollection=true;
+                    service.setMusicCollection(service.collected);
+                    break;
+            }
+        }
+    }
+
+    //接收前台服务发出的广播
+    class MusicPlayReceiver extends BroadcastReceiver {
+
+        //点击播放键
+        public static final String CHANGE_PLAY_STATUS="com.oounabaramusic.android.CHANGE_PLAY_STATUS";
+        //前一首音乐
+        public static final String PREVIOUS_MUSIC="com.oounabaramusic.android.PREVIOUS_MUSIC";
+        //下一首音乐
+        public static final String NEXT_MUSIC="com.oounabaramusic.android.NEXT_MUSIC";
+        //收藏音乐
+        public static final String TO_COLLECTION="com.oounabaramusic.android.TO_COLLECTION";
+        //关闭前台服务
+        public static final String QUIT_NOTIFICATION="com.oounabaramusic.android.QUIT_NOTIFICATION";
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            switch (Objects.requireNonNull(intent.getAction())){
+                case CHANGE_PLAY_STATUS:
+                    if(status==IS_START){
+                        stop();
+                    }else if(status==IS_PAUSE){
+                        start();
+                    }
+                    break;
+                case PREVIOUS_MUSIC:
+                    playPreviousMusic();
+                    break;
+                case NEXT_MUSIC:
+                    playNextMusic();
+                    break;
+                case TO_COLLECTION:
+                    if(SharedPreferencesUtil.isLogin(sp)){
+                        if(currentMusic.getIsServer()==1){
+                            String userId=sp.getString("userId","-1");
+                            List<String> data=new ArrayList<>();
+                            data.add(userId);
+                            data.add(currentMusic.getMd5());
+
+                            if(isCollection){
+                                String url=MyEnvironment.serverBasePath+"cancelCollectionMusic";
+                                new S2SHttpUtil(
+                                        MusicPlayService.this,
+                                        new Gson().toJson(data),
+                                        url,handler)
+                                        .call(BasicCode.CANCEL_COLLECTION_MUSIC_END);
+                            }else{
+                                new S2SHttpUtil(
+                                        MusicPlayService.this,
+                                        new Gson().toJson(data),
+                                        MyEnvironment.serverBasePath+"collectionMusic",
+                                        handler)
+                                        .call(BasicCode.COLLECTION_MUSIC_END);
+                            }
+                        }else{
+                            Toast.makeText(MusicPlayService.this, "无法收藏本地音乐", Toast.LENGTH_SHORT).show();
+                        }
+                    }else{
+                        Toast.makeText(MusicPlayService.this, "请先登录", Toast.LENGTH_SHORT).show();
+                    }
+                    break;
+
+                case QUIT_NOTIFICATION:
+                    showing=false;
+                    stopForeground(true);
+                    stop();
+                    break;
+            }
         }
     }
 }

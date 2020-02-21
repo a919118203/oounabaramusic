@@ -15,11 +15,11 @@ import com.oounabaramusic.android.okhttputil.HttpUtil;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MyCircleImageView extends CircleImageView {
-    public static final int NO_NET=0;
-    public static final int LOAD_SUCCESS=1;
-    public static final int LOAD_FAILURE=2;
-    public static final int NO_COVER=3;
-    public static final int LOAD_END=4;
+    public static final int NO_NET=10000;
+    public static final int LOAD_SUCCESS=10001;
+    public static final int LOAD_FAILURE=10002;
+    public static final int NO_COVER=10003;
+    public static final int LOAD_END=10004;
 
     private Handler handler=new ImageHandler(this);
     private Bitmap defaultImage;

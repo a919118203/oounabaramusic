@@ -656,6 +656,14 @@ public class MusicPlayActivity extends BaseActivity implements View.OnClickListe
                     }
                     break;
 
+                case MusicPlayService.IS_START:
+                    activity.controlPlay.setImageBitmap(activity.stop);
+                    break;
+
+                case MusicPlayService.IS_PAUSE:
+                    activity.controlPlay.setImageBitmap(activity.start);
+                    break;
+
                 case MusicPlayService.EVENT_CHANGE_LOOP_TYPE:
                     int loopType=activity.binder.getCurrentLoopType();
                     switch(loopType){

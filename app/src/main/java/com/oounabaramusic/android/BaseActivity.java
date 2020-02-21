@@ -65,6 +65,8 @@ public class BaseActivity extends AppCompatActivity {
     private boolean isBind ; //判断是否已绑定音乐播放服务
     private boolean autoCloseInputMethod;  //是否开启点输入框之外的地方关闭输入法
 
+    private MusicPlayListAdapter listAdapter;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         LogUtil.printLog("onCreate: "+this.toString());
@@ -202,8 +204,6 @@ public class BaseActivity extends AppCompatActivity {
 
     //刷新所有控件
     public void refreshPlayBar(){
-        //刷新音乐service
-        binder.refresh();
 
         //重新获取播放列表
         listAdapter.setDataList(binder.getPlayList());
@@ -238,11 +238,14 @@ public class BaseActivity extends AppCompatActivity {
         }
     }
 
+    private void refreshPlayButton(){
+        playButton.setStatus(binder.getStatus()==MusicPlayService.IS_START);
+    }
+
     public void refreshPlayList(){
         listAdapter.setDataList(binder.getPlayList());
     }
 
-    private MusicPlayListAdapter listAdapter;
     private View createContentView() {
         View view=LayoutInflater.from(this).inflate(R.layout.pw_play_list, (ViewGroup) getWindow().getDecorView(),false);
 
@@ -375,6 +378,11 @@ public class BaseActivity extends AppCompatActivity {
                 return;
 
             switch (msg.what){
+                case MusicPlayService.IS_START:
+                case MusicPlayService.IS_PAUSE:
+                    activity.refreshPlayButton();
+                    break;
+
                 case MusicPlayService.IS_PREPARE:   //其实音乐已经要开始了
                     //播放Bar设置相应的信息
                     activity.refreshPlayBar();
@@ -390,7 +398,6 @@ public class BaseActivity extends AppCompatActivity {
                     activity.refreshPlayBar();
                     break;
                 case MusicPlayService.EVENT_START_NEW_MUSIC:
-
                     Music item= (Music) msg.obj;
                     activity.musicName.setText(item.getMusicName());
                     activity.singerName.setText(item.getSingerName());
