@@ -49,6 +49,7 @@ public class GoodFragment extends BaseFragment {
     }
 
     private void init() {
+        f=false;
         srl = (SwipeRefreshLayout) rootView;
         srl.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override

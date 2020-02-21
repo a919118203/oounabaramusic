@@ -15,6 +15,7 @@ import com.oounabaramusic.android.DownloadManagementActivity;
 import com.oounabaramusic.android.R;
 import com.oounabaramusic.android.bean.Music;
 import com.oounabaramusic.android.bean.MyImage;
+import com.oounabaramusic.android.util.LogUtil;
 import com.oounabaramusic.android.util.MyEnvironment;
 import com.oounabaramusic.android.widget.customview.MyImageView;
 import com.oounabaramusic.android.widget.popupwindow.MyBottomSheetDialog;
@@ -41,6 +42,7 @@ public class DMMusicNormalAdapter extends RecyclerView.Adapter<DMMusicNormalAdap
         spw=new MyBottomSheetDialog(activity);
         spw.setContentView(createContentView());
         dataList=activity.getLocalMusicDao().selectAllDownloadEnd();
+
     }
 
     public List<Music> getDataList() {

@@ -272,7 +272,7 @@ public class DownloadService extends Service {
             Music clone=localMusicDao.selectMusicByMd5(item.getMd5());
             if(clone!=null){
                 int status = clone.getDownloadStatus();
-                if(status==0||status==3){
+                if(status==0||status==1){
                     Toast.makeText(DownloadService.this, "该文件已存在", Toast.LENGTH_SHORT).show();
                     return ;
                 }

@@ -117,6 +117,18 @@ public class MyVideoPlayer extends FrameLayout {
             }
         });
 
+        videoView.setOnErrorListener(new MediaPlayer.OnErrorListener() {
+            @Override
+            public boolean onError(MediaPlayer mp, int what, int extra) {
+                pb.setVisibility(GONE);
+                cover.setVisibility(VISIBLE);
+                playIcon.setVisibility(VISIBLE);
+                controllerView.setVisibility(GONE);
+                Toast.makeText(getContext(), "加载失败,请稍后再试", Toast.LENGTH_SHORT).show();
+                return true;
+            }
+        });
+
         controllerView.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {

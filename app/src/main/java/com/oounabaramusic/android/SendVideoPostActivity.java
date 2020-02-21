@@ -2,6 +2,7 @@ package com.oounabaramusic.android;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
@@ -13,9 +14,12 @@ import android.os.Handler;
 import android.os.Message;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -83,6 +87,7 @@ public class SendVideoPostActivity extends BaseActivity implements View.OnClickL
                 break;
             case R.id.upload:
                 if(checkSend()){
+                    showDialog();
                     //先发动态
                     sendPost();
                 }
@@ -169,6 +174,21 @@ public class SendVideoPostActivity extends BaseActivity implements View.OnClickL
         });
 
         chooseVideo.setOnClickListener(this);
+    }
+
+    private void showDialog(){
+        View view = LayoutInflater.from(this).inflate(
+                R.layout.alertdialog_search_local_music,
+                (ViewGroup) getWindow().getDecorView(),false);
+        TextView msg = view.findViewById(R.id.text_view);
+
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setTitle("正在上传，请勿关闭")
+                .setView(view)
+                .create();
+
+        dialog.getWindow().setBackgroundDrawable(getResources().getDrawable(R.drawable.layout_card_2));
+        dialog.show();
     }
 
     private boolean checkSend(){

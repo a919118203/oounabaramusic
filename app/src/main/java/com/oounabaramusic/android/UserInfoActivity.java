@@ -380,7 +380,6 @@ public class UserInfoActivity extends BaseActivity implements View.OnClickListen
             }
         }
 
-
         super.onActivityResult(requestCode, resultCode, data);
     }
 

@@ -47,7 +47,7 @@ public class MusicPlayService extends Service {
     private MusicPlayBinder mBinder;
     private MediaPlayer mp;
     private List<Music> playlist;    //播放列表 存放音乐的md5值
-    private List<Handler> handlers;
+    private List<BaseHandler> handlers;
     private int currentPlayPosition =-1;      //当前播放的位置
     private Music currentMusic;      //当前播放的音乐
     private PlayRunnable currentRunnable;
@@ -62,6 +62,8 @@ public class MusicPlayService extends Service {
     private int currentLoopType=LOOP_TYPE_LIST;
 
     private Handler handler=new Handler();
+
+    private int saveComment = -1;
     @Override
     public void onCreate() {
         LogUtil.printLog("onCreate ");
@@ -91,9 +93,7 @@ public class MusicPlayService extends Service {
         currentMusic.setDuration(mp.getDuration()/1000);
 
         //通知已经准备完毕
-        for(Handler handler:handlers){
-            handler.sendEmptyMessage(IS_PREPARE);
-        }
+        sendEmptyMessage(IS_PREPARE);
 
         //播放音乐
         status=IS_START;
@@ -113,13 +113,50 @@ public class MusicPlayService extends Service {
         return mBinder;
     }
 
+    private void sendMessage(Message msg){
+        List<BaseHandler> removeList = new ArrayList<>();
+
+        for(BaseHandler handler:handlers){
+            if(handler.isDie()){
+                removeList.add(handler);
+            }else{
+                Message message = new Message();
+                message.what=msg.what;
+                message.arg1=msg.arg1;
+                message.arg2=msg.arg2;
+                message.obj=msg.obj;
+                handler.sendMessage(message);
+            }
+        }
+
+        for (BaseHandler handler:removeList){
+            handlers.remove(handler);
+        }
+    }
+
+    private void sendEmptyMessage(int code){
+        Message msg = new Message();
+        msg.what=code;
+        sendMessage(msg);
+    }
+
+    private void addHandler(BaseHandler handler){
+        if(handlers.contains(handler)){
+            return;
+        }
+
+        if(handler.isDie()){
+            handler.resurrection();
+        }
+        handlers.add(handler);
+    }
+
     @Override
     public boolean onUnbind(Intent intent) {
         LogUtil.printLog("onUnbind");
         return super.onUnbind(intent);
     }
 
-    private int saveComment = -1;
     private void playMusic(int position) {
 
         synchronized (this){
@@ -135,12 +172,10 @@ public class MusicPlayService extends Service {
             }
         }
 
-        for(Handler handler:handlers){
-            Message msg=new Message();
-            msg.what=EVENT_START_NEW_MUSIC;
-            msg.obj=playlist.get(position);
-            handler.sendMessage(msg);
-        }
+        Message msg=new Message();
+        msg.what=EVENT_START_NEW_MUSIC;
+        msg.obj=playlist.get(position);
+        sendMessage(msg);
 
         if(status==PREPAREING){          //如果当前还在准备的时候播放下一首，就存起来，不播放，准备完再播放这首歌
             saveComment =position;           //一直覆盖，播放最后一首
@@ -148,6 +183,7 @@ public class MusicPlayService extends Service {
         }
         saveComment =position;
 
+        //如果现在播放的音乐和要播放的音乐相同，不重新加载音乐
         if(currentMusic!=null&&currentMusic.getMd5().equals(playlist.get(position).getMd5())){
             if(status==IS_START||status==IS_PAUSE){
                 mp.seekTo(0);
@@ -209,10 +245,6 @@ public class MusicPlayService extends Service {
         }
     }
 
-    private void saveListenCnt(){
-
-    }
-
     private void playNextMusic() {
         switch (currentLoopType){
             case LOOP_TYPE_LIST:
@@ -247,7 +279,7 @@ public class MusicPlayService extends Service {
 
     @Override
     public void onDestroy() {
-        LogUtil.printLog("onDestroy ");
+        LogUtil.printLog("MusicPlayService:   onDestroy ");
         mp.stop();
         super.onDestroy();
     }
@@ -318,11 +350,13 @@ public class MusicPlayService extends Service {
         //从播放列表中删除一首音乐
         public void deleteMusic(String md5){
             boolean exists=false;
+            int index=0;
             for(Music item:playlist){
                 if(item.getMd5().equals(md5)){
                     exists=true;
                     break;
                 }
+                index++;
             }
 
             if(!exists){     //如果存在于播放列表中才删除
@@ -334,17 +368,23 @@ public class MusicPlayService extends Service {
                 return;
             }
 
+            //移除音乐
+            playlist.remove(index);
 
-            playlist.remove(currentPlayPosition);
-            if(currentPlayPosition<playlist.size()){
-                MusicPlayService.this.playMusic(currentPlayPosition);
+            //如果移除的是正在播放的音乐
+            if(index==currentPlayPosition){
+                if(currentPlayPosition<playlist.size()){
+                    MusicPlayService.this.playMusic(currentPlayPosition);
+                }else{
+                    MusicPlayService.this.playMusic(currentPlayPosition-1);
+                }
             }else{
-                MusicPlayService.this.playMusic(currentPlayPosition-1);
+                //维护currentPlayPosition
+                if(index<currentPlayPosition)
+                    currentPlayPosition--;
             }
 
-            for(Handler handler:handlers){
-                handler.sendEmptyMessage(EVENT_DELETE_MUSIC);
-            }
+            sendEmptyMessage(EVENT_DELETE_MUSIC);
         }
 
         public void deleteAllMusic(){
@@ -362,9 +402,7 @@ public class MusicPlayService extends Service {
 
             //重置位置
             currentPlayPosition=-1;
-            for(Handler handler:handlers){
-                handler.sendEmptyMessage(EVENT_DELETE_MUSIC);
-            }
+            sendEmptyMessage(EVENT_DELETE_MUSIC);
         }
 
         //刷新
@@ -396,12 +434,12 @@ public class MusicPlayService extends Service {
             return currentPlayPosition;
         }
 
-        public void addHandler(Handler handler){
-            handlers.add(handler);
+        public void addHandler(BaseHandler handler){
+            MusicPlayService.this.addHandler(handler);
         }
 
-        public void removeHandler(Handler handler){
-            handlers.remove(handler);
+        public void removeHandler(BaseHandler handler){
+            handler.toDie();
         }
 
         public void setLocalMusicDao(LocalMusicDao dao){
@@ -427,9 +465,7 @@ public class MusicPlayService extends Service {
         public void setCurrentLoopType(int loopType){
             MusicPlayService.this.currentLoopType=loopType;
 
-            for(Handler handler:handlers){
-                handler.sendEmptyMessage(EVENT_CHANGE_LOOP_TYPE);
-            }
+            sendEmptyMessage(EVENT_CHANGE_LOOP_TYPE);
         }
     }
 
@@ -464,12 +500,10 @@ public class MusicPlayService extends Service {
                         return;
 
                     //设置UI
-                    for(Handler handler:handlers){
-                        Message message=new Message();
-                        message.what= EVENT_UPDATE_TIME;
-                        message.arg1=mp.getCurrentPosition();
-                        handler.sendMessage(message);
-                    }
+                    Message message=new Message();
+                    message.what= EVENT_UPDATE_TIME;
+                    message.arg1=mp.getCurrentPosition();
+                    sendMessage(message);
 
                     if(mp.getCurrentPosition()/1000>=mp.getDuration()/1000)
                         break;

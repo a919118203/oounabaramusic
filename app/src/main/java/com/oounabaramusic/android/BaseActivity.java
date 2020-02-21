@@ -26,6 +26,7 @@ import com.oounabaramusic.android.adapter.MusicPlayListAdapter;
 import com.oounabaramusic.android.bean.Music;
 import com.oounabaramusic.android.bean.MyImage;
 import com.oounabaramusic.android.dao.LocalMusicDao;
+import com.oounabaramusic.android.service.BaseHandler;
 import com.oounabaramusic.android.service.DownloadService;
 import com.oounabaramusic.android.service.MusicPlayService;
 import com.oounabaramusic.android.util.ActivityManager;
@@ -50,7 +51,7 @@ public class BaseActivity extends AppCompatActivity {
     protected static final int CHOOSE_VIDEO=3;
     protected static final int CHOOSE_USER_HEADER_PHOTO=2;  //标记这是换头像的
     private MyBottomSheetDialog musicPlayList;
-    private Handler handler=new MusicPlayHandler(this);
+    private BaseHandler handler=new MusicPlayHandler(this);
     private MusicPlayService.MusicPlayBinder binder;
     private DownloadService.DownloadBinder downloadBinder;
     private ServiceConnection connection,downloadConnection;
@@ -63,6 +64,7 @@ public class BaseActivity extends AppCompatActivity {
 
     private boolean isBind ; //判断是否已绑定音乐播放服务
     private boolean autoCloseInputMethod;  //是否开启点输入框之外的地方关闭输入法
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         LogUtil.printLog("onCreate: "+this.toString());
@@ -71,6 +73,7 @@ public class BaseActivity extends AppCompatActivity {
         localMusicDao=new LocalMusicDao(this);
         sp= PreferenceManager.getDefaultSharedPreferences(this);
         autoCloseInputMethod=true;
+        isBind=false;
     }
 
     private void init(){
@@ -108,9 +111,8 @@ public class BaseActivity extends AppCompatActivity {
             public void onServiceConnected(ComponentName name, IBinder service) {
                 isBind=true;
                 binder= (MusicPlayService.MusicPlayBinder) service;
-                binder.addHandler(handler);
                 binder.setLocalMusicDao(localMusicDao);
-
+                binder.addHandler(handler);
                 //初始化播放列表弹窗
                 musicPlayList=new MyBottomSheetDialog(BaseActivity.this);
                 musicPlayList.setContentView(createContentView());
@@ -360,7 +362,7 @@ public class BaseActivity extends AppCompatActivity {
 
     protected void onClosedInputMethod(){}
 
-    static class MusicPlayHandler extends Handler{
+    static class MusicPlayHandler extends BaseHandler{
         private BaseActivity activity;
 
         MusicPlayHandler(BaseActivity activity){

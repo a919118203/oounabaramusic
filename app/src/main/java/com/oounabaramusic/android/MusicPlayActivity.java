@@ -33,6 +33,7 @@ import com.oounabaramusic.android.bean.MyImage;
 import com.oounabaramusic.android.code.BasicCode;
 import com.oounabaramusic.android.okhttputil.LrcHttpUtil;
 import com.oounabaramusic.android.okhttputil.S2SHttpUtil;
+import com.oounabaramusic.android.service.BaseHandler;
 import com.oounabaramusic.android.service.MusicPlayService;
 import com.oounabaramusic.android.util.DensityUtil;
 import com.oounabaramusic.android.util.FormatUtil;
@@ -62,7 +63,7 @@ public class MusicPlayActivity extends BaseActivity implements View.OnClickListe
     private ImageView lrcRevision;
     private FrameLayout musicCoverLayout,musicLyricsLayout;
     private MusicPlayService.MusicPlayBinder binder;
-    private Handler mHandler;
+    private BaseHandler mHandler;
     private Music music;
 
     private MyCircleImageView musicCover;
@@ -355,9 +356,13 @@ public class MusicPlayActivity extends BaseActivity implements View.OnClickListe
         musicCover.getLayoutParams().width= (int) (DensityUtil.getDisplayWidth(this)*0.8);
         musicCover.getLayoutParams().height= (int) (DensityUtil.getDisplayWidth(this)*0.8);
         musicCover.setEventHandler(mHandler);
+
+        int singerId=0;
+        if(music.getSingerId()!=null&&!music.getSingerId().isEmpty()){
+            singerId=Integer.valueOf(music.getSingerId().split("/")[0]);
+        }
         musicCover.setImage(new MyImage(
-                MyImage.TYPE_SINGER_COVER,
-                Integer.valueOf(music.getSingerId().split("/")[0])));
+                MyImage.TYPE_SINGER_COVER,singerId));
 
         seekBar.setMax(music.getDuration());
         seekBar.setProgress(binder.getCurrentProgress()/1000);
@@ -386,12 +391,14 @@ public class MusicPlayActivity extends BaseActivity implements View.OnClickListe
             controlPlay.setImageBitmap(start);
         }
 
-        serverMusicCover.setImage(new MyImage(
-                MyImage.TYPE_SINGER_COVER,
-                Integer.valueOf(music.getSingerId().split("/")[0])));
-        serverMusicName.setText(music.getMusicName());
-        serverMusicSinger.setText(music.getSingerName().replace("/"," "));
-        serverMusicSinger2.setText(music.getSingerName().replace("/"," "));
+        if(music.getIsServer()==1){
+            serverMusicCover.setImage(new MyImage(
+                    MyImage.TYPE_SINGER_COVER,
+                    Integer.valueOf(music.getSingerId().split("/")[0])));
+            serverMusicName.setText(music.getMusicName());
+            serverMusicSinger.setText(music.getSingerName().replace("/"," "));
+            serverMusicSinger2.setText(music.getSingerName().replace("/"," "));
+        }
     }
 
     private void initLyrics(int height) {
@@ -610,7 +617,7 @@ public class MusicPlayActivity extends BaseActivity implements View.OnClickListe
         }
     }
 
-    static class MyHandler extends Handler{
+    static class MyHandler extends BaseHandler{
         MusicPlayActivity activity;
         MyHandler(MusicPlayActivity activity){
             this.activity=activity;

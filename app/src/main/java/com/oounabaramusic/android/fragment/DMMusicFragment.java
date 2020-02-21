@@ -41,10 +41,8 @@ public class DMMusicFragment extends BaseFragment implements View.OnClickListene
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        if(rootView==null){
-            rootView=inflater.inflate(R.layout.fragment_dm_music,container,false);
-            init(rootView);
-        }
+        rootView=inflater.inflate(R.layout.fragment_dm_music,container,false);
+        init(rootView);
         return rootView;
     }
 
