@@ -44,8 +44,6 @@
         android:layout_alignBottom="@id/message"
         android:layout_marginEnd="20dp"
         android:layout_marginStart="10dp"
-        android:max="100"
-        android:progress="50"
         android:progressTint="@color/colorPrimary"
         style="?android:attr/progressBarStyleHorizontal"/>
 

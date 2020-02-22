@@ -48,16 +48,25 @@ public class VideoHttpUtil {
             return;
         }
 
-        File file=new File(filePath);
+        final File file=new File(filePath);
         if(!file.exists())
             return;
+
+        UploadRequestBody requestBody = new UploadRequestBody(RequestBody.create(file, MediaType.parse("multipart/form-data")),
+                new UploadRequestBody.WriteListener(){
+
+                    @Override
+                    public void onWrite(long byteCount, long fileSize) {
+                        LogUtil.printLog(byteCount+"  "+fileSize);
+                    }
+                });
 
         OkHttpClient client=new OkHttpClient();
 
         RequestBody body=new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
                 .addFormDataPart("file",file.getName(),
-                        RequestBody.create(file, MediaType.parse("multipart/form-data")))
+                        requestBody)
                 .build();
 
         String json = new Gson().toJson(video);

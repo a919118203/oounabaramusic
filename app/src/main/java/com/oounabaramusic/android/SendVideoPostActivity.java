@@ -34,12 +34,17 @@ import com.oounabaramusic.android.code.BasicCode;
 import com.oounabaramusic.android.okhttputil.HttpUtil;
 import com.oounabaramusic.android.okhttputil.S2SHttpUtil;
 import com.oounabaramusic.android.okhttputil.VideoHttpUtil;
+import com.oounabaramusic.android.service.UploadVideoService;
+import com.oounabaramusic.android.util.FormatUtil;
 import com.oounabaramusic.android.util.MyEnvironment;
 import com.oounabaramusic.android.util.RealPathFromUriUtils;
 import com.oounabaramusic.android.util.SharedPreferencesUtil;
 import com.oounabaramusic.android.util.StatusBarUtil;
 import com.oounabaramusic.android.util.VideoUtil;
 
+import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 public class SendVideoPostActivity extends BaseActivity implements View.OnClickListener{
@@ -87,46 +92,37 @@ public class SendVideoPostActivity extends BaseActivity implements View.OnClickL
                 break;
             case R.id.upload:
                 if(checkSend()){
-                    showDialog();
-                    //先发动态
-                    sendPost();
+                    startUpload();
+
+                    Toast.makeText(this, "正在上传", Toast.LENGTH_SHORT).show();
+                    finish();
                 }
                 break;
         }
         return super.onOptionsItemSelected(item);
     }
 
-    private void sendPost(){
+    private void startUpload(){
+        Intent intent = new Intent(this, UploadVideoService.class);
+
         Post post = new Post();
         post.setContentId(0);
         post.setContentType(Post.VIDEO);
         post.setContent(content.getText().toString());
         post.setUserId(SharedPreferencesUtil.getUserId(sp));
 
-        new S2SHttpUtil(
-                this,
-                new Gson().toJson(post),
-                MyEnvironment.serverBasePath+"addPost",
-                new MyHandler(this))
-                .call(BasicCode.SEND_MESSAGE);
-    }
-
-    private void uploadVideo(int postId){
         Video video = new Video();
-        video.setPostId(postId);
         video.setTitle(title.getText().toString());
         video.setUserId(SharedPreferencesUtil.getUserId(sp));
         video.setDuration(VideoUtil.getVideoLen(filePath));
 
-        VideoHttpUtil.uploadVideo(this,video,filePath,new MyHandler(this));
-    }
+        Map<String,String> data = new HashMap<>();
+        data.put("post",gson.toJson(post));
+        data.put("video",gson.toJson(video));
 
-    private void uploadVideoCover(int videoId){
-        HttpUtil.uploadVideoCover(
-                this,
-                new MyImage(MyImage.TYPE_VIDEO_COVER,videoId),
-                filePath,
-                new MyHandler(this));
+        intent.putExtra("json",gson.toJson(data));
+        intent.putExtra("filePath",filePath);
+        startService(intent);
     }
 
     private void init(){
@@ -176,24 +172,21 @@ public class SendVideoPostActivity extends BaseActivity implements View.OnClickL
         chooseVideo.setOnClickListener(this);
     }
 
-    private void showDialog(){
-        View view = LayoutInflater.from(this).inflate(
-                R.layout.alertdialog_search_local_music,
-                (ViewGroup) getWindow().getDecorView(),false);
-        TextView msg = view.findViewById(R.id.text_view);
-
-        AlertDialog dialog = new AlertDialog.Builder(this)
-                .setTitle("正在上传，请勿关闭")
-                .setView(view)
-                .create();
-
-        dialog.getWindow().setBackgroundDrawable(getResources().getDrawable(R.drawable.layout_card_2));
-        dialog.show();
-    }
-
     private boolean checkSend(){
         if(filePath==null){
             Toast.makeText(this, "请选择视频", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        File file = new File(filePath);
+        if(file.exists()){
+            if(file.length()>(long)Integer.MAX_VALUE){
+                Toast.makeText(this, "视频文件过大，不能大于"+
+                        FormatUtil.fileSizeFormat(Integer.MAX_VALUE), Toast.LENGTH_SHORT).show();
+                return false;
+            }
+        }else{
+            Toast.makeText(this, "文件不存在", Toast.LENGTH_SHORT).show();
             return false;
         }
 
@@ -237,34 +230,5 @@ public class SendVideoPostActivity extends BaseActivity implements View.OnClickL
                 break;
         }
         super.onActivityResult(requestCode, resultCode, data);
-    }
-
-    static class MyHandler extends Handler{
-        SendVideoPostActivity activity;
-        MyHandler(SendVideoPostActivity activity){
-            this.activity=activity;
-        }
-
-        @Override
-        public void handleMessage(Message msg) {
-            switch (msg.what){
-                case BasicCode.UPLOAD_VIDEO:
-                    //然后上传视频封面
-                    int videoId = Integer.valueOf((String) msg.obj);
-                    activity.uploadVideoCover(videoId);
-                    break;
-
-                case BasicCode.SEND_MESSAGE:
-                    //然后上传视频
-                    int postId = Integer.valueOf((String) msg.obj);
-                    activity.uploadVideo(postId);
-                    break;
-
-                case BasicCode.UPLOAD_IMAGE:
-                    Toast.makeText(activity, "发布成功", Toast.LENGTH_SHORT).show();
-                    activity.finish();
-                    break;
-            }
-        }
     }
 }

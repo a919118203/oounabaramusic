@@ -52,8 +52,8 @@ import androidx.core.app.NotificationCompat;
 
 public class MusicPlayService extends Service {
 
-    private static final String PUSH_CHANNEL_ID="1";
-    private static final String PUSH_CHANNEL_NAME="Mogeko";
+    static final String PUSH_CHANNEL_ID="1";
+    static final String PUSH_CHANNEL_NAME="Mogeko";
     private int notiId = 19971005;
 
     public static final int NOT_PREPARE=0;
@@ -89,8 +89,8 @@ public class MusicPlayService extends Service {
     private int saveComment = -1;
 
     private Notification notification;
+    private int cnt;       //防止TransactionTooLargeException
     private boolean showing;
-    private RemoteViews remoteViews;
     private NotificationManager notificationManager;
     private MusicPlayReceiver receiver;
     private IntentFilter intentFilter;
@@ -110,6 +110,8 @@ public class MusicPlayService extends Service {
         initReceiver();
 
         initContentView();
+
+        initNotificationManager();
 
         initNotification();
     }
@@ -138,6 +140,15 @@ public class MusicPlayService extends Service {
         handlers.add(handler);
     }
 
+    private void initNotificationManager(){
+        notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O&&
+                notificationManager.getNotificationChannel(PUSH_CHANNEL_ID)==null) {
+            NotificationChannel channel = new NotificationChannel(PUSH_CHANNEL_ID, PUSH_CHANNEL_NAME, NotificationManager.IMPORTANCE_NONE);
+            notificationManager.createNotificationChannel(channel);
+        }
+    }
+
     private void initReceiver(){
         intentFilter = new IntentFilter();
         intentFilter.addAction(MusicPlayReceiver.CHANGE_PLAY_STATUS);
@@ -151,8 +162,8 @@ public class MusicPlayService extends Service {
         registerReceiver(receiver,intentFilter);
     }
 
-    private void initContentView(){
-        remoteViews = new RemoteViews(getPackageName(), R.layout.special_play_notification);
+    private RemoteViews initContentView(){
+        RemoteViews remoteViews = new RemoteViews(getPackageName(), R.layout.special_play_notification);
 
         remoteViews.setOnClickPendingIntent(R.id.collect,
                 newPendingIntent(MusicPlayReceiver.TO_COLLECTION));
@@ -164,6 +175,8 @@ public class MusicPlayService extends Service {
                 newPendingIntent(MusicPlayReceiver.CHANGE_PLAY_STATUS));
         remoteViews.setOnClickPendingIntent(R.id.quit,
                 newPendingIntent(MusicPlayReceiver.QUIT_NOTIFICATION));
+
+        return remoteViews;
     }
 
     private PendingIntent newPendingIntent(String action){
@@ -173,18 +186,12 @@ public class MusicPlayService extends Service {
     }
 
     private void initNotification(){
-        notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            NotificationChannel channel = new NotificationChannel(PUSH_CHANNEL_ID, PUSH_CHANNEL_NAME, NotificationManager.IMPORTANCE_NONE);
-            notificationManager.createNotificationChannel(channel);
-        }
 
         Intent intent = new Intent(this, MusicPlayActivity.class);
         PendingIntent pi = PendingIntent.getActivity(this,0,intent,0);
 
-        notification = new Notification();
         notification=new NotificationCompat.Builder(this,PUSH_CHANNEL_ID)
-                .setCustomContentView(remoteViews)
+                .setCustomContentView(initContentView())
                 .setSmallIcon(R.mipmap.default_image)
                 .setTicker("Mogeko")
                 .setPriority(NotificationCompat.PRIORITY_MIN)
@@ -228,28 +235,41 @@ public class MusicPlayService extends Service {
     }
 
     private void setNotificationImage(Bitmap bitmap){
-        remoteViews.setImageViewBitmap(R.id.cover,bitmap);
-        notification.contentView=remoteViews;
+        if(cnt++==50){
+            cnt=0;
+            initNotification();
+        }
+
+        notification.contentView.setImageViewBitmap(R.id.cover,bitmap);
         notificationManager.notify(notiId,notification);
     }
 
     private void setPlayButton(Bitmap bitmap){
-        remoteViews.setImageViewBitmap(R.id.play_controller,bitmap);
-        notification.contentView=remoteViews;
+        if(cnt++==50){
+            cnt=0;
+            initNotification();
+        }
+
+        notification.contentView.setImageViewBitmap(R.id.play_controller,bitmap);
         notificationManager.notify(notiId,notification);
     }
 
     private void setPlayInfo(Music item){
+        if(cnt++==50){
+            cnt=0;
+            initNotification();
+        }
+
         //封面
         if(item.getIsServer()==1){
             HttpUtil.loadImage(this, new MyImage(MyImage.TYPE_SINGER_COVER,
                     Integer.valueOf(item.getSingerId().split("/")[0])),handler);
         }else{
-            remoteViews.setImageViewBitmap(R.id.cover,defaultImage);
+            notification.contentView.setImageViewBitmap(R.id.cover,defaultImage);
         }
 
         //文本内容
-        remoteViews.setTextViewText(R.id.content,
+        notification.contentView.setTextViewText(R.id.content,
                 item.getMusicName()+" - "+ item.getSingerName()
                         .replace("/"," "));
 
@@ -265,13 +285,17 @@ public class MusicPlayService extends Service {
                         .call(BasicCode.GET_IS_COLLECT_MUSIC_END);
             }
         }
-        notification.contentView=remoteViews;
+
         notificationManager.notify(notiId,notification);
     }
 
     private void setMusicCollection(Bitmap bitmap){
-        remoteViews.setImageViewBitmap(R.id.collect,bitmap);
-        notification.contentView=remoteViews;
+        if(cnt++==50){
+            cnt=0;
+            initNotification();
+        }
+
+        notification.contentView.setImageViewBitmap(R.id.collect,bitmap);
         notificationManager.notify(notiId,notification);
     }
 

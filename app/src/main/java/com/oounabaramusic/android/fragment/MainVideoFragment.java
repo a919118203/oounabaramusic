@@ -5,12 +5,15 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.oounabaramusic.android.BaseActivity;
 import com.oounabaramusic.android.R;
 import com.oounabaramusic.android.SendVideoPostActivity;
 import com.oounabaramusic.android.adapter.MainVideoAdapter;
+import com.oounabaramusic.android.service.UploadVideoService;
+import com.oounabaramusic.android.util.ServiceUtil;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -83,7 +86,11 @@ public class MainVideoFragment extends BaseFragment implements View.OnClickListe
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.send_video:
-                SendVideoPostActivity.startActivity(activity);
+                if(!ServiceUtil.ServiceIsRunning(activity,"UploadVideoService")){
+                    SendVideoPostActivity.startActivity(activity);
+                }else{
+                    Toast.makeText(activity, "正在上传视频", Toast.LENGTH_SHORT).show();
+                }
                 break;
         }
     }

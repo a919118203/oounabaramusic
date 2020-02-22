@@ -1,5 +1,6 @@
 package com.oounabaramusic.android.fragment;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -18,6 +19,7 @@ import com.oounabaramusic.android.MyCollectionActivity;
 import com.oounabaramusic.android.R;
 import com.oounabaramusic.android.bean.MyImage;
 import com.oounabaramusic.android.bean.Video;
+import com.oounabaramusic.android.service.UploadVideoService;
 import com.oounabaramusic.android.util.DensityUtil;
 import com.oounabaramusic.android.util.LogUtil;
 import com.oounabaramusic.android.util.MyEnvironment;
@@ -70,49 +72,15 @@ public class TestFragment extends BaseFragment implements View.OnClickListener{
 
 
     private void init(){
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-
-                String url = MyEnvironment.serverBasePath+"loadImage";
-
-                OkHttpClient client = new OkHttpClient();
-
-                MyImage image = new MyImage();
-                image.setContentType(0);
-                image.setContentId(5);
-
-                RequestBody body = new FormBody.Builder()
-                        .add("json",new Gson().toJson(image))
-                        .build();
-
-                Request request = new Request.Builder()
-                        .url(url)
-                        .post(body)
-                        .build();
-
-                client.newCall(request).enqueue(new Callback() {
-                    @Override
-                    public void onFailure(@NotNull Call call, @NotNull IOException e) {
-
-                    }
-
-                    @Override
-                    public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                        LogUtil.printLog("test:  "+response.header("md5"));
-                        response.close();
-                    }
-                });
-
-            }
-        }).start();
+        rootView.findViewById(R.id.dianji).setOnClickListener(this);
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.dianji:
-
+                Intent intent = new Intent(activity, UploadVideoService.class);
+                activity.startService(intent);
                 break;
         }
     }
