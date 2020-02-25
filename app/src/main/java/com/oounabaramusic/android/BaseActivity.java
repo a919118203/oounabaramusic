@@ -219,9 +219,16 @@ public class BaseActivity extends AppCompatActivity {
             return ;
         }
 
-        playButton.setStatus(binder.getStatus()==MusicPlayService.IS_START);
+        playButton.setStatus(binder.getStatus()==MusicPlayService.IS_START||
+                binder.getStatus()==MusicPlayService.PREPAREING);
 
-        Music item=binder.getCurrentMusic();
+        Music item;
+
+        if(binder.getStatus()==MusicPlayService.PREPAREING&&binder.getSaveComment()!=-1){
+            item=binder.getPlayList().get(binder.getSaveComment());
+        }else{
+            item=binder.getCurrentMusic();
+        }
 
         musicName.setText(item.getMusicName());
         singerName.setText(item.getSingerName());

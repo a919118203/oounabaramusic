@@ -105,12 +105,9 @@ public class SingerAdapter extends RecyclerView.Adapter<SingerAdapter.ViewHolder
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent=new Intent(activity, SingerActivity.class);
-                    intent.putExtra("singer",dataList.get(getAdapterPosition()));
-                    intent.putExtra("followed",
-                            SingerAdapter.this.followed.contains(
-                                    dataList.get(getAdapterPosition()).getId()));
-                    activity.startActivity(intent);
+
+                    SingerActivity.startActivity(activity,
+                            dataList.get(getAdapterPosition()).getId());
                 }
             });
 

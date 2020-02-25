@@ -67,9 +67,7 @@ public class SingerDialog {
             return ;
         }
 
-        Intent intent=new Intent(context, SingerActivity.class);
-        intent.putExtra("singerId",singerId);
-        context.startActivity(intent);
+        SingerActivity.startActivity(context,singerId);
     }
 
 }

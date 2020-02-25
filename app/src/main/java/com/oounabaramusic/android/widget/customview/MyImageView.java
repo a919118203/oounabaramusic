@@ -45,8 +45,9 @@ public class MyImageView extends ImageView {
         super(context, attrs, defStyleAttr, defStyleRes);
     }
 
-    public void setImage(final MyImage image){
+    public void setImage(MyImage image){
         this.image=image;
+        setImageBitmap(null);
         HttpUtil.loadImage(getContext(),image,handler);
     }
 

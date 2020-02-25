@@ -90,10 +90,9 @@ public class MCSingerAdapter extends RecyclerView.Adapter<MCSingerAdapter.ViewHo
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent=new Intent(activity, SingerActivity.class);
-                    intent.putExtra("singer",dataList.get(getAdapterPosition()));
-                    intent.putExtra("followed",dataList.get(getAdapterPosition()).getFollowed());
-                    activity.startActivity(intent);
+
+                    SingerActivity.startActivity(activity,
+                            dataList.get(getAdapterPosition()).getId());
                 }
             });
 

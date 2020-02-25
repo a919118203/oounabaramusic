@@ -136,9 +136,7 @@ public class SingerMusicMenuAdapter extends RecyclerView.Adapter<SingerMusicMenu
             return ;
         }
 
-        Intent intent=new Intent(activity, SingerActivity.class);
-        intent.putExtra("singerId",singerId);
-        activity.startActivity(intent);
+        SingerActivity.startActivity(activity,singerId);
     }
 
 

@@ -41,6 +41,7 @@ public class MyCircleImageView extends CircleImageView {
 
     public void setImage(MyImage image){
         this.image=image;
+        setImageBitmap(null);
         HttpUtil.loadImage(getContext(),image,handler);
     }
 

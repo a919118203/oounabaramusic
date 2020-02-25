@@ -86,6 +86,7 @@ public class MusicPlayService extends Service {
 
     private MyHandler handler;
 
+    //用于解决多次连续点击歌
     private int saveComment = -1;
 
     private Notification notification;
@@ -653,6 +654,10 @@ public class MusicPlayService extends Service {
             MusicPlayService.this.currentLoopType=loopType;
             sendEmptyMessage(EVENT_CHANGE_LOOP_TYPE);
         }
+
+        public int getSaveComment(){
+            return saveComment;
+        }
     }
 
     private class PlayRunnable implements Runnable{
@@ -744,6 +749,8 @@ public class MusicPlayService extends Service {
 
                 case MyCircleImageView.LOAD_FAILURE:
                     Toast.makeText(service, "图片加载失败", Toast.LENGTH_SHORT).show();
+
+                case MyCircleImageView.NO_COVER:
                     bitmap=BitmapFactory.decodeResource(
                             service.getResources(),R.mipmap.default_image);
                     service.setNotificationImage(bitmap);

@@ -52,6 +52,8 @@ public class UploadVideoService extends Service {
 
     private int cnt;
 
+    public static boolean running;
+
     public UploadVideoService() {
         mHandler=new MyHandler(this);
     }
@@ -90,6 +92,7 @@ public class UploadVideoService extends Service {
 
         json = intent.getStringExtra("json");
         filePath = intent.getStringExtra("filePath");
+        running=true;
 
         startUpload();
 
@@ -111,12 +114,6 @@ public class UploadVideoService extends Service {
                 .build();
     }
 
-    private void createNotification(long current,long fileSize){
-        initNotification();
-
-        setProgress(current,fileSize);
-    }
-
     private void startUpload(){
         startForeground(notiId,notification);
 
@@ -133,8 +130,7 @@ public class UploadVideoService extends Service {
 
         if(cnt++==50){
             cnt=0;
-            createNotification(current, fileSize);
-            return;
+            initNotification();
         }
 
         //更新进度
@@ -231,6 +227,8 @@ public class UploadVideoService extends Service {
 
                 case BasicCode.UPLOAD_IMAGE:
                     Toast.makeText(service, "上传成功", Toast.LENGTH_SHORT).show();
+
+                    running=false;
                     service.stopSelf();
                     break;
             }

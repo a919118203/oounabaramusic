@@ -86,7 +86,7 @@ public class MainVideoFragment extends BaseFragment implements View.OnClickListe
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.send_video:
-                if(!ServiceUtil.ServiceIsRunning(activity,"UploadVideoService")){
+                if(!UploadVideoService.running){
                     SendVideoPostActivity.startActivity(activity);
                 }else{
                     Toast.makeText(activity, "正在上传视频", Toast.LENGTH_SHORT).show();

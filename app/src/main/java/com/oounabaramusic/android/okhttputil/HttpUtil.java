@@ -59,6 +59,9 @@ public class HttpUtil {
 
     public static final int NO_NET=-200;
     public static final int FAILURE=-300;
+    private static final String lock="Mogeko";
+
+    public static Map<String,Bitmap> bitmaps=new HashMap<>();
 
     /**
      * 登录
@@ -146,7 +149,7 @@ public class HttpUtil {
     }
 
 
-    synchronized public static void loadImage(final Context context, final MyImage image, final Handler handler){
+    public static void loadImage(final Context context, final MyImage image, final Handler handler){
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -168,68 +171,71 @@ public class HttpUtil {
                         .post(body)
                         .build();
 
-                client.newCall(request).enqueue(new Callback() {
-                    @Override
-                    public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                        handler.sendEmptyMessage(MyCircleImageView.LOAD_FAILURE);
+                FileOutputStream fos = null;
+                InputStream is=null;
+
+                try {
+                    Response response = client.newCall(request).execute();
+
+                    String md5 = response.header("md5");
+
+                    //如果已经缓存过了
+                    if(bitmaps.containsKey(md5)){
+                        Message msg = new Message();
+                        msg.what=MyCircleImageView.LOAD_SUCCESS;
+                        msg.obj=bitmaps.get(md5);
+                        handler.sendMessage(msg);
+                        return;
                     }
 
-                    @Override
-                    public void onResponse(@NotNull Call call, @NotNull Response response) {
-                        String md5 = response.header("md5");
-                        if(md5==null){
-                            handler.sendEmptyMessage(MyCircleImageView.NO_COVER);
-                            return;
-                        }
-
-                        InputStream is = Objects.requireNonNull(response.body()).byteStream();
-                        FileOutputStream fos = null;
-
-                        try {
-                            File file = new File(MyEnvironment.cachePath+md5);
-                            if(file.exists()){
-                                String thisMd5 = DigestUtils.md5HexOfFile(file);
-                                if(!thisMd5.equals(md5)){
-                                    fos = new FileOutputStream(file);
-
-                                    byte[] buff = new byte[1024];
-                                    int len;
-                                    while((len=is.read(buff))!=-1){
-                                        fos.write(buff,0,len);
-                                    }
-                                    fos.flush();
-                                }
-                            }else{
-                                fos = new FileOutputStream(file);
-
-                                byte[] buff = new byte[1024];
-                                int len;
-                                while((len=is.read(buff))!=-1){
-                                    fos.write(buff,0,len);
-                                }
-                                fos.flush();
-                            }
-
-                            Bitmap bitmap = BitmapFactory.decodeFile(file.getPath());
-                            Message msg = new Message();
-                            msg.what=MyCircleImageView.LOAD_SUCCESS;
-                            msg.obj=bitmap;
-                            handler.sendMessage(msg);
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                            handler.sendEmptyMessage(MyCircleImageView.LOAD_FAILURE);
-                        }  finally {
-                            try {
-                                is.close();
-                                if(fos!=null){
-                                    fos.close();
-                                }
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                        }
+                    if(md5==null){
+                        handler.sendEmptyMessage(MyCircleImageView.NO_COVER);
+                        return;
                     }
-                });
+
+                    synchronized (lock){
+                        is = Objects.requireNonNull(response.body()).byteStream();
+
+                        File file = new File(MyEnvironment.cachePath+md5);
+                        if(file.exists()){
+                            is.skip(file.length());
+                        }
+
+                        fos = new FileOutputStream(file,true);
+
+                        byte[] buff = new byte[1024];
+                        int len;
+                        while((len=is.read(buff))!=-1){
+                            fos.write(buff,0,len);
+                        }
+                        fos.flush();
+
+                        Bitmap bitmap = BitmapFactory.decodeFile(file.getPath());
+
+                        //缓存
+                        bitmaps.put(md5,bitmap);
+
+                        //发送消息
+                        Message msg = new Message();
+                        msg.what=MyCircleImageView.LOAD_SUCCESS;
+                        msg.obj=bitmap;
+                        handler.sendMessage(msg);
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    handler.sendEmptyMessage(MyCircleImageView.LOAD_FAILURE);
+                }  finally {
+                    try {
+                        if(is!=null){
+                            is.close();
+                        }
+                        if(fos!=null){
+                            fos.close();
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
         }).start();
     }

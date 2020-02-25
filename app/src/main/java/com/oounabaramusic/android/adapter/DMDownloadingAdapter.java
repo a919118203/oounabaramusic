@@ -40,9 +40,9 @@ public class DMDownloadingAdapter extends RecyclerView.Adapter<DMDownloadingAdap
 
     public DMDownloadingAdapter(DownloadManagementActivity activity){
         this.activity=activity;
+        handler=new DMDownloadingHandler(this);
         dataList=activity.getDownloadBinder().getDownloadList();
         downloadable=activity.getDownloadBinder().getDownloadable();
-        handler=new DMDownloadingHandler(this);
         activity.getDownloadBinder().addHandler(handler);
         activity.getDownloadBinder().addAdapter(this);
     }

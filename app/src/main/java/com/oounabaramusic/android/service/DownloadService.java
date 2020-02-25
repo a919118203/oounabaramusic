@@ -188,8 +188,6 @@ public class DownloadService extends Service {
                     bos.write(bytes,0,len);
                     total+=(long)len;
 
-                    Thread.sleep(50);//TODO下载速度太快  不好看效果
-
                     //每一次进度都发送消息
                     for(Handler handler:handlers){
                         Message msg=new Message();
@@ -228,7 +226,7 @@ public class DownloadService extends Service {
                 bos.close();
                 is.close();
 
-            } catch (IOException | InterruptedException e) {
+            } catch (IOException e) {
                 e.printStackTrace();
             }
 
@@ -403,6 +401,7 @@ public class DownloadService extends Service {
         }
 
         public void addHandler(Handler handler){
+            if(!handlers.contains(handler))
             handlers.add(handler);
         }
 
@@ -415,7 +414,9 @@ public class DownloadService extends Service {
         }
 
         public void addAdapter(RecyclerView.Adapter adapter){
-            adapters.add(adapter);
+            if(!adapters.contains(adapter)){
+                adapters.add(adapter);
+            }
         }
     }
 

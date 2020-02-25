@@ -58,7 +58,6 @@ public class SendVideoPostActivity extends BaseActivity implements View.OnClickL
     private EditText content;
     private TextView contentCnt;
 
-
     public static void startActivity(Context context){
         Intent intent = new Intent(context,SendVideoPostActivity.class);
         context.startActivity(intent);

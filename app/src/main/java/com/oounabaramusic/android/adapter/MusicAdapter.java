@@ -122,9 +122,7 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.ViewHolder> 
                             singerNames,
                             singerIds);
                 }else{
-                    Intent intent=new Intent(activity, SingerActivity.class);
-                    intent.putExtra("singerId",Integer.valueOf(singerIds));
-                    activity.startActivity(intent);
+                    SingerActivity.startActivity(activity,Integer.valueOf(singerIds));
                 }
                 spw.dismiss();
             }
