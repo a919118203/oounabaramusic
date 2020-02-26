@@ -29,11 +29,14 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class SingerAdapter extends RecyclerView.Adapter<SingerAdapter.ViewHolder> {
 
+    private static final String TO_FOLLOW="a";
+
     private Activity activity;
     private List<Singer> dataList;
-    private List<Integer> followed;
     private SharedPreferences sp;
     private Handler handler;
+
+    private int selectPosition;
 
     public SingerAdapter(Activity activity,Handler handler){
         this.activity=activity;
@@ -47,13 +50,20 @@ public class SingerAdapter extends RecyclerView.Adapter<SingerAdapter.ViewHolder
         notifyDataSetChanged();
     }
 
-    public void setFollowed(List<Integer> followed) {
-        this.followed = followed;
+    public void addDataList(List<Singer> dataList){
+        if(dataList==null||dataList.isEmpty()){
+            return;
+        }
+
+        int start = this.dataList.size();
+        int len = dataList.size();
+        this.dataList.addAll(dataList);
+        notifyItemRangeInserted(start,len);
     }
 
-    public void followSingerEnd(String singerId){
-        followed.add(Integer.valueOf(singerId));
-        notifyDataSetChanged();
+    public void followSingerEnd(){
+        dataList.get(selectPosition).setFollowed(true);
+        notifyItemChanged(selectPosition,TO_FOLLOW);
     }
 
     @NonNull
@@ -73,12 +83,11 @@ public class SingerAdapter extends RecyclerView.Adapter<SingerAdapter.ViewHolder
         boolean login=sp.getBoolean("login",false);;
 
         if(login){
-            for(int singerId:followed){
-                if(dataList.get(position).getId()==singerId){
-                    holder.followed.setVisibility(View.VISIBLE);
-                    holder.toFollow.setVisibility(View.GONE);
-                    return ;
-                }
+
+            if(dataList.get(position).getFollowed()){
+                holder.followed.setVisibility(View.VISIBLE);
+                holder.toFollow.setVisibility(View.GONE);
+                return ;
             }
 
             holder.followed.setVisibility(View.GONE);
@@ -86,6 +95,25 @@ public class SingerAdapter extends RecyclerView.Adapter<SingerAdapter.ViewHolder
         }else{
             holder.followed.setVisibility(View.GONE);
             holder.toFollow.setVisibility(View.GONE);
+        }
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position, @NonNull List<Object> payloads) {
+        if(payloads.isEmpty()){
+            onBindViewHolder(holder, position);
+        }else{
+            String option = (String) payloads.get(0);
+
+            switch (option){
+                case TO_FOLLOW:
+                    holder.followed.setVisibility(View.VISIBLE);
+                    holder.toFollow.setVisibility(View.GONE);
+
+                    //姑且恢复
+                    holder.toFollow.setEnabled(true);
+                    break;
+            }
         }
     }
 
@@ -119,7 +147,8 @@ public class SingerAdapter extends RecyclerView.Adapter<SingerAdapter.ViewHolder
             toFollow.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
+                    toFollow.setEnabled(false);
+                    selectPosition=getAdapterPosition();
                     Singer data = new Singer();
                     data.setId(dataList.get(getAdapterPosition()).getId());
                     data.setMainUserId(SharedPreferencesUtil.getUserId(sp));

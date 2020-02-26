@@ -49,6 +49,8 @@ public class SingerClassificationActivity extends BaseActivity {
     private SingerClassificationHandler handler;
     private SharedPreferences sp;
 
+    private boolean end;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,6 +77,10 @@ public class SingerClassificationActivity extends BaseActivity {
     @Override
     protected void onRestart() {
         super.onRestart();
+
+        if(countries==null){
+            return;
+        }
         loadSinger();
     }
 
@@ -105,6 +111,17 @@ public class SingerClassificationActivity extends BaseActivity {
         //加载完歌手tag后初始化tag收起动画
         animation=new HeightChangeAnimation(tab,filter);
 
+        rv.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                LinearLayoutManager llm = (LinearLayoutManager) recyclerView.getLayoutManager();
+
+                if(llm.findLastVisibleItemPosition()==adapter.getItemCount()-1){
+                    loadNextSinger();
+                }
+            }
+        });
+
         loadSinger();
     }
 
@@ -122,12 +139,37 @@ public class SingerClassificationActivity extends BaseActivity {
         singer.setCountryId(countries.get(country.getSelectedTabPosition()).getId());
         singer.setTypeId(types.get(type.getSelectedTabPosition()).getId());
         singer.setMainUserId(userId);
+        singer.setStart(0);
         new S2SHttpUtil(
                 this,
                 gson.toJson(singer),
                 MyEnvironment.serverBasePath+"music/loadSinger",
                 handler)
         .call(BasicCode.GET_CONTENT_2);
+    }
+
+    private void loadNextSinger(){
+        if(end){
+            return;
+        }
+
+        int userId=0;
+
+        if(SharedPreferencesUtil.isLogin(sp)){
+            userId=SharedPreferencesUtil.getUserId(sp);
+        }
+
+        Singer singer = new Singer();
+        singer.setCountryId(countries.get(country.getSelectedTabPosition()).getId());
+        singer.setTypeId(types.get(type.getSelectedTabPosition()).getId());
+        singer.setMainUserId(userId);
+        singer.setStart(adapter.getItemCount());
+        new S2SHttpUtil(
+                this,
+                gson.toJson(singer),
+                MyEnvironment.serverBasePath+"music/loadSinger",
+                handler)
+                .call(BasicCode.GET_CONTENT_3);
     }
 
     private void init() {
@@ -215,20 +257,29 @@ public class SingerClassificationActivity extends BaseActivity {
                     activity.recycler.setVisibility(View.GONE);
                     json= (String) msg.obj;
 
-                    data=activity.gson.fromJson(json,
-                            new TypeToken<Map<String,String>>(){}.getType());
-
-                    List<Singer> singers=activity.gson.fromJson(data.get("singers"),
+                    List<Singer> singers=activity.gson.fromJson(json,
                             new TypeToken<List<Singer>>(){}.getType());
 
-                    List<Integer> followed=activity.gson.fromJson(data.get("followed"),
-                            new TypeToken<List<Integer>>(){}.getType());
-
-                    activity.adapter.setFollowed(followed);
                     activity.adapter.setDataList(singers);
+
+                    activity.end=false;
+                    break;
+
+                case BasicCode.GET_CONTENT_3:
+                    json= (String) msg.obj;
+
+                    singers=activity.gson.fromJson(json,
+                            new TypeToken<List<Singer>>(){}.getType());
+
+                    if(singers.isEmpty()){
+                        activity.end=true;
+                    }
+
+                    activity.adapter.addDataList(singers);
+
                     break;
                 case BasicCode.TO_FOLLOW_SINGER:
-                    activity.adapter.followSingerEnd((String) msg.obj);
+                    activity.adapter.followSingerEnd();
             }
         }
     }

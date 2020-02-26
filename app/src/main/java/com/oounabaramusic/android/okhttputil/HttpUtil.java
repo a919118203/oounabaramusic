@@ -154,46 +154,46 @@ public class HttpUtil {
             @Override
             public void run() {
 
-                //如果没网，就加载默认图片,或者缓存
-                if(!InternetUtil.checkNet(context)){
-                    handler.sendEmptyMessage(MyCircleImageView.NO_NET);
-                    return;
-                }
-
-                OkHttpClient client = new OkHttpClient();
-
-                RequestBody body = new FormBody.Builder()
-                        .add("json",new Gson().toJson(image))
-                        .build();
-
-                Request request = new Request.Builder()
-                        .url(MyEnvironment.serverBasePath+"loadImage")
-                        .post(body)
-                        .build();
-
-                FileOutputStream fos = null;
-                InputStream is=null;
-
-                try {
-                    Response response = client.newCall(request).execute();
-
-                    String md5 = response.header("md5");
-
-                    //如果已经缓存过了
-                    if(bitmaps.containsKey(md5)){
-                        Message msg = new Message();
-                        msg.what=MyCircleImageView.LOAD_SUCCESS;
-                        msg.obj=bitmaps.get(md5);
-                        handler.sendMessage(msg);
+                synchronized (lock){
+                    //如果没网，就加载默认图片,或者缓存
+                    if(!InternetUtil.checkNet(context)){
+                        handler.sendEmptyMessage(MyCircleImageView.NO_NET);
                         return;
                     }
 
-                    if(md5==null){
-                        handler.sendEmptyMessage(MyCircleImageView.NO_COVER);
-                        return;
-                    }
+                    OkHttpClient client = new OkHttpClient();
 
-                    synchronized (lock){
+                    RequestBody body = new FormBody.Builder()
+                            .add("json",new Gson().toJson(image))
+                            .build();
+
+                    Request request = new Request.Builder()
+                            .url(MyEnvironment.serverBasePath+"loadImage")
+                            .post(body)
+                            .build();
+
+                    FileOutputStream fos = null;
+                    InputStream is=null;
+
+                    try {
+                        Response response = client.newCall(request).execute();
+
+                        String md5 = response.header("md5");
+
+                        //如果已经缓存过了
+                        if(bitmaps.containsKey(md5)){
+                            Message msg = new Message();
+                            msg.what=MyCircleImageView.LOAD_SUCCESS;
+                            msg.obj=bitmaps.get(md5);
+                            handler.sendMessage(msg);
+                            return;
+                        }
+
+                        if(md5==null){
+                            handler.sendEmptyMessage(MyCircleImageView.NO_COVER);
+                            return;
+                        }
+
                         is = Objects.requireNonNull(response.body()).byteStream();
 
                         File file = new File(MyEnvironment.cachePath+md5);
@@ -220,20 +220,21 @@ public class HttpUtil {
                         msg.what=MyCircleImageView.LOAD_SUCCESS;
                         msg.obj=bitmap;
                         handler.sendMessage(msg);
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    handler.sendEmptyMessage(MyCircleImageView.LOAD_FAILURE);
-                }  finally {
-                    try {
-                        if(is!=null){
-                            is.close();
-                        }
-                        if(fos!=null){
-                            fos.close();
-                        }
+
                     } catch (IOException e) {
                         e.printStackTrace();
+                        handler.sendEmptyMessage(MyCircleImageView.LOAD_FAILURE);
+                    }  finally {
+                        try {
+                            if(is!=null){
+                                is.close();
+                            }
+                            if(fos!=null){
+                                fos.close();
+                            }
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
             }
