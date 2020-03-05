@@ -85,7 +85,7 @@ public class ChooseDateView extends LinearLayout {
     public Date getDate(){
         Calendar calendar=Calendar.getInstance();
         int y = Integer.valueOf(year.getText().toString());
-        int m = Integer.valueOf(month.getText().toString());
+        int m = Integer.valueOf(month.getText().toString())-1;
         int d = Integer.valueOf(day.getText().toString());
         calendar.set(y,m,d);
         return calendar.getTime();
