@@ -3,6 +3,10 @@ package com.oounabaramusic.android.bean;
 public class SingerCountry {
 	private int id;
 	private String country;
+	public SingerCountry(){ }
+	public SingerCountry(int id){
+		this.id = id;
+	}
 	public int getId() {
 		return id;
 	}

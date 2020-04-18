@@ -3,6 +3,10 @@ package com.oounabaramusic.android.bean;
 public class SingerType {
 	private int id;
 	private String type;
+	public SingerType(){ }
+	public SingerType(int id){
+		this.id = id;
+	}
 	public int getId() {
 		return id;
 	}

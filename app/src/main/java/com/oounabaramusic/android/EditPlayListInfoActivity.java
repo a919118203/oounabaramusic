@@ -210,10 +210,16 @@ public class EditPlayListInfoActivity extends BaseActivity implements View.OnCli
                 .call(BasicCode.SAVE_TO_SERVER);
                 break;
             case R.id.edit_info_save_name:
+                String playListName = newPlaylistName.getText().toString();
+                if(playListName.length()==0||playListName.length()>40){
+                    Toast.makeText(this, "歌单名长度不正确", Toast.LENGTH_SHORT).show();
+                    break;
+                }
+
                 saveName.setEnabled(false);
                 Map<String,String> map=new HashMap<>();
                 map.put("playListId",playList.getId()+"");
-                map.put("playListName",newPlaylistName.getText().toString());
+                map.put("playListName",playListName);
 
                 new S2SHttpUtil(
                         this,

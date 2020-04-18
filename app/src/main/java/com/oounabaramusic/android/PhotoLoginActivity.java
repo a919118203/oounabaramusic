@@ -104,6 +104,19 @@ public class PhotoLoginActivity extends BaseActivity {
     }
 
     public void onGetVerificationCode(View view){
+        String p = photo.getText().toString();
+        if(p.length()==0){
+            Toast.makeText(this, "还没写电话号码呢", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if(!StringUtil.checkAllNumbers(p)){
+            Toast.makeText(this, "输入全数字", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        strPhoto=p;
+
         getVerificationCode.setEnabled(false);
         getVerificationCode.setTextColor(getResources().getColor(R.color.negative));
         new Thread(new Runnable() {
@@ -134,18 +147,6 @@ public class PhotoLoginActivity extends BaseActivity {
                 });
             }
         }).start();
-
-
-        strPhoto=photo.getText().toString();
-        if(strPhoto.length()==0){
-            Toast.makeText(this, "还没写电话号码呢", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        if(!StringUtil.checkAllNumbers(strPhoto)){
-            Toast.makeText(this, "输入全数字", Toast.LENGTH_SHORT).show();
-            return;
-        }
         SMSSDK.getVerificationCode("86",strPhoto);
     }
 

@@ -90,15 +90,17 @@ public class LyricsAdapter extends RecyclerView.Adapter<LyricsAdapter.ViewHolder
             holder.lyrics.setTextColor(activity.getResources().getColor(R.color.negative));
         }
 
-        holder.itemView.post(new Runnable() {
-            @Override
-            public void run() {
-                if(position>=1&&holder.itemView.getHeight()!=0){
-                    heights[position]=holder.itemView.getHeight();
-                    cnt=position>cnt?position:cnt;
+        if(heights[position]==0){
+            holder.itemView.post(new Runnable() {
+                @Override
+                public void run() {
+                    if(position>=1&&holder.itemView.getHeight()!=0){
+                        heights[position]=holder.itemView.getHeight();
+                        cnt=position>cnt?position:cnt;
+                    }
                 }
-            }
-        });
+            });
+        }
     }
 
     @Override
@@ -127,15 +129,15 @@ public class LyricsAdapter extends RecyclerView.Adapter<LyricsAdapter.ViewHolder
             header=itemView.findViewById(R.id.header);
             foot=itemView.findViewById(R.id.foot);
 
-            itemView.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
-                @Override
-                public boolean onPreDraw() {
-                    itemView.getViewTreeObserver().removeOnPreDrawListener(this);
-                    int position=getLayoutPosition();
-
-                    return true;
-                }
-            });
+//            itemView.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+//                @Override
+//                public boolean onPreDraw() {
+//                    itemView.getViewTreeObserver().removeOnPreDrawListener(this);
+//                    int position=getLayoutPosition();
+//
+//                    return true;
+//                }
+//            });
 
             header.getLayoutParams().height=headerHeight;
             foot.getLayoutParams().height=headerHeight;

@@ -253,30 +253,29 @@ public class HttpUtil {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                //如果没网，就加载默认图片,或者缓存
+                //如果没网
                 if(!InternetUtil.checkNet(context)){
                     Toast.makeText(context, "请检查网络连接", Toast.LENGTH_SHORT).show();
                     return;
                 }
-
                 OkHttpClient client=new OkHttpClient();
-
+                //图片文件
                 File file = new File(filePath);
-
+                //保存文件md5值
                 image.setMd5(DigestUtils.md5HexOfFile(file));
-
+                //构建RequestBody
                 RequestBody body=new MultipartBody.Builder()
                         .setType(MultipartBody.FORM)
                         .addFormDataPart("file",file.getName(),
                                 RequestBody.create(file, MediaType.parse("multipart/form-data")))
                         .build();
-
+                //构建Request
                 Request request = new Request.Builder()
                         .url(MyEnvironment.serverBasePath+"uploadImage")
                         .header("json", new Gson().toJson(image))
                         .post(body)
                         .build();
-
+                //上传图片
                 client.newCall(request).enqueue(new Callback() {
                     @Override
                     public void onFailure(@NotNull Call call, @NotNull IOException e) {
@@ -290,7 +289,6 @@ public class HttpUtil {
                 });
             }
         }).start();
-
     }
 
     /**

@@ -148,10 +148,15 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
+        //如果用户点击屏幕
         if(ev.getAction()==MotionEvent.ACTION_DOWN){
+            //获取点击的View
             View v=getCurrentFocus();
+            //如果点击的View发送键而且不是入力框
             if(!InputMethodUtil.isClickView(send,ev)&&!InputMethodUtil.isClickEditText(v,ev)){
+                //隐藏输入法
                 InputMethodUtil.hideSoftKeyboard(this);
+                //取消选中评论
                 onClosedInputMethod();
             }
         }

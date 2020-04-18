@@ -5,7 +5,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 public class LogUtil {
-    static private boolean _switch=true;
+    static private boolean _switch=false;
     static public void printLog(String content){
         if(_switch){
             Log.d("Mogeko", content);

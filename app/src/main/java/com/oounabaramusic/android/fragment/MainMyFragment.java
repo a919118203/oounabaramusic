@@ -10,6 +10,7 @@ import android.preference.PreferenceManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -55,7 +56,6 @@ public class MainMyFragment extends Fragment implements View.OnClickListener{
     private MyBottomSheetDialog dialogFavoritePlaylistMenu;
     private OpenListAnimation myPlaylistAnim,favoritePlaylistAnim;
     private BaseActivity activity;
-    private View rootView;
 
 
     private MyPlayListAdapter myPlayListAdapter;
@@ -77,10 +77,8 @@ public class MainMyFragment extends Fragment implements View.OnClickListener{
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        if(rootView==null){
-            rootView=inflater.inflate(R.layout.fragment_main_my,container,false);
-            init(rootView);
-        }
+        View rootView=inflater.inflate(R.layout.fragment_main_my,container,false);
+        init(rootView);
         return rootView;
     }
 

@@ -213,7 +213,7 @@ public class LocalMusicAdapter extends RecyclerView.Adapter<LocalMusicAdapter.Lo
                 new S2SHttpUtil(
                         activity,
                         musicList.get(popupPosition).getMd5(),
-                        MyEnvironment.serverBasePath+"getMusicId",
+                        MyEnvironment.serverBasePath+"music/getMusicId",
                         new MyHandler(LocalMusicAdapter.this))
                 .call(BasicCode.GET_MUSIC_ID);
                 spwMusicMenuIsServer.dismiss();

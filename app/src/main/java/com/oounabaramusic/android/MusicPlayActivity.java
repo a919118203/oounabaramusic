@@ -15,6 +15,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -301,7 +302,7 @@ public class MusicPlayActivity extends BaseActivity implements View.OnClickListe
                     new S2SHttpUtil(
                             MusicPlayActivity.this,
                             music.getMd5(),
-                            MyEnvironment.serverBasePath+"getMusicId",
+                            MyEnvironment.serverBasePath+"music/getMusicId",
                             mHandler)
                     .call(BasicCode.GET_MUSIC_ID);
 
@@ -402,48 +403,67 @@ public class MusicPlayActivity extends BaseActivity implements View.OnClickListe
     }
 
     private void initLyrics(int height) {
-        rv.setLayoutManager(new LinearLayoutManager(this));
-        rv.setAdapter(adapter=new LyricsAdapter(this,height));
-        rv.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        if(adapter==null){
+            rv.setLayoutManager(new LinearLayoutManager(this));
+            rv.setAdapter(adapter=new LyricsAdapter(this,height));
+            rv.addOnScrollListener(new RecyclerView.OnScrollListener() {
+                @Override
+                public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                    super.onScrollStateChanged(recyclerView, newState);
+                    //当滚动停止时，自动滚到当前歌词的中间
+                    if(dragging &&newState==RecyclerView.SCROLL_STATE_IDLE){
+                        dragging =false;
+                        //隐藏中间线
+                        index.setVisibility(View.GONE);
 
-            @Override
-            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-                if(dragging &&newState==RecyclerView.SCROLL_STATE_IDLE){
-                    dragging =false;
-                    index.setVisibility(View.GONE);
-                    if(adapter.getItemCount()==0){
-                        return ;
+                        //如果没有歌词就退出
+                        if(adapter.getItemCount()==0){
+                            return ;
+                        }
+
+                        //获取当前位置
+                        int position=adapter.getCurrent();
+
+                        //计算还要滑动多少才滑到中间
+                        int a=(adapter.getHeight(position)-adapter.getHeight(position-1))/2
+                                +adapter.getHeight(position-1);
+                        //滑
+                        rv.smoothScrollBy(0,a-sum);
+
+                        //获取对应歌词的时间
+                        long seek=adapter.getLrc().getTimes().get(position);
+
+                        //将音乐播放时间线跳到对应的时间
+                        if(seek<Integer.MAX_VALUE){
+                            binder.seekTo((int) seek);
+                        }
                     }
-                    int position=adapter.getCurrent();
-                    int a=(adapter.getHeight(position)-adapter.getHeight(position-1))/2
-                            +adapter.getHeight(position-1);
-                    rv.smoothScrollBy(0,a-sum);
-
-                    long seek=adapter.getLrc().getTimes().get(position);
-                    if(seek<Integer.MAX_VALUE){
-                        binder.seekTo((int) seek);
+                    //只有是用户手动拖的，才自动滑到对应歌词的中间
+                    if(newState==RecyclerView.SCROLL_STATE_DRAGGING){
+                        dragging =true;
+                        index.setVisibility(View.VISIBLE);
                     }
                 }
 
-                if(newState==RecyclerView.SCROLL_STATE_DRAGGING){
-                    dragging =true;
-                    index.setVisibility(View.VISIBLE);
-                }
-            }
+                @Override
+                public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                    super.onScrolled(recyclerView, dx, dy);
 
-            @Override
-            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                sum+=dy;
-                int newIndex=adapter.search(sum);
-                if(newIndex!=adapter.getCurrent()){
-                    adapter.setCurrent(newIndex==0?1:newIndex);
-                    indexTime.setText(FormatUtil.secondToString(adapter.getLrc().getTimes().get(newIndex)/1000));
-                    adapter.notifyDataSetChanged();
+                    //记录当前整体的已滑距离
+                    sum+=dy;
+
+                    //通过已滑距离计算是第几句歌词
+                    int newIndex=adapter.search(sum);
+
+                    //防止重复调用
+                    if(newIndex!=adapter.getCurrent()){
+                        adapter.setCurrent(newIndex==0?1:newIndex);
+                        indexTime.setText(FormatUtil.secondToString(adapter.getLrc().getTimes().get(newIndex)/1000));
+                        adapter.notifyDataSetChanged();
+                    }
                 }
-            }
-        });
+            });
+        }
 
         loadLyrics();
     }
@@ -566,7 +586,7 @@ public class MusicPlayActivity extends BaseActivity implements View.OnClickListe
                         new S2SHttpUtil(
                                 MusicPlayActivity.this,
                                 music.getMd5(),
-                                MyEnvironment.serverBasePath+"getMusicId",
+                                MyEnvironment.serverBasePath+"music/getMusicId",
                                 mHandler)
                                 .call(BasicCode.GET_MUSIC_ID);
 

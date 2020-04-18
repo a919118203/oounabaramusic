@@ -42,8 +42,6 @@ public class ListenRankAdapter extends RecyclerView.Adapter<ListenRankAdapter.Vi
     public void refresh(){
         MusicListen ml=new MusicListen();
         ml.setUserId(activity.getUserId());
-        ml.setDel(-1);
-        ml.setListenCnt(-1);
 
         new S2SHttpUtil(
                 activity,

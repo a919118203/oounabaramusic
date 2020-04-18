@@ -134,6 +134,7 @@ public class PlayListTagActivity extends BaseActivity {
 
     private void initTag() {
         if(bigTags==null){
+            //获取所有大标签
             new S2SHttpUtil(
                     this,
                     "",
@@ -145,25 +146,26 @@ public class PlayListTagActivity extends BaseActivity {
 
         //初始化歌单标签
         for(int i=0;i<bigTags.size();i++){
+            //动态读取layout
             LinearLayout ll= (LinearLayout) LayoutInflater
                     .from(this)
                     .inflate(R.layout.activity_play_list_tag_item,
                             (ViewGroup) getWindow().getDecorView(),
                             false);
-
+            //获取大标签
             PlayListBigTag item=bigTags.get(i);
-
+            //设置大标签名
             TextView title=ll.findViewById(R.id.title);
             title.setText(item.getName());
+            //设置小标签
             RecyclerView rv=ll.findViewById(R.id.recycler_view);
             RecyclerView.Adapter adapter;
-
             adapter=new OtherPlayListTagAdapter(this,item.getTags());
-
+            //保存adapter实例
             adapters.add(adapter);
             rv.setAdapter(adapter);
             rv.setLayoutManager(new GridLayoutManager(this,4));
-
+            //将view加到主布局中
             content.addView(ll);
         }
 
@@ -171,7 +173,6 @@ public class PlayListTagActivity extends BaseActivity {
         for(PlayListSmallTag tag:myTags){
             //寻找对应大标签的位置
             int index = bigTags.indexOf(tag);
-
             //第一个为我的标签 所以+1
             ((OtherPlayListTagAdapter)adapters.get(index+1)).selectTag(tag);
         }

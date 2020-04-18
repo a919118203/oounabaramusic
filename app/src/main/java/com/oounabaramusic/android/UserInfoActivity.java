@@ -293,6 +293,10 @@ public class UserInfoActivity extends BaseActivity implements View.OnClickListen
 
             case R.id.user_follow:
             case R.id.user_cancel_follow:
+                if(!SharedPreferencesUtil.isLogin(sp)){
+                    Toast.makeText(this, "请先登录", Toast.LENGTH_SHORT).show();
+                }
+
                 Map<String,Integer> data =new HashMap<>();
                 data.put("from", SharedPreferencesUtil.getUserId(sp));
                 data.put("to",user.getId());
@@ -306,7 +310,11 @@ public class UserInfoActivity extends BaseActivity implements View.OnClickListen
                 break;
 
             case R.id.user_send_message:
-                MessageActivity.startActivity(this,user.getId(),user.getUserName());
+                if(SharedPreferencesUtil.isLogin(sp)){
+                    MessageActivity.startActivity(this,user.getId(),user.getUserName());
+                }else{
+                    Toast.makeText(this, "请先登录", Toast.LENGTH_SHORT).show();
+                }
                 break;
         }
     }

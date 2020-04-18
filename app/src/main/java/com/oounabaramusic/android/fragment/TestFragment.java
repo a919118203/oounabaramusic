@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.Adapter;
 import android.widget.ImageView;
 import android.widget.MediaController;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
@@ -66,22 +67,24 @@ public class TestFragment extends BaseFragment implements View.OnClickListener{
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         rootView=inflater.inflate(R.layout.fragment_test,container,false);
-        init();
+        //init();
         return rootView;
     }
 
 
-    private void init(){
-        rootView.findViewById(R.id.dianji).setOnClickListener(this);
-    }
-
+//    private void init(){
+//        rootView.findViewById(R.id.dianji).setOnClickListener(this);
+//        StringBuffer sb = new StringBuffer();
+//        sb.append(1);
+//    }
+//
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
-            case R.id.dianji:
-                Intent intent = new Intent(activity, UploadVideoService.class);
-                activity.startService(intent);
-                break;
-        }
+//        switch (v.getId()){
+//            case R.id.dianji:
+//                Intent intent = new Intent(activity, UploadVideoService.class);
+//                activity.startService(intent);
+//                break;
+//        }
     }
 }
